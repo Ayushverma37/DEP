@@ -1,0 +1,69 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+.LogoImg{
+  float:left ;
+  height: 100px;
+
+}
+.loginClass{
+  margin-right: 50px;
+  text-align: right;
+}
+
+.homeClass{
+  height: 80vh;
+  background-color: #013A6B;
+  background-image: -webkit-linear-gradient(180deg, white 50%, #dfe7fd 50%);
+}
+.homeText{
+  padding-top: 25vh;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.navbarClass{
+  background-color: whitesmoke;
+}
+.IITText{
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.photo {
+  height: 10vh;
+  width: 10vh;
+}
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
