@@ -6,7 +6,6 @@ import Login from '../Login'
 export default function NavbarComp() {
   return (
     <>
-    
     <Navbar bg="grey" expand="lg" className='navbarClass'>
     <Navbar.Brand href="#"><img className='photo' src={logoIIT1} alt="" height='20%'/></Navbar.Brand>
     <Navbar.Brand href="#" className='IITText'>Indian Institute <br />
