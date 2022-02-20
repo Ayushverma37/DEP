@@ -5,7 +5,8 @@ export default function DashboardTAble() {
   return (
     <>
     <div className="app-container">
-    <table>
+    <table className="Table">
+        
         <thead>
             <tr>
             <th>Name</th>

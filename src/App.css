@@ -49,6 +49,9 @@
 }
 .navbarClass{
   background-color: whitesmoke;
+  width: 85%;
+  margin-right: 0;
+  margin-left: auto;
 }
 .IITText{
   font-weight: bold;
@@ -60,16 +63,24 @@
   width: 10vh;
 }
 
-.app-container {
+/* //DashboardTable */
+/* .app-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 1rem;
 }
 
+.Table{
+  margin-top: 10vh;
+  margin-bottom: 20vh;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 70%;
 }
 
 th,
@@ -77,55 +88,26 @@ td {
   border: 1px solid #ffffff;
   text-align: left;
   padding: 8px;
-  font-size: 32px;
-}
+  font-size: 20px;
+} */
 
-th {
+/* th {
   background-color: rgb(117, 201, 250);
 }
 
 td {
   background-color: rgb(205, 235, 253);
+} */
+
+.tableContainer{
+  margin-top: 10vh;
+  margin-bottom: 20vh;
+  margin-right: auto;
+  margin-left: 20%;
+  border-collapse: collapse;
+  width: 60%;
 }
 
-form {
-  display: flex;
-  gap: 5px;
-}
-
-form td:last-child {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-form * {
-  font-size: 28px;
-}
-
-/* //sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  min-height: 100vh !important;
-  z-index: 100;
-  padding: 48px 0 0;
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-}
-#sidebar-wrapper{
-  min-height: 100vh !important;
-  width: 100vw;
-  margin-left: -1rem;
-  -webkit-transition: margin .25s ease-out;
-  -moz-transition: margin .25s ease-out;
-  -o-transition: margin .25s ease-out;
-  transition: margin .25s ease-out;
-}
-#sidebar-wrapper .sidebar-heading {
-  padding: 0.875rem 1.25rem;
-  font-size: 1.2rem;
-}
 
 #page-content-wrapper {
   min-width: 0;

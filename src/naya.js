@@ -5,22 +5,18 @@ import Home from './components/Home';
 import NavbarComp from './components/NavbarComp';
 import DashboardTAble from './components/Dashboard';
 import CustomizedTables from './components/Dashboard2';
-import ResponsiveDrawer from './components/sidebar';
 
-import PermanentDrawerLeft from './components/sidebar_final';
-
-function App() {
+function naya() {
   return (
     <div className="homePageClass">
-       <NavbarComp/>
+      <NavbarComp/>
       
       {/* <Home/> */}
       {/* <DashboardTAble/> */}
-       <CustomizedTables/> 
-      {/* <ResponsiveDrawer/> */}
-      <PermanentDrawerLeft/>
+      <CustomizedTables/>
+
     </div>
   );
 }
 
-export default App;
+export default naya;
