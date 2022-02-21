@@ -1,5 +1,11 @@
+import { Switch } from "@mui/material";
 import React, { useState } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
+import { BrowserRouter, Route, Link } from "react-router-dom";
+// import { Redirect } from 'react-router';
+// import { Redirect } from 'react-router';
+import CustomizedTables from "./components/Dashboard2";
+import Home from "./components/Home";
 
 const clientId =
   "277372439327-34b2v50u9nner2fulahklo3au5vbh911.apps.googleusercontent.com";
@@ -7,32 +13,17 @@ const clientId =
 function Login() {
   const [showloginButton, setShowloginButton] = useState(true);
   const [showlogoutButton, setShowlogoutButton] = useState(false);
-  const onLoginSuccess = async(res) => {
+  const onLoginSuccess = (res) => {
     console.log("Login Success:", res.profileObj);
-    var server_address = "http://localhost:5000/" + res.profileObj.email;
-    const response = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    if(response != -1)
-    {
-        setShowloginButton(false);
-        setShowlogoutButton(true);
-    }
-    else{
-        onSignoutSuccess();
-        logout();
-    }
-    
+   
+    setShowloginButton(false);
+    setShowlogoutButton(true);
   };
 
   const onLoginFailure = (res) => {
     console.log("Login Failed:", res);
   };
 
-  var logout = function() {
-    document.location.href = "http://localhost:3000/";
-}
   const onSignoutSuccess = () => {
     alert("You have been logged out successfully");
     console.clear();

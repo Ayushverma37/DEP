@@ -1,7 +1,10 @@
 import React from 'react'
+import NavbarCompHome from './NavbarCompHome';
 
 export default function Home() {
   return (
+    <>
+    <NavbarCompHome />
     <div className='homeClass text-center' >
         <div className='homeText'>
         <h4>Welcome To </h4>
@@ -9,5 +12,7 @@ export default function Home() {
         </div>
         
     </div>
+    </>
+    
   );
 }

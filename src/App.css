@@ -53,6 +53,13 @@
   margin-right: 0;
   margin-left: auto;
 }
+
+.navbarClassHome{
+  background-color: whitesmoke;
+  width: 100%;
+  margin-right: 0;
+  margin-left: auto;
+}
 .IITText{
   font-weight: bold;
   letter-spacing: 2px;
