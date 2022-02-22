@@ -34,9 +34,13 @@ function Login() {
   return (
     <div>
       {showloginButton ? (
-        <GoogleLogin
+        <GoogleLogin 
           clientId={clientId}
-          buttonText="Sign In"
+          render={(renderProps) => (
+            <button className="loginButton" onClick={renderProps.onClick} disabled={renderProps.disabled}>
+            LOGIN
+             </button>)}
+          
           onSuccess={onLoginSuccess}
           onFailure={onLoginFailure}
           cookiePolicy={"single_host_origin"}
