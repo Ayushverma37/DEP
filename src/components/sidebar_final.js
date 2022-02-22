@@ -12,7 +12,7 @@ import {FaHome,FaUserMinus,FaUsersCog} from 'react-icons/fa';
 
 const drawerWidth = 15;
 
-export default function PermanentDrawerLeft() {
+export default function PermanentDrawerLeft(props) {
   return (
     <Box sx={{ display: 'flex' }} className="Drawer">
       <CssBaseline />
@@ -43,7 +43,7 @@ export default function PermanentDrawerLeft() {
       >
         <Toolbar />
         <span className='userInfo'>LOGO</span>
-        <span className='userInfo'>Welcome</span>
+        <span className='userInfo'>Welcome {props.emailid}</span>
        
         <Divider />
         <ul className='ulSideBar'>

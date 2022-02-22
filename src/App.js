@@ -7,23 +7,21 @@ import CustomizedTables from "./components/Dashboard2";
 import ResponsiveDrawer from "./components/sidebar";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { useState } from 'react'
 import PermanentDrawerLeft from "./components/sidebar_final";
 import DashboardFinal from "./components/DashboardFinal";
 // import { Switch } from "@mui/material";
 
 function App() {
+  // const [isLogin, setisLogin] = useState(false);
   return (
-
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route exact path="/home" element={<Home />} />
-        <Route exact path ="/dashboard" element={<DashboardFinal />} />
+        <Route exact path="/dashboard" element={<DashboardFinal />} />
       </Routes>
     </BrowserRouter>
-
-
 
   );
 }

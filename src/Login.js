@@ -42,8 +42,8 @@ function Login() {
     console.clear();
     setShowloginButton(true);
     setShowlogoutButton(false);
-    
     navigate("/home");
+    window.location.reload();
   };
 
   return (
@@ -78,3 +78,4 @@ function Login() {
   );
 }
 export default Login;
+

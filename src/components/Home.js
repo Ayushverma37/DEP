@@ -1,12 +1,16 @@
 import React from 'react'
 import NavbarCompHome from './NavbarCompHome';
-
-
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 export default function Home() {
-  function refreshPage() {
-    window.location.reload(false);
-  }
+  useEffect(() => {
+
+  }, [])
+  
+  // useEffect(() => {
+  //   window.location.reload();
+  // }, [showlogoutButton]);
   return (
     <>
     <NavbarCompHome />
