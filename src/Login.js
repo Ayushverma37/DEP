@@ -23,14 +23,18 @@ function Login() {
   const onLoginSuccess = (res) => {
     console.log("Login Success:", res.profileObj);
     const flag = 0;
-    if (flag == -1) {
+    if (flag === -1) {
       var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut();
       navigate("/home");
+      auth2.signOut();
+      
     }
-    navigate("/dashboard", { state: { emailid: res.profileObj.email } });
-    setShowloginButton(false);
-    setShowlogoutButton(true);
+    else{
+      navigate("/dashboard", { state: { emailid: res.profileObj.email } });
+      setShowloginButton(false);
+      setShowlogoutButton(true);
+    }
+
   };
 
   const onLoginFailure = (res) => {
