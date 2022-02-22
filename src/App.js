@@ -5,8 +5,8 @@ import NavbarComp from "./components/NavbarComp";
 import DashboardTAble from "./components/Dashboard";
 import CustomizedTables from "./components/Dashboard2";
 import ResponsiveDrawer from "./components/sidebar";
-import { BrowserRouter, Route, Link, Routes } from "react-router-dom";
-import { Navigate } from "react-router";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PermanentDrawerLeft from "./components/sidebar_final";
 import DashboardFinal from "./components/DashboardFinal";
@@ -15,10 +15,12 @@ import DashboardFinal from "./components/DashboardFinal";
 function App() {
   return (
 
-      <div className="homePageClass">
-        {/* <Home /> */}
-        {/* <DashboardFinal /> */}
-      </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route exact path ="/dashboard" element={<DashboardFinal />} />
+      </Routes>
+    </BrowserRouter>
 
 
 
