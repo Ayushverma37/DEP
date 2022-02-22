@@ -43,7 +43,7 @@ export default function PermanentDrawerLeft() {
       >
         <Toolbar />
         <span className='userInfo'>LOGO</span>
-        <span className='userInfo'>Welcome {}</span>
+        <span className='userInfo'>Welcome</span>
        
         <Divider />
         <ul className='ulSideBar'>

@@ -1,7 +1,12 @@
 import React from 'react'
 import NavbarCompHome from './NavbarCompHome';
 
+
+
 export default function Home() {
+  function refreshPage() {
+    window.location.reload(false);
+  }
   return (
     <>
     <NavbarCompHome />

@@ -2,11 +2,17 @@ import { Switch } from "@mui/material";
 import React, { useState } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import CustomizedTables from "./components/Dashboard2";
 import Home from "./components/Home";
 import DashboardFinal from "./components/DashboardFinal";
-
+import { gapi } from 'gapi-script';
 const clientId =
   "277372439327-34b2v50u9nner2fulahklo3au5vbh911.apps.googleusercontent.com";
 
@@ -16,7 +22,13 @@ function Login() {
   const navigate = useNavigate();
   const onLoginSuccess = (res) => {
     console.log("Login Success:", res.profileObj);
-    navigate("/dashboard");
+    const flag = 0;
+    if (flag == -1) {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut();
+      navigate("/home");
+    }
+    navigate("/dashboard", { state: { emailid: res.profileObj.email } });
     setShowloginButton(false);
     setShowlogoutButton(true);
   };
@@ -27,22 +39,27 @@ function Login() {
 
   const onSignoutSuccess = () => {
     alert("You have been logged out successfully");
-    navigate("/home");
     console.clear();
     setShowloginButton(true);
     setShowlogoutButton(false);
+    
+    navigate("/home");
   };
 
   return (
     <div>
       {showloginButton ? (
-        <GoogleLogin 
+        <GoogleLogin
           clientId={clientId}
           render={(renderProps) => (
-            <button className="loginButton" onClick={renderProps.onClick} disabled={renderProps.disabled}>
-            LOGIN
-             </button>)}
-          
+            <button
+              className="loginButton"
+              onClick={renderProps.onClick}
+              disabled={renderProps.disabled}
+            >
+              LOGIN
+            </button>
+          )}
           onSuccess={onLoginSuccess}
           onFailure={onLoginFailure}
           cookiePolicy={"single_host_origin"}
