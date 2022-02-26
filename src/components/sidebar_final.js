@@ -30,8 +30,8 @@ export default function PermanentDrawerLeft(props) {
             width: `${drawerWidth}%`,
             boxSizing: 'border-box',
             backgroundColor:'#4d5bf9',
-            borderTopRightRadius:'10px',
-            borderBottomRightRadius:'10px',
+            borderTopRightRadius:'20px',
+            borderBottomRightRadius:'20px',
 
             color:'#fff',
 
@@ -42,9 +42,16 @@ export default function PermanentDrawerLeft(props) {
         anchor="left"
       >
         <Toolbar />
-        {/* {console.log(props.userimage)} */}
-        <span className='userImage'><img src={props.userimage}></img></span>
-        <span className='userInfo'>Welcome {props.emailid}</span>
+        {console.log(props.userImg)}
+        {console.log(props.userEmail)}
+        
+        <span className="userImgContainer"><img className='userImage' src={props.userImg}></img></span> 
+     
+        
+        <span className='userInfo'>Welcome {props.userName}</span>
+         <span className='userInfo'>{props.userEmail}</span>
+     
+
        
         <Divider />
         <ul className='ulSideBar'>

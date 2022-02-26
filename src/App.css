@@ -66,8 +66,9 @@
 }
 
 .photo {
-  height: 10vh;
-  width: 10vh;
+  height: 60px;
+  width: 60px;
+  margin-left: 20px;
 }
 
 /* //DashboardTable */
@@ -147,12 +148,12 @@ td {
 }
 .ulSideBar
 {
-  position:absolute;
-  top:0;
-  left: 0;
+  /* position:absolute;
+  top:20px;
+  left: 0; */
   width: 100%;
   padding-left: 10px;
-  padding-top: 150px;
+  padding-top: 20px;
 
 }
 .liSideBar
@@ -207,14 +208,29 @@ td {
   width: 100%;
   height: 50px;
   text-align: center;
+  
 }
 
 /* user image */
 .userImage{
-  width: 150;
-  height: 150;
-  border-radius: 150 / 2;
-  overflow: "hidden";
+  width: 50px;
+  height: 50px;
+  border-radius: 0;
+  
+  
+align-self: center;
   border-width: 3;
   border-color:  "red";
+}
+.userImgContainer{
+  margin-left: auto;
+  margin-right: auto;
+
+  margin-bottom: 20px;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 40px;
+  overflow: hidden;
+
 }

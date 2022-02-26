@@ -30,9 +30,9 @@ function Login() {
       
     }
     else{
-      // {console.log(res.profileObj.imageUrl)}
-      navigate("/dashboard", { state: { emailid: res.profileObj.email, userimage: "https://lh3.googleusercontent.com/a-/AOh14GhdtfLv7IHR0Si2U7jt4r8g227__Htm_k3G1gjf_Q=s96-c"}});
-      // console.log(res);
+      {console.log(res.profileObj.imageUrl)}
+      navigate("/dashboard", { state: { userName:res.profileObj.givenName,userImg:res.profileObj.imageUrl,userEmail:res.profileObj.email,}});
+      console.log(res.profileObj);
       setShowloginButton(false);
       setShowlogoutButton(true);
     }

@@ -18,6 +18,16 @@ export default function DashboardFinal() {
   }, []);
   const {state} = useLocation();
   const [tableShow,setTableShow] = useState(false);
+  console.log(state.userImg);
+  console.log("HELPL");
+  console.log(state.userName);
+  console.log(state.userEmail);
+
+  let obj={
+    userName:state.userName,
+    userEmail:state.userEmail,
+    userImg:state.userImg,
+  }
   return (
     <div>
         <NavbarComp />
@@ -36,7 +46,9 @@ export default function DashboardFinal() {
         {/* <CustomizedTables /> */}
         {/* <center>{state.emailid}</center> */}
         {/* <PermanentDrawerLeft/> */}
-        <PermanentDrawerLeft emailid={state.emailid}/>
+
+        <PermanentDrawerLeft {...obj}>
+          </PermanentDrawerLeft>
     </div>
   )
 }
