@@ -6,7 +6,6 @@ export default function DashboardTAble() {
     <>
     <div className="app-container">
     <table className="Table">
-        
         <thead>
             <tr>
             <th>Name</th>
@@ -16,7 +15,6 @@ export default function DashboardTAble() {
             </tr>
         </thead>
         <tbody>
-
             {contacts.map((contact) => (
                 <tr>
                     <td>{contact.fullName}</td>

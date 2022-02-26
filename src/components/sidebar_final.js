@@ -42,7 +42,8 @@ export default function PermanentDrawerLeft(props) {
         anchor="left"
       >
         <Toolbar />
-        <span className='userInfo'>LOGO</span>
+        {/* {console.log(props.userimage)} */}
+        <span className='userImage'><img src={props.userimage}></img></span>
         <span className='userInfo'>Welcome {props.emailid}</span>
        
         <Divider />
@@ -70,14 +71,12 @@ export default function PermanentDrawerLeft(props) {
          
         </ul>
         {/* <List >
-          
             <ListItem button key="Dashboard">
               <ListItemIcon>
                 <InboxIcon className="listItem" />
                 </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-
             <ListItem button key="Manage User" backgroundColor="#fff">
               <ListItemIcon>
                 <InboxIcon className="listItem" />
@@ -89,11 +88,9 @@ export default function PermanentDrawerLeft(props) {
                 <InboxIcon className="listItem" />
                 </ListItemIcon>
               <ListItemText primary="Log Out" />
-            </ListItem>
-          
+            </ListItem> 
         </List> */}
         <Divider />
-        
       </Drawer>
     </Box>
   );

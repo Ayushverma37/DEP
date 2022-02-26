@@ -30,7 +30,9 @@ function Login() {
       
     }
     else{
-      navigate("/dashboard", { state: { emailid: res.profileObj.email } });
+      // {console.log(res.profileObj.imageUrl)}
+      navigate("/dashboard", { state: { emailid: res.profileObj.email, userimage: "https://lh3.googleusercontent.com/a-/AOh14GhdtfLv7IHR0Si2U7jt4r8g227__Htm_k3G1gjf_Q=s96-c"}});
+      // console.log(res);
       setShowloginButton(false);
       setShowlogoutButton(true);
     }
@@ -73,7 +75,16 @@ function Login() {
 
       {showlogoutButton ? (
         <GoogleLogout
-          clientId={clientId}
+          clientId={clientId} 
+          render={(renderProps) => (
+            <button
+              className="loginButton"
+              onClick={renderProps.onClick}
+              disabled={renderProps.disabled}
+            >
+              Logout
+            </button>
+          )}
           buttonText="Sign Out"
           onLogoutSuccess={onSignoutSuccess}
         ></GoogleLogout>
