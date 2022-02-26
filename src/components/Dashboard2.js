@@ -38,21 +38,24 @@ export default function CustomizedTables() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
             <TableRow>
-                <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell align="right">Address</StyledTableCell>
-                <StyledTableCell align="right">Phone Numbert&nbsp;(g)</StyledTableCell>
-                <StyledTableCell align="right">Email&nbsp;(g)</StyledTableCell>
+                <StyledTableCell>ID</StyledTableCell>
+                <StyledTableCell align="right">Title</StyledTableCell>
+                <StyledTableCell align="right">Proffesor</StyledTableCell>
+                <StyledTableCell align="right">Grant</StyledTableCell>
+                <StyledTableCell align="right">Comment</StyledTableCell>
             </TableRow>
             </TableHead>
             <TableBody>
             {rows.map((row) => (
                 <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
-                    {row.fullName}
+                    {row.Project_id}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.address}</StyledTableCell>
+                <StyledTableCell align="right">{row.Project_title}</StyledTableCell>
                 <StyledTableCell align="right">{row.phoneNumber}</StyledTableCell>
-                <StyledTableCell align="right">{row.email}</StyledTableCell>
+                <StyledTableCell align="right">{row.Proffesor_List}</StyledTableCell>
+                <StyledTableCell align="right">{row.Grant}</StyledTableCell>
+                <StyledTableCell align="right">{row.Comment_Time}</StyledTableCell>
                 </StyledTableRow>
             ))}
             </TableBody>
