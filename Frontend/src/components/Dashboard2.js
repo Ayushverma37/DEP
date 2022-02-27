@@ -1,5 +1,5 @@
 // import * as React from 'react';
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import data from "./data.json"
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -30,8 +30,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedTables() {
-    const [rows] = useState(data);
+export default function CustomizedTables(props) {
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    set_rows(props.data);
+  },[props.data]);
+
+  const [rows,set_rows] = useState(props.data);
+  
+  console.log(rows);
   return (
     <div className="tableContainer">
         <TableContainer component={Paper}>
@@ -40,22 +48,21 @@ export default function CustomizedTables() {
             <TableRow>
                 <StyledTableCell>ID</StyledTableCell>
                 <StyledTableCell align="right">Title</StyledTableCell>
-                <StyledTableCell align="right">Proffesor</StyledTableCell>
+                <StyledTableCell align="right">Professor</StyledTableCell>
                 <StyledTableCell align="right">Grant</StyledTableCell>
                 <StyledTableCell align="right">Comment</StyledTableCell>
             </TableRow>
             </TableHead>
             <TableBody>
             {rows.map((row) => (
-                <StyledTableRow key={row.id}>
+                <StyledTableRow key={row.project_id}>
                 <StyledTableCell component="th" scope="row">
-                    {row.Project_id}
+                    {row.project_id}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.Project_title}</StyledTableCell>
-                <StyledTableCell align="right">{row.phoneNumber}</StyledTableCell>
-                <StyledTableCell align="right">{row.Proffesor_List}</StyledTableCell>
-                <StyledTableCell align="right">{row.Grant}</StyledTableCell>
-                <StyledTableCell align="right">{row.Comment_Time}</StyledTableCell>
+                <StyledTableCell align="right">{row.project_title}</StyledTableCell>
+                <StyledTableCell align="right">{row.professor_list}</StyledTableCell>
+                <StyledTableCell align="right">{row.project_grant}</StyledTableCell>
+                <StyledTableCell align="right">{row.comment_time}</StyledTableCell>
                 </StyledTableRow>
             ))}
             </TableBody>

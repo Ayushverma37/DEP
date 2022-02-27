@@ -10,7 +10,6 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 
-
 export default function DashboardFinal() {
   useEffect(() => {
     return () => {
@@ -18,6 +17,7 @@ export default function DashboardFinal() {
   }, []);
   const {state} = useLocation();
   const [tableShow,setTableShow] = useState(false);
+  const [all_projects,setall_projects] = useState(null);
   console.log(state.userImg);
   console.log("HELPL");
   console.log(state.userName);
@@ -28,6 +28,38 @@ export default function DashboardFinal() {
     userEmail:state.userEmail,
     userImg:state.userImg,
   }
+
+  async function fetch_proj_on_click(){
+    
+    var server_address = "http://localhost:5000/user/" + obj.userEmail;
+    const resp = await fetch(server_address, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      
+    });
+    const response = await resp.json();
+    console.log("Server response" , response);
+    if(response!=1)
+    {
+      alert("You Are not an Admin , access Denied ");
+      return;
+    }
+
+    var server_address = "http://localhost:5000/project/";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({sort:1})
+    });
+
+    const json_response= await resp2.json();
+
+    setall_projects(json_response);
+    setTableShow(true);
+
+  }
+
+
   return (
     <div>
         <NavbarComp />
@@ -37,11 +69,11 @@ export default function DashboardFinal() {
 
           </Button>
             <Button variant="contained"
-            onClick={() => {
-            setTableShow(true);
-          }}>Fetch All Projects </Button>
+            onClick={
+              fetch_proj_on_click
+            }>Fetch All Projects </Button>
           </Stack>
-          {tableShow ? <CustomizedTables/> : null}
+          {tableShow ? <CustomizedTables data={all_projects} /> : null}
 
         {/* <CustomizedTables /> */}
         {/* <center>{state.emailid}</center> */}
