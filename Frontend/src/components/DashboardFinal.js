@@ -30,7 +30,8 @@ export default function DashboardFinal() {
   }
 
   async function fetch_proj_on_click(){
-    
+    setTableShow(true);
+    return;
     var server_address = "http://localhost:5000/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
