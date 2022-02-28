@@ -30,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedTables(props) {
+export default function ProjectTable(props) {
 
   useEffect(() => {
     // Update the document title using the browser API

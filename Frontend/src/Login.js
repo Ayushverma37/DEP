@@ -9,9 +9,9 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import CustomizedTables from "./components/Dashboard2";
+import CustomizedTable from "./components/ProjectsTable";
 import Home from "./components/Home";
-import DashboardFinal from "./components/DashboardFinal";
+import Dashboard from "./components/Dashboard";
 import { gapi } from 'gapi-script';
 const clientId =
   "277372439327-34b2v50u9nner2fulahklo3au5vbh911.apps.googleusercontent.com";

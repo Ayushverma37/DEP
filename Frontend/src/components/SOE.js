@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import CustomizedTables from './Dashboard2'
+import SOE_Table from './SOE_Table'
 import NavbarComp from './NavbarComp'
-import PermanentDrawerLeft from './sidebar_final'
+import PermanentDrawerLeft from './Sidebar'
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -10,7 +10,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 
-export default function DashboardFinal() {
+export default function SOE() {
   useEffect(() => {
     return () => {
     }
@@ -74,11 +74,8 @@ export default function DashboardFinal() {
               fetch_proj_on_click
             }>Fetch All Projects </Button>
           </Stack>
-          {tableShow ? <CustomizedTables data={all_projects} /> : null}
+          {tableShow ? <SOE_Table data={all_projects} /> : null}
 
-        {/* <CustomizedTables /> */}
-        {/* <center>{state.emailid}</center> */}
-        {/* <PermanentDrawerLeft/> */}
 
         <PermanentDrawerLeft {...obj}>
           </PermanentDrawerLeft>
