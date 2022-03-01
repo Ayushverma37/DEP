@@ -165,7 +165,7 @@ td {
   border-bottom-left-radius: 20px;
 
 }
-.liSideBar a{
+.liSideBar {
   position: relative;
   display: block;
   width: 100%;
@@ -176,7 +176,7 @@ td {
 
 
 }
-.liSideBar a .iconSideBar
+.liSideBar  .iconSideBar
 {
   position: relative;
   display: block;
@@ -186,7 +186,7 @@ td {
   text-align: center;
   font-size: 1.2rem;
 }
-.liSideBar a .titleSideBar{
+.liSideBar  .titleSideBar{
   position: relative;
   display: block;
  
