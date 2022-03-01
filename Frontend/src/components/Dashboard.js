@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import ProjectTable from './ProjectsTable'
 import NavbarComp from './NavbarComp'
-import PermanentDrawerLeft from './Sidebar'
+import PermanentDrawerLeft from './sidebar'
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';

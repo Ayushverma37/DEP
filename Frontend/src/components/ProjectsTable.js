@@ -9,6 +9,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import Button from '@mui/material/Button';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,14 +34,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProjectTable(props) {
 
-  useEffect(() => {
-    // Update the document title using the browser API
-    set_rows(props.data);
-  },[props.data]);
+  // useEffect(() => {
+  //   // Update the document title using the browser API
+  //   set_rows(props.data);
+  // },[props.data]);
 
-  const [rows,set_rows] = useState(props.data);
+  const [rows,set_rows] = useState(data);
   
   console.log(rows);
+  function viewProject(projectID){
+    //To DO;
+  }
   return (
     <div className="tableContainer">
         <TableContainer component={Paper}>
@@ -51,11 +56,12 @@ export default function ProjectTable(props) {
                 <StyledTableCell align="right">Professor</StyledTableCell>
                 <StyledTableCell align="right">Grant</StyledTableCell>
                 <StyledTableCell align="right">Comment</StyledTableCell>
+                <StyledTableCell align="right">View Project</StyledTableCell>
             </TableRow>
             </TableHead>
             <TableBody>
             {rows.map((row) => (
-                <StyledTableRow key={row.project_id}>
+                <StyledTableRow key={row.project_id} onClick={viewProject(row.project_id)}>
                 <StyledTableCell component="th" scope="row">
                     {row.project_id}
                 </StyledTableCell>
@@ -63,6 +69,7 @@ export default function ProjectTable(props) {
                 <StyledTableCell align="right">{row.professor_list}</StyledTableCell>
                 <StyledTableCell align="right">{row.project_grant}</StyledTableCell>
                 <StyledTableCell align="right">{row.comment_time}</StyledTableCell>
+                <StyledTableCell align="right"><Button startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>
             ))}
             </TableBody>
