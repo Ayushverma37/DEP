@@ -176,7 +176,7 @@ td {
 
 
 }
-.liSideBar  .iconSideBar
+.liSideBar .iconSideBar
 {
   position: relative;
   display: block;
@@ -186,7 +186,7 @@ td {
   text-align: center;
   font-size: 1.2rem;
 }
-.liSideBar  .titleSideBar{
+.liSideBar .titleSideBar{
   position: relative;
   display: block;
  
