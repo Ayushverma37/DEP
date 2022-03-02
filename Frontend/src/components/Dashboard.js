@@ -29,9 +29,10 @@ export default function Dashboard() {
     isDashboard:state.isDashboard,
   }
 
+  
   async function add_proj_on_click(){
 
-
+  
 
   return;
   }

@@ -117,6 +117,20 @@ td {
 }
 
 
+.soeTable{
+  margin-top: 0;
+  margin-bottom: 20vh;
+  /* margin-right: auto; */
+  margin-left: 17%;
+  border-collapse: collapse;
+  width: 80%;
+}
+/* .buttonAdd{
+  width: "70px";
+
+
+} */
+
 #page-content-wrapper {
   min-width: 0;
   width: 100%;

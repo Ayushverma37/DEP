@@ -1,4 +1,4 @@
-// import * as React from 'react';
+
 import React, { useState,useEffect } from 'react'
 import data from "./data.json"
 import { styled } from '@mui/material/styles';
@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,6 +34,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function ProjectTable(props) {
+  const navigate=useNavigate();
 
   // useEffect(() => {
   //   // Update the document title using the browser API
@@ -44,6 +46,11 @@ export default function ProjectTable(props) {
   console.log(rows);
   function viewProject(projectID){
     //To DO;
+  }
+  const toViewProject= () =>{
+  
+    navigate("/soe");
+
   }
   return (
     <div className="tableContainer">
@@ -69,7 +76,7 @@ export default function ProjectTable(props) {
                 <StyledTableCell align="right">{row.professor_list}</StyledTableCell>
                 <StyledTableCell align="right">{row.project_grant}</StyledTableCell>
                 <StyledTableCell align="right">{row.comment_time}</StyledTableCell>
-                <StyledTableCell align="right"><Button startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
+                <StyledTableCell align="right"><Button onClick={toViewProject} startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>
             ))}
             </TableBody>

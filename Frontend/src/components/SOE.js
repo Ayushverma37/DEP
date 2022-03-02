@@ -14,7 +14,7 @@ export default function SOE() {
 
   const {state} = useLocation();
   const [tableShow,setTableShow] = useState(false);
-  const [all_projects,setall_projects] = useState(null);
+  // const [all_projects,setall_projects] = useState(null);
   console.log(state.userImg);
   console.log("HELPL");
   console.log(state.userName);
@@ -52,7 +52,7 @@ export default function SOE() {
 
     const json_response= await resp2.json();
 
-    setall_projects(json_response);
+    // setall_projects(json_response);
     setTableShow(true);
 
   }
@@ -61,19 +61,8 @@ export default function SOE() {
   return (
     <div>
         <NavbarComp />
-          <Stack justifyContent="center" alignItems="center" direction="row" spacing={0} padding={4}>
-          <TextField id="standard-basic" label="Search Project" variant="standard" />
-          <Button color="primary" size="large"   startIcon={<SearchIcon />}>
-
-          </Button>
-            <Button variant="contained"
-            onClick={
-              fetch_proj_on_click
-            }>Fetch All Projects </Button>
-          </Stack>
-          {tableShow ? <SOE_Table data={all_projects} /> : null}
-
-
+          {/* {tableShow ? <SOE_Table data={all_projects} /> : null} */}
+          <SOE_Table/>
         <PermanentDrawerLeft {...obj}>
           </PermanentDrawerLeft>
     </div>
