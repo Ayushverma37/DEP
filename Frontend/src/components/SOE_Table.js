@@ -189,7 +189,10 @@ export default function SOE_Table(props) {
             <Button
               startIcon={<CloseIcon />}
               style={{ float: "right" }}
-              onClick={() => setOpenViewCommentPopup(false)}
+              onClick={() => {
+                setOpenViewCommentPopup(false)
+                setrowIdView(0)
+              }}
             />
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 100 }} aria-label="customized table">

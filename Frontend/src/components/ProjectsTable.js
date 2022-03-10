@@ -41,17 +41,12 @@ export default function ProjectTable(props) {
   //   set_rows(props.data);
   // },[props.data]);
 
+  const [projectId, setprojectId] = useState(0)
   const [rows,set_rows] = useState(data);
-  
+  console.log("Hello " +props)
   console.log(rows);
-  function viewProject(projectID){
-    //To DO;
-  }
-  const toViewProject= () =>{
-  
-    navigate("/soe");
 
-  }
+  
   return (
     <div className="tableContainer">
         <TableContainer component={Paper}>
@@ -68,7 +63,7 @@ export default function ProjectTable(props) {
             </TableHead>
             <TableBody>
             {rows.map((row) => (
-                <StyledTableRow key={row.project_id} onClick={viewProject(row.project_id)}>
+                <StyledTableRow key={row.project_id} >
                 <StyledTableCell component="th" scope="row">
                     {row.project_id}
                 </StyledTableCell>
@@ -76,7 +71,10 @@ export default function ProjectTable(props) {
                 <StyledTableCell align="right">{row.professor_list}</StyledTableCell>
                 <StyledTableCell align="right">{row.project_grant}</StyledTableCell>
                 <StyledTableCell align="right">{row.comment_time}</StyledTableCell>
-                <StyledTableCell align="right"><Button onClick={toViewProject} startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
+                <StyledTableCell align="right"><Button onClick={async() => {
+                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id}});
+                
+              }}  startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>
             ))}
             </TableBody>

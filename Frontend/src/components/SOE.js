@@ -20,12 +20,14 @@ export default function SOE() {
   console.log("HELPL");
   console.log(state.userName);
   console.log(state.userEmail);
+  console.log("The project id is: "+ state.projId)
 
   let obj = {
     userName: state.userName,
     userEmail: state.userEmail,
     userImg: state.userImg,
   };
+  
 
   async function fetch_proj_on_click() {
     setTableShow(true);

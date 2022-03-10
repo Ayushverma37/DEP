@@ -27,6 +27,8 @@ export default function Dashboard() {
     userEmail:state.userEmail,
     userImg:state.userImg,
     isDashboard:state.isDashboard,
+    allProjectData: all_projects
+
   }
 
   
@@ -92,7 +94,7 @@ export default function Dashboard() {
               add_proj_on_click
             }>Add new project </Button>
           </Stack>
-          {tableShow ? <ProjectTable data={all_projects} /> : null}
+          {tableShow ? <ProjectTable {...obj}/> : null}
          
       
             
