@@ -131,6 +131,12 @@ td {
 
 } */
 
+.viewCommentDiv{
+ margin: auto;
+  border-collapse: collapse;
+  width: 100%;
+}
+
 #page-content-wrapper {
   min-width: 0;
   width: 100%;
@@ -247,5 +253,13 @@ align-self: center;
   border-radius: 40px;
   overflow: hidden;
 
+}
+
+.AddComment{
+  width: 400px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 

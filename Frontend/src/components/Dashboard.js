@@ -39,6 +39,7 @@ export default function Dashboard() {
 
   async function fetch_proj_on_click(){
     setTableShow(true);
+    console.log("Fetched");
     return;
     var server_address = "http://localhost:5000/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
@@ -92,6 +93,7 @@ export default function Dashboard() {
             }>Add new project </Button>
           </Stack>
           {tableShow ? <ProjectTable data={all_projects} /> : null}
+         
       
             
           
