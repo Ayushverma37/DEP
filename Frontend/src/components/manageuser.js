@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import Stack from "@mui/material/Stack";
 
 import NavbarComp from "./NavbarComp";
 import PermanentDrawerLeft from "./sidebar";
@@ -16,6 +17,8 @@ import Paper from "@mui/material/Paper";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ViewCommentPopup from "./ViewCommentPopup";
 import RemoveUserPop from "./RemoveUserPop";
+import SendIcon from "@mui/icons-material/Send";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,6 +45,11 @@ export default function Manageuser() {
 
   const [rows, set_rows] = useState(data);
   const [currentUserEmail, sercurrentUserEmail] = useState("");
+
+
+  useEffect(() => {
+      //Load the table again whenever the rows data changes
+  }, [rows]);
 
   let obj = {
     userName: state.userName,
@@ -83,7 +91,7 @@ export default function Manageuser() {
     <div>
       <NavbarComp />
 
-      <RemoveUserPop 
+      <RemoveUserPop
         className="removeUserClass"
         openRemoveUserPop={openRemoveUserPop}
         setOpenRemoveUserPop={setOpenRemoveUserPop}
@@ -91,13 +99,39 @@ export default function Manageuser() {
         <div className="removeUserDiv">
           <span>
             <div> Are you sure you want to remove the user ? </div>
-            <Button
-                  variant="contained"
-                  endIcon={<SendIcon />}
-                  onClick={removeUser}
-                >
-                  YES
-                </Button>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={4}
+            >
+              <Button
+              style={{ height: "30px",paddingTop:"10px",paddingBottom:"10px"}} 
+                variant="contained"
+                
+                onClick={
+                  () => {
+                    removeUser()
+                    setOpenRemoveUserPop(false)
+                 
+                  }
+                 }
+              >
+                YES
+              </Button>
+              <Button
+                variant="contained"
+                style={{ height: "30px",paddingTop:"10px",paddingBottom:"10px"}} 
+                
+                onClick={() => {
+                  setOpenRemoveUserPop(false)
+               
+                }}
+              >
+                NO
+              </Button>
+            </Stack>
           </span>
         </div>
       </RemoveUserPop>

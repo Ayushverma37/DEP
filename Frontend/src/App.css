@@ -271,10 +271,10 @@ align-self: center;
 }
 
 .removeUserDiv{
-  height: 200px;
+  height: 150px;
 text-align: center;
 justify-content: center;
-padding-top: 50px;
+padding-top: 20px;
   
 }
 .removeUserDiv button{
