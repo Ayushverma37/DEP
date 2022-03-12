@@ -45,7 +45,7 @@ export default function Manageuser() {
   const { state } = useLocation();
 
   const [rows, set_rows] = useState(data);
-  const [currentUserEmail, sercurrentUserEmail] = useState("");
+  const [currentUserEmail, setcurrentUserEmail] = useState("");
   const [newUserRole,setnewUserRole]=useState();
   const [newUserEmail,setnewUserEmail]=useState();
 
@@ -191,10 +191,7 @@ export default function Manageuser() {
               {rows.map((row) => (
                 <StyledTableRow
                   key={row.project_id}
-                  onClick={() => {
-                    setOpenRemoveUserPop(true);
-                    sercurrentUserEmail(row.Email);
-                  }}
+                  
                 >
                   <StyledTableCell component="th" scope="row">
                     {row.project_id}
@@ -206,7 +203,12 @@ export default function Manageuser() {
                     <StyledTableCell align="right">Professor</StyledTableCell>
                   )}
                   <StyledTableCell align="right">
-                    <Button startIcon={<RemoveCircleOutlineIcon />} />
+                    <Button 
+                    onClick={() => {
+                      setOpenRemoveUserPop(true);
+                      setcurrentUserEmail(row.Email);
+                    }}
+                    startIcon={<RemoveCircleOutlineIcon />} />
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
