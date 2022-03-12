@@ -18,6 +18,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ViewCommentPopup from "./ViewCommentPopup";
 import RemoveUserPop from "./RemoveUserPop";
 import SendIcon from "@mui/icons-material/Send";
+import TextField from "@mui/material/TextField";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -45,10 +46,12 @@ export default function Manageuser() {
 
   const [rows, set_rows] = useState(data);
   const [currentUserEmail, sercurrentUserEmail] = useState("");
+  const [newUserRole,setnewUserRole]=useState();
+  const [newUserEmail,setnewUserEmail]=useState();
 
 
   useEffect(() => {
-      //Load the table again whenever the rows data changes
+    //Load the table again whenever the rows data changes
   }, [rows]);
 
   let obj = {
@@ -87,9 +90,42 @@ export default function Manageuser() {
   function removeUser() {
     //To DO; //Curreent user email is stored in currentUserEmail handled by useState
   }
+  function addUser() {
+    //To DO; //Curreent user email and role is stored in newUserEmail,newUserRole  handled by useState
+  }
   return (
     <div>
       <NavbarComp />
+
+      <Stack
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+        spacing={3}
+        padding={4}
+      >
+        <TextField
+            id="standard-basic"
+            label="Email Address"
+            variant="standard"
+            onChange={(event) => {
+              setnewUserEmail(event.target.value);
+            }}
+          />
+          <TextField
+            id="standard-basic"
+            label="Role (Admin/Professor)"
+            variant="standard"
+            onChange={(event) => {
+              setnewUserRole(event.target.value);
+            }}
+          />
+        <Button variant="contained" onClick={addUser}>
+          Add new user
+        </Button>
+      
+      </Stack>
+
 
       <RemoveUserPop
         className="removeUserClass"
@@ -107,26 +143,28 @@ export default function Manageuser() {
               padding={4}
             >
               <Button
-              style={{ height: "30px",paddingTop:"10px",paddingBottom:"10px"}} 
+                style={{
+                  height: "30px",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                }}
                 variant="contained"
-                
-                onClick={
-                  () => {
-                    removeUser()
-                    setOpenRemoveUserPop(false)
-                 
-                  }
-                 }
+                onClick={() => {
+                  removeUser();
+                  setOpenRemoveUserPop(false);
+                }}
               >
                 YES
               </Button>
               <Button
                 variant="contained"
-                style={{ height: "30px",paddingTop:"10px",paddingBottom:"10px"}} 
-                
+                style={{
+                  height: "30px",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                }}
                 onClick={() => {
-                  setOpenRemoveUserPop(false)
-               
+                  setOpenRemoveUserPop(false);
                 }}
               >
                 NO
