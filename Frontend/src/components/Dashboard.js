@@ -65,8 +65,14 @@ export default function Dashboard() {
     setTableShow(true);
   }
 
-  console.log("isDASHBOARD", obj.isDashboard);
+  function search_project(){
+    return;
+    //TODO
+    //We will use the setall_project state to update the JSON file with new data
+  }
 
+
+  const [searchProject,setsearchProject]=useState("");
   return (
     <div>
       <NavbarComp />
@@ -83,8 +89,12 @@ export default function Dashboard() {
             id="standard-basic"
             label="Search Project"
             variant="standard"
+            onChange={(event) => {
+              setsearchProject(event.target.value);
+            }}
           />
           <Button
+            onClick={search_project}
             color="primary"
             size="large"
             startIcon={<SearchIcon />}
