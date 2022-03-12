@@ -269,3 +269,17 @@ align-self: center;
   align-items: center;
   display: flex; */
 }
+
+.removeUserDiv{
+  height: 200px;
+text-align: center;
+justify-content: center;
+padding-top: 50px;
+  
+}
+.removeUserDiv button{
+  padding-top: 20px;
+}
+.removeUserClass{
+  
+}
