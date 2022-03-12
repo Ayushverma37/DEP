@@ -26,6 +26,7 @@ export default function SOE() {
     userName: state.userName,
     userEmail: state.userEmail,
     userImg: state.userImg,
+    projId: state.projId
   };
   
 
@@ -70,7 +71,7 @@ export default function SOE() {
       <div className="projectHeading">
         <h2>Statement of Expenditure</h2>
       </div>
-      <SOE_Table />
+      <SOE_Table {...obj}/>
       
       <PermanentDrawerLeft {...obj}></PermanentDrawerLeft>
     </div>

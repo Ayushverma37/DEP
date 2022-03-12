@@ -22,7 +22,6 @@ export default function Dashboard() {
   const [newProjectTitle, setnewProjectTitle] = useState("")
   const [newProfessor, setnewProfessor] = useState("")
   const [newGrant, setnewGrant] = useState("")
-  const [newCommentTime, setnewCommentTime] = useState("")
 
   console.log(state.userImg);
   console.log("HELPL");
@@ -160,24 +159,16 @@ export default function Dashboard() {
             />
             <TextField
               id="outlined-basic"
-              label="Professor"
+              label="Professors"
               variant="outlined"
               onChange={(event) => {
                 setnewProfessor(event.target.value);
               }}
             />
             <TextField id="outlined-basic" label="Grant" variant="outlined" />
-            <TextField
-              id="outlined-basic"
-              label="Comment Time"
-              variant="outlined"
-              onChange={(event) => {
-                setnewCommentTime(event.target.value);
-              }}
-            />
             <center>
               <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitAddProject}>
-                Add User
+                Add Project
               </Button>
             </center>
           </div>

@@ -49,7 +49,7 @@ export default function SOE_Table(props) {
 
   // const [rows,set_rows] = useState(props.data);
   const [rows, set_rows] = useState(soeData);
-
+  console.log("Project id = "+ props.projId)
   console.log(rows);
   const [comment, setComment] = useState("");
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
@@ -61,6 +61,8 @@ export default function SOE_Table(props) {
   const handleSubmit = () => {
     console.log(comment);
     console.log(rowId);
+    
+
     setOpenAddCommentPopup(false);
   };
 
