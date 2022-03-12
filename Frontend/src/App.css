@@ -41,12 +41,23 @@
   height: 80vh;
   background-color: #013A6B;
   background-image: -webkit-linear-gradient(180deg, white 50%, #dfe7fd 50%);
+
+}
+@keyframes swing {
+  0% { transform: scale(2); }
+  100% { transform: scale(1); }
+}
+.dangle {
+  animation: swing ease-in 1s forwards;
+
 }
 .homeText{
   padding-top: 25vh;
   font-weight: bold;
   letter-spacing: 2px;
+  
 }
+
 .navbarClass{
   background-color: whitesmoke;
   width: 85%;
@@ -265,6 +276,7 @@ align-self: center;
 .AddProject{
   width: 400px;
   background-color: white;
+  padding-left: -40px;
   /* justify-content: center;
   align-items: center;
   display: flex; */
@@ -282,4 +294,26 @@ padding-top: 20px;
 }
 .removeUserClass{
   
+}
+
+.CloseAddProjectPopup{
+  position: relative;
+  right: -100px;
+}
+
+.projectHeading{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+  /* text-align: center; */
+  margin-left: 43%;
+  margin-right: auto;
+}
+
+.loginButton{
+  margin-top: 20px;
+  height: 50px;
+  width: 100px;
+  font-size: large;
+  letter-spacing: 5px;
 }

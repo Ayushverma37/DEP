@@ -198,7 +198,7 @@ export default function SOE_Table(props) {
               <Table sx={{ minWidth: 100 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>ProfessorName</StyledTableCell>
+                    <StyledTableCell>Author</StyledTableCell>
                     <StyledTableCell align="right">Comment</StyledTableCell>
                     <StyledTableCell align="right">
                       Comment Date/Time

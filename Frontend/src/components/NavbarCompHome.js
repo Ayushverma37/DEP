@@ -8,8 +8,8 @@ export default function NavbarCompHome() {
   return (
     <>
     <Navbar bg="grey" expand="lg" className='navbarClassHome'>
-    <Navbar.Brand href="#"><img className='photo' src={logoIIT1} alt="" height='20%'/></Navbar.Brand>
-    <Navbar.Brand href="#" className='IITText'>Indian Institute <br />
+    <Navbar.Brand ><img className='photo' src={logoIIT1} alt="" height='20%'/></Navbar.Brand>
+    <Navbar.Brand className='IITText'>Indian Institute <br />
     of Technology, Ropar</Navbar.Brand>
     <Navbar.Toggle aria-controls="navbarScroll" />
     <Navbar.Collapse id="navbarScroll">

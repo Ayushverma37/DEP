@@ -67,6 +67,9 @@ export default function SOE() {
     <div>
       <NavbarComp />
       {/* {tableShow ? <SOE_Table data={all_projects} /> : null} */}
+      <div className="projectHeading">
+        <h2>Statement of Expenditure</h2>
+      </div>
       <SOE_Table />
       
       <PermanentDrawerLeft {...obj}></PermanentDrawerLeft>

@@ -10,7 +10,7 @@ import {
 export default function AddProjectPopup(props) {
   const {children, openAddProjectPopup, setOpenAddProjectPopup } = props;
   return (
-    <Dialog open={openAddProjectPopup} fullWidth maxWidth="md">
+    <Dialog open={openAddProjectPopup} fullWidth maxWidth="sm">
       
       <DialogContent dividers>{children}</DialogContent>
     </Dialog>

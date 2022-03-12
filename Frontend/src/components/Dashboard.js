@@ -11,17 +11,29 @@ import Box from "@mui/material/Box";
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import AddProjectPopup from "./AddProjectPopup";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function Dashboard() {
   const { state } = useLocation();
   const [tableShow, setTableShow] = useState(false);
   const [all_projects, setall_projects] = useState(null);
-  const [openAddProjectPopup, setopenAddProjectPopup] = useState(false)
+  const [openAddProjectPopup, setopenAddProjectPopup] = useState(false);
+  const [newProjectId, setnewProjectId] = useState("")
+  const [newProjectTitle, setnewProjectTitle] = useState("")
+  const [newProfessor, setnewProfessor] = useState("")
+  const [newGrant, setnewGrant] = useState("")
+  const [newCommentTime, setnewCommentTime] = useState("")
+
   console.log(state.userImg);
   console.log("HELPL");
   console.log(state.userName);
   console.log(state.userEmail);
   console.log("SWEMZ", state.isDashboard);
+
+  const SubmitAddProject = () => {
+    console.log(newProjectTitle);
+    setopenAddProjectPopup(false);
+  };
 
   let obj = {
     userName: state.userName,
@@ -65,14 +77,13 @@ export default function Dashboard() {
     setTableShow(true);
   }
 
-  function search_project(){
+  function search_project() {
     return;
     //TODO
     //We will use the setall_project state to update the JSON file with new data
   }
 
-
-  const [searchProject,setsearchProject]=useState("");
+  const [searchProject, setsearchProject] = useState("");
   return (
     <div>
       <NavbarComp />
@@ -109,24 +120,69 @@ export default function Dashboard() {
         </Button>
       </Stack>
       {tableShow ? <ProjectTable {...obj} /> : null}
-      <AddProjectPopup openAddProjectPopup={openAddProjectPopup} setopenAddProjectPopup={setopenAddProjectPopup}>
-        <Box component="form" sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }} noValidate autoComplete="off" display="flex" justifyContent="center" alignItems="center">
+      <AddProjectPopup
+        openAddProjectPopup={openAddProjectPopup}
+        setopenAddProjectPopup={setopenAddProjectPopup}
+      >
+        <Box
+          component="form"
+          sx={{ "& .MuiTextField-root": { m: 1, width: "400px" } }}
+          noValidate
+          autoComplete="off"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           <div className="AddProject">
-            <TextField id="outlined-basic" label="Project Id" variant="outlined" />
-            <TextField id="outlined-basic" label="Project Title" variant="outlined" />
-            <TextField id="outlined-basic" label="Professor" variant="outlined" />
+            <Button
+              className="CloseAddProjectPopup"
+              startIcon={<CloseIcon />}
+              style={{ float: "right" }}
+              onClick={() => {
+                setopenAddProjectPopup(false);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Project Id"
+              variant="outlined"
+              onChange={(event) => {
+                setnewProjectId(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Project Title"
+              variant="outlined"
+              onChange={(event) => {
+                setnewProjectTitle(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Professor"
+              variant="outlined"
+              onChange={(event) => {
+                setnewProfessor(event.target.value);
+              }}
+            />
             <TextField id="outlined-basic" label="Grant" variant="outlined" />
-            <TextField id="outlined-basic" label="Comments" variant="outlined" />
+            <TextField
+              id="outlined-basic"
+              label="Comment Time"
+              variant="outlined"
+              onChange={(event) => {
+                setnewCommentTime(event.target.value);
+              }}
+            />
             <center>
-              <Button variant="contained" endIcon={<SendIcon />}>
-                Send
+              <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitAddProject}>
+                Add User
               </Button>
             </center>
-
           </div>
         </Box>
       </AddProjectPopup>
-
 
       <PermanentDrawerLeft {...obj}></PermanentDrawerLeft>
     </div>

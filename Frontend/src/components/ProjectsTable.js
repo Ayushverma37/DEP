@@ -45,7 +45,21 @@ export default function ProjectTable(props) {
   const [rows,set_rows] = useState(data);
   console.log("Hello " +props)
   console.log(rows);
+  function sortByID(){
 
+  }
+  function sortByTitle(){
+    
+  }
+  function sortByProfessor(){
+    
+  }
+  function sortByGrant(){
+    
+  }
+  function sortByCommentTime(){
+    
+  }
   
   return (
     <div className="tableContainer">
@@ -53,25 +67,27 @@ export default function ProjectTable(props) {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
             <TableRow>
-                <StyledTableCell>ID</StyledTableCell>
-                <StyledTableCell align="right">Title</StyledTableCell>
-                <StyledTableCell align="right">Professor</StyledTableCell>
-                <StyledTableCell align="right">Grant</StyledTableCell>
-                <StyledTableCell align="right">Comment</StyledTableCell>
-                <StyledTableCell align="right">View Project</StyledTableCell>
+                
+                <StyledTableCell><Button style={{color:"white"}} onClick={sortByID}>ID</Button></StyledTableCell>
+                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByTitle}>title</Button></StyledTableCell>
+                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByProfessor}>Professor</Button></StyledTableCell>
+                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByGrant}>Grant</Button></StyledTableCell>
+                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByCommentTime}>Comment Time</Button></StyledTableCell>
+                <StyledTableCell align="center">View Project</StyledTableCell>
+
             </TableRow>
             </TableHead>
             <TableBody>
             {rows.map((row) => (
                 <StyledTableRow key={row.project_id} >
-                <StyledTableCell component="th" scope="row">
+                <StyledTableCell component="th" scope="row" align="center">
                     {row.project_id}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.project_title}</StyledTableCell>
-                <StyledTableCell align="right">{row.professor_list}</StyledTableCell>
-                <StyledTableCell align="right">{row.project_grant}</StyledTableCell>
-                <StyledTableCell align="right">{row.comment_time}</StyledTableCell>
-                <StyledTableCell align="right"><Button onClick={async() => {
+                <StyledTableCell align="center">{row.project_title}</StyledTableCell>
+                <StyledTableCell align="center">{row.professor_list}</StyledTableCell>
+                <StyledTableCell align="center">{row.project_grant}</StyledTableCell>
+                <StyledTableCell align="center">{row.comment_time}</StyledTableCell>
+                <StyledTableCell align="center"><Button onClick={async() => {
                 navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id}});
                 
               }}  startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
