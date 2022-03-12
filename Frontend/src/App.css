@@ -262,4 +262,10 @@ align-self: center;
   align-items: center;
   display: flex;
 }
-
+.AddProject{
+  width: 400px;
+  background-color: white;
+  /* justify-content: center;
+  align-items: center;
+  display: flex; */
+}
