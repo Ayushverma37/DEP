@@ -125,7 +125,7 @@ app.post("/project",async function(req,res){
         console.log(req.body);
 
         // running the insert command 
-        const db_res = await pool.query(" INSERT INTO projects VALUES ($1,$2,$3,$4,$5) RETURNING * ",[req.body.project_id,req.body.project_title,req.body.grant,req.body.comment_date,req.body.professors]);
+        const db_res = await pool.query(" INSERT INTO projects VALUES ($1,$2,$3,$4,current_timestamp) RETURNING * ",[req.body.project_id,req.body.project_title,req.body.professors,req.body.grant]);
         
         // now corresponding to each professor we need to make an entry in his corresponding project table 
         var prof_emails = req.body.professors.split(',');

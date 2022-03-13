@@ -20,6 +20,7 @@ import TextField from "@mui/material/TextField";
 import AddCommentPopup from "./AddCommentPopup";
 import ViewCommentPopup from "./ViewCommentPopup";
 import CommentViewData from "./CommentViewData.json";
+import AddExpensesRowPopUp from "./AddExpensesRowPop";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,14 +43,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function SOE_Table(props) {
-  // useEffect(() => {
-  //   // Update the document title using the browser API
-  //   set_rows(props.data);
-  // },[props.data]);
+  useEffect(() => {
+    // Update the document title using the browser API
+    set_rows(props.table_data);
+  }, [props.table_data]);
 
   // const [rows,set_rows] = useState(props.data);
-  const [rows, set_rows] = useState(soeData);
-  console.log("Project id = "+ props.projId)
+  const [rows, set_rows] = useState(props.table_data);
+  console.log("Project id = " + props.projId)
   console.log(rows);
   const [comment, setComment] = useState("");
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
@@ -57,14 +58,80 @@ export default function SOE_Table(props) {
   const [rowId, setrowId] = useState(0);
   const [rowIdView, setrowIdView] = useState(0);
   const [commentJsonData, setcommentJsonData] = useState(CommentViewData);
+  const [AddExpensesRowPop, setAddExpensesRowPop] = useState(false);
+  const [new_sr,set_new_sr] = useState("");
+  const [new_particulars,set_new_particulars]=useState("");
+  const [new_remarks,set_new_remarks]=useState("")
+  const [new_vouchno,set_new_vouchno]=useState("")
+  const [new_rec,set_new_rec] = useState("");
+  const [new_pay,set_new_pay]=useState("")
+  const [new_balance,set_new_balance]=useState("")
+  const [new_heads,set_new_heads]=useState("")
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(comment);
     console.log(rowId);
-    
+
+    var server_address = "http://localhost:5000/comment";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        project_id: props.projId,
+        row_no: rowId,
+        comment_body: comment,
+        prof_email: props.userEmail
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log(json_response)
 
     setOpenAddCommentPopup(false);
   };
+
+  const addNewExpensesRecord=async () =>{
+    
+
+    var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+    const resp = await fetch(server_address2, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const response = await resp.json();
+    console.log("Server response", response);
+    
+    if(response!=1){
+      alert("YOU ARE NOT THE ADMIN");
+      return
+    }
+
+    
+
+
+
+    var server_address = "http://localhost:5000/insert_main_table";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+
+       particulars: new_particulars,
+       remarks : new_remarks,
+       vouchno : new_vouchno,
+       rec: new_rec,
+       pay: new_pay,
+       balance: new_balance,
+       heads: new_heads,
+       project_id : props.projId
+        
+       }),
+    });
+    
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->"+json_response);
+
+  }
 
   useEffect(() => {
     if (rowIdView > 0) {
@@ -72,7 +139,7 @@ export default function SOE_Table(props) {
       setOpenViewCommentPopup(true);
       //Todo: Set the Json data according to "rowIdView"
     }
-    else{
+    else {
       setOpenViewCommentPopup(false);
     }
   }, [rowIdView]);
@@ -107,7 +174,7 @@ export default function SOE_Table(props) {
                     {row.particulars}
                   </StyledTableCell>
                   <StyledTableCell align="right">{row.remarks}</StyledTableCell>
-                  <StyledTableCell align="right">{row.vouchNo}</StyledTableCell>
+                  <StyledTableCell align="right">{row.vouchno}</StyledTableCell>
                   <StyledTableCell align="right">{row.rec}</StyledTableCell>
                   <StyledTableCell align="right">{row.pay}</StyledTableCell>
                   <StyledTableCell align="right">{row.balance}</StyledTableCell>
@@ -116,8 +183,21 @@ export default function SOE_Table(props) {
                     {/* <Stack  direction="row"  spacing={-5}> */}
                     <Button
                       startIcon={<RemoveRedEyeIcon />}
-                      onClick={() => {
+                      onClick={async () => {
                         setrowIdView(row.sr);
+                        var server_address = "http://localhost:5000/get_comment";
+                        const resp2 = await fetch(server_address, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            row_no: row.sr,
+                            project_id: props.projId
+                          }),
+                        });
+
+                        const json_response = await resp2.json();
+                        console.log(json_response)
+                        setcommentJsonData(json_response)
                         // ViewComments(row.sr)
                       }}
                     />
@@ -210,9 +290,9 @@ export default function SOE_Table(props) {
                 </TableHead>
                 <TableBody>
                   {commentJsonData.map((row) => (
-                    <StyledTableRow key={row.professorName}>
+                    <StyledTableRow key={row.comment_time}>
                       <StyledTableCell component="th" scope="row">
-                        {row.professorName}
+                        {row.person}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {row.comment}
@@ -231,6 +311,172 @@ export default function SOE_Table(props) {
           </span>
         </div>
       </ViewCommentPopup>
+      <Stack
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+        spacing={3}
+        padding={4}
+      >
+        <Button
+          variant="contained"
+          onClick={async () => {
+            var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+            const resp = await fetch(server_address2, {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            });
+            const response = await resp.json();
+            console.log("Server response", response);
+
+            if (response != 1) {
+              alert("YOU ARE NOT THE ADMIN");
+              return
+            }
+            setAddExpensesRowPop(true);
+          }}
+        >
+          Add new expense
+        </Button>
+        <Button
+          variant="contained"
+          onClick={async () => {
+            var server_address = "http://localhost:5000/get_main_table";
+            const resp2 = await fetch(server_address, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ project_id: props.projId }),
+            });
+
+            const json_response = await resp2.json();
+            set_rows(json_response);
+          }}
+        >
+          REFRESH TABLE
+        </Button>
+      </Stack>
+
+      <AddExpensesRowPopUp
+        AddExpensesRowPop={AddExpensesRowPop}
+        setAddExpensesRowPop={setAddExpensesRowPop}
+      >
+        <Box
+          component="form"
+          sx={{ "& .MuiTextField-root": {  width: "600px" } }}
+          
+          noValidate
+          autoComplete="off"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <div className="addExpenses">
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+     style = {{width: 500}}
+
+                id="outlined-basic"
+                label="Particulars"
+                variant="outlined"
+                onChange={(event) => {
+                  set_new_particulars(event.target.value);
+                }}
+              />
+              <TextField
+     style = {{width: 500}}
+
+                id="outlined-basic"
+                label="Remarks"
+                variant="outlined"
+                onChange={(event) => {
+                  set_new_remarks(event.target.value)
+                }}
+              />
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+     style = {{width: 500}}
+
+                id="outlined-basic"
+                label="Voucher No. and Date"
+                variant="outlined"
+                onChange={(event) => {
+                  set_new_vouchno(event.target.value);
+                }}
+              />
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                     style = {{width: 500}}
+                id="outlined-basic" label="Rec" variant="outlined" 
+                onChange={(event) => {
+                  set_new_rec(event.target.value);
+                }}/>
+              <TextField
+                     style = {{width: 500}}
+                id="outlined-basic" label="Pay" variant="outlined" 
+                onChange={(event) => {
+                  set_new_pay(event.target.value);
+                }}/>
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+     style = {{width: 500}}
+
+                id="outlined-basic"
+                label="Balance"
+                variant="outlined"
+                onChange={(event) => {
+                  set_new_balance(event.target.value);
+                }}
+              />
+              <TextField
+                     style = {{width: 500}}
+                id="outlined-basic" label="Heads" variant="outlined" 
+                onChange={(event) => {
+                  set_new_heads(event.target.value);
+                }}
+                />
+            </Stack>
+            <center>
+              <Button
+                onClick={() => {
+                  addNewExpensesRecord();
+                  setAddExpensesRowPop(false);
+                }}
+                variant="contained"
+                endIcon={<SendIcon />}
+              >
+                Add
+              </Button>
+            </center>
+          </div>
+        </Box>
+      </AddExpensesRowPopUp>
     </>
   );
 }

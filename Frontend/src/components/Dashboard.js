@@ -29,7 +29,22 @@ export default function Dashboard() {
   console.log(state.userEmail);
   console.log("SWEMZ", state.isDashboard);
 
-  const SubmitAddProject = () => {
+  const SubmitAddProject = async () => {
+
+    var server_address = "http://localhost:5000/create_project";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        project_id: newProjectId,
+        project_title: newProjectTitle,
+        professors: newProfessor,
+        grant: newGrant
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->" + json_response);
     console.log(newProjectTitle);
     setopenAddProjectPopup(false);
   };
@@ -43,14 +58,7 @@ export default function Dashboard() {
   };
 
   async function add_proj_on_click() {
-    setopenAddProjectPopup(true);
-    return;
-  }
-
-  async function fetch_proj_on_click() {
-    setTableShow(true);
-    console.log("Fetched");
-    return;
+    
     var server_address = "http://localhost:5000/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
@@ -58,8 +66,42 @@ export default function Dashboard() {
     });
     const response = await resp.json();
     console.log("Server response", response);
-    if (response != 1) {
-      alert("You Are not an Admin , access Denied ");
+
+    if(response!=1){
+      alert("YOU ARE NOT THE ADMIN")
+      return
+    }
+
+    setopenAddProjectPopup(true);
+
+    return;
+  }
+
+  async function fetch_proj_on_click() {
+    /*setTableShow(true);
+    console.log("Fetched");
+    return;*/
+
+    var server_address = "http://localhost:5000/user/" + obj.userEmail;
+    const resp = await fetch(server_address, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const response = await resp.json();
+    console.log("Server response", response);
+    if (response == 2) {
+
+      var server_address2 = "http://localhost:5000/project_prof/" + obj.userEmail;
+      const resp2 = await fetch(server_address2, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const response2 = await resp2.json();
+      console.log("Server response", response2);
+      
+      setall_projects(response2);
+      setTableShow(true);
+      
       return;
     }
 
@@ -76,7 +118,18 @@ export default function Dashboard() {
     setTableShow(true);
   }
 
-  function search_project() {
+  async function search_project() {
+
+    
+    var server_address = "http://localhost:5000/project/" + searchProject;
+    const resp2 = await fetch(server_address, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const json_response = await resp2.json();
+    setall_projects(json_response);
+    setTableShow(true);
     return;
     //TODO
     //We will use the setall_project state to update the JSON file with new data
@@ -165,7 +218,11 @@ export default function Dashboard() {
                 setnewProfessor(event.target.value);
               }}
             />
-            <TextField id="outlined-basic" label="Grant" variant="outlined" />
+            <TextField id="outlined-basic" label="Grant" variant="outlined"
+              onChange={(event) => {
+                setnewGrant(event.target.value);
+              }}
+            />
             <center>
               <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitAddProject}>
                 Add Project

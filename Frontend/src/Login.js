@@ -22,20 +22,21 @@ function Login() {
   const navigate = useNavigate();
   const onLoginSuccess = async (res) => {
     console.log("Login Success:", res.profileObj);
-    // var server_address = "http://localhost:5000/user/" + res.profileObj.email;
-    // const resp = await fetch(server_address, {
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" },
+     var server_address = "http://localhost:5000/user/" + res.profileObj.email;
+     const resp = await fetch(server_address, {
+       method: "GET",
+       headers: { "Content-Type": "application/json" },
       
-    // });
-    // const response = await resp.json();
-    // console.log("Server response" , response);
-    const flag = 1;
+     });
+     const response = await resp.json();
+     console.log("Server response" , response);
+    const flag = response;
     if (flag == -1) {
       var auth2 = gapi.auth2.getAuthInstance();
+      alert("You are not a valid USER!!");
       navigate("/home");
       auth2.signOut();
-      alert("You are not a valid USER!!");
+      
       
     }
     else{

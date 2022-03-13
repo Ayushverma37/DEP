@@ -26,7 +26,8 @@ export default function SOE() {
     userName: state.userName,
     userEmail: state.userEmail,
     userImg: state.userImg,
-    projId: state.projId
+    projId: state.projId,
+    table_data : state.table_data
   };
   
 

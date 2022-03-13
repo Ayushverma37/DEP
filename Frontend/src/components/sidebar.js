@@ -54,8 +54,22 @@ export default function PermanentDrawerLeft(props) {
 
     
   }
-  const toManageUser= () =>{
+  const toManageUser=async () =>{
     
+
+    var server_address = "http://localhost:5000/user/" + props.userEmail;
+    const resp = await fetch(server_address, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const response = await resp.json();
+    console.log("Server response", response);
+
+    if(response != 1){
+      alert("YOU ARE NOT THE ADMIN");
+      return;
+    }
+
     navigate("/manageuser", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail}});
 
     

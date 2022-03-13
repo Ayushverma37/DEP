@@ -317,3 +317,8 @@ padding-top: 20px;
   font-size: large;
   letter-spacing: 5px;
 }
+
+.addExpenses{
+  width: 600px;
+  background-color: white;
+}

@@ -50,9 +50,21 @@ export default function Manageuser() {
   const [newUserEmail,setnewUserEmail]=useState();
 
 
-  useEffect(() => {
-    //Load the table again whenever the rows data changes
-  }, [rows]);
+  useEffect(async () => {
+
+    var server_address = "http://localhost:5000/get_user";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+       }),
+    });
+
+    const response = await resp2.json();
+    console.log("Server response", response);
+    set_rows(response);
+    
+  }, []);
 
   let obj = {
     userName: state.userName,
@@ -64,7 +76,7 @@ export default function Manageuser() {
   const [openRemoveUserPop, setOpenRemoveUserPop] = useState(false);
 
   async function add_user_on_click() {
-    return;
+    /*
     var server_address = "http://localhost:5000/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
@@ -75,16 +87,22 @@ export default function Manageuser() {
     if (response != 1) {
       alert("You Are not an Admin , access Denied ");
       return;
-    }
+    }*/
 
-    var server_address = "http://localhost:5000/project/";
+    var server_address = "http://localhost:5000/user";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sort: 1 }),
+      body: JSON.stringify({ 
+        email_id : newUserEmail,
+        admin : newUserRole
+       }),
     });
 
-    const json_response = await resp2.json();
+    const response = await resp2.json();
+    console.log("Server response", response);
+    set_rows(response);
+    console.log("THis is rows ->"+rows);  
   }
 
   function removeUser() {
@@ -120,7 +138,7 @@ export default function Manageuser() {
               setnewUserRole(event.target.value);
             }}
           />
-        <Button variant="contained" onClick={addUser}>
+        <Button variant="contained" onClick={add_user_on_click}>
           Add new user
         </Button>
       
@@ -179,8 +197,11 @@ export default function Manageuser() {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell>ID</StyledTableCell>
-                <StyledTableCell align="right">Email</StyledTableCell>
+              
+
+                <StyledTableCell >Email</StyledTableCell>
+
+                
 
                 <StyledTableCell align="right">Role</StyledTableCell>
 
@@ -190,14 +211,12 @@ export default function Manageuser() {
             <TableBody>
               {rows.map((row) => (
                 <StyledTableRow
-                  key={row.project_id}
+                  key={row.email_id}
                   
                 >
-                  <StyledTableCell component="th" scope="row">
-                    {row.project_id}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{row.Email}</StyledTableCell>
-                  {row.Role ? (
+                 
+                  <StyledTableCell >{row.email_id}</StyledTableCell>
+                  {row.admin==1 ? (
                     <StyledTableCell align="right">Admin</StyledTableCell>
                   ) : (
                     <StyledTableCell align="right">Professor</StyledTableCell>
@@ -206,7 +225,7 @@ export default function Manageuser() {
                     <Button 
                     onClick={() => {
                       setOpenRemoveUserPop(true);
-                      setcurrentUserEmail(row.Email);
+                      setcurrentUserEmail(row.email_id);
                     }}
                     startIcon={<RemoveCircleOutlineIcon />} />
                   </StyledTableCell>

@@ -36,10 +36,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function ProjectTable(props) {
   const navigate=useNavigate();
 
-  // useEffect(() => {
-  //   // Update the document title using the browser API
-  //   set_rows(props.data);
-  // },[props.data]);
+   useEffect(() => {
+     // Update the document title using the browser API
+     set_rows(props.allProjectData);
+   },[props.allProjectData]);
 
   const [projectId, setprojectId] = useState(0)
   const [rows,set_rows] = useState(data);
@@ -88,7 +88,17 @@ export default function ProjectTable(props) {
                 <StyledTableCell align="center">{row.project_grant}</StyledTableCell>
                 <StyledTableCell align="center">{row.comment_time}</StyledTableCell>
                 <StyledTableCell align="center"><Button onClick={async() => {
-                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id}});
+
+                  var server_address = "http://localhost:5000/get_main_table";
+                  const resp2 = await fetch(server_address, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ project_id: row.project_id }),
+                  });
+
+                  const json_response = await resp2.json();
+
+                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , table_data : json_response}});
                 
               }}  startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>
