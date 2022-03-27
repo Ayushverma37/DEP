@@ -19,6 +19,7 @@
     "react-bootstrap": "^2.1.2",
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2",
+    "react-html-table-to-excel": "^2.0.0",
     "react-icons": "^4.3.1",
     "react-image-dangling": "^1.0.1",
     "react-router-dom": "^6.2.1",

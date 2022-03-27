@@ -22,6 +22,15 @@ export default function Dashboard() {
   const [newProjectTitle, setnewProjectTitle] = useState("")
   const [newProfessor, setnewProfessor] = useState("")
   const [newGrant, setnewGrant] = useState("")
+  const [newManpower, setnewManpower] = useState("")
+  const [newConsumables, setnewConsumables] = useState("")
+  const [newTravel, setnewTravel] = useState("")
+  const [newDemo, setnewDemo] = useState("")
+  const [newOverheads, setnewOverheads] = useState("")
+  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState("")
+  const [newEquipment, setnewEquipment] = useState("")
+  const [newConstruction, setnewConstruction] = useState("")
+  const [newFabrication, setnewFabrication] = useState("")
 
   console.log(state.userImg);
   console.log("HELPL");
@@ -178,7 +187,7 @@ export default function Dashboard() {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "400px" } }}
+          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -223,6 +232,62 @@ export default function Dashboard() {
                 setnewGrant(event.target.value);
               }}
             />
+            <center>Enter the Sanctioned Amount under the following categories:- </center>
+
+            <Stack justifyContent="center" alignItems="center"  direction="row" >
+            <TextField style = {{width: 500}} id="outlined-basic" label="Manpower" variant="outlined" 
+              onChange={(event) => {
+                setnewManpower(event.target.value);
+              }}
+            />
+            <TextField style = {{width: 500}}  id="outlined-basic" label="Consumables" variant="outlined"
+              onChange={(event) => {
+                setnewConsumables(event.target.value);
+              }}
+            />
+            </Stack>
+            <Stack justifyContent="center" alignItems="center"  direction="row">
+            <TextField id="outlined-basic" label="Travel" variant="outlined"
+              onChange={(event) => {
+                setnewTravel(event.target.value);
+              }}
+            />
+            <TextField id="outlined-basic" label="Field Testing/Demo/Tranings" variant="outlined"
+              onChange={(event) => {
+                setnewDemo(event.target.value);
+              }}
+            />
+            </Stack>
+            <Stack justifyContent="center" alignItems="center"  direction="row">
+            <TextField id="outlined-basic" label="Overhead" variant="outlined"
+              onChange={(event) => {
+                setnewOverheads(event.target.value);
+              }}
+            />
+            <TextField id="outlined-basic" label="Unforseen Expenses" variant="outlined"
+              onChange={(event) => {
+                setnewUnforeseenExpenses(event.target.value);
+              }}
+            />
+            </Stack>
+            <Stack justifyContent="center" alignItems="center"  direction="row">
+            <TextField id="outlined-basic" label="Equipment" variant="outlined"
+              onChange={(event) => {
+                setnewEquipment(event.target.value);
+              }}
+            />
+            <TextField id="outlined-basic" label="Construction" variant="outlined"
+              onChange={(event) => {
+                setnewConstruction(event.target.value);
+              }}
+            />
+            </Stack>
+            <TextField id="outlined-basic" label="Fabrication" variant="outlined"
+              onChange={(event) => {
+                setnewFabrication(event.target.value);
+              }}
+            />
+            
             <center>
               <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitAddProject}>
                 Add Project

@@ -274,7 +274,7 @@ align-self: center;
   display: flex;
 }
 .AddProject{
-  width: 400px;
+  width: 500px;
   background-color: white;
   padding-left: -40px;
   /* justify-content: center;
@@ -319,6 +319,10 @@ padding-top: 20px;
 }
 
 .addExpenses{
+  width: 600px;
+  background-color: white;
+}
+.addFunds{
   width: 600px;
   background-color: white;
 }

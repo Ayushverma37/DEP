@@ -48,6 +48,7 @@ export default function Manageuser() {
   const [currentUserEmail, setcurrentUserEmail] = useState("");
   const [newUserRole,setnewUserRole]=useState();
   const [newUserEmail,setnewUserEmail]=useState();
+  const [newUsername, setnewUsername] = useState();
 
 
   useEffect(async () => {
@@ -95,6 +96,7 @@ export default function Manageuser() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
         email_id : newUserEmail,
+        name: newUsername,
         admin : newUserRole
        }),
     });
@@ -128,6 +130,14 @@ export default function Manageuser() {
             variant="standard"
             onChange={(event) => {
               setnewUserEmail(event.target.value);
+            }}
+          />
+          <TextField
+            id="standard-basic"
+            label="Name"
+            variant="standard"
+            onChange={(event) => {
+              setnewUsername(event.target.value);
             }}
           />
           <TextField
@@ -199,13 +209,13 @@ export default function Manageuser() {
               <TableRow>
               
 
-                <StyledTableCell >Email</StyledTableCell>
-
+                <StyledTableCell align="center">Email</StyledTableCell>
+                <StyledTableCell align="center">Name</StyledTableCell>
                 
 
-                <StyledTableCell align="right">Role</StyledTableCell>
+                <StyledTableCell align="center">Role</StyledTableCell>
 
-                <StyledTableCell align="right">Remove</StyledTableCell>
+                <StyledTableCell align="center">Remove</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -215,13 +225,14 @@ export default function Manageuser() {
                   
                 >
                  
-                  <StyledTableCell >{row.email_id}</StyledTableCell>
+                  <StyledTableCell align="center">{row.email_id}</StyledTableCell>
+                  <StyledTableCell align="center">{row.user_name}</StyledTableCell>
                   {row.admin==1 ? (
-                    <StyledTableCell align="right">Admin</StyledTableCell>
+                    <StyledTableCell align="center">Admin</StyledTableCell>
                   ) : (
-                    <StyledTableCell align="right">Professor</StyledTableCell>
+                    <StyledTableCell align="center">Professor</StyledTableCell>
                   )}
-                  <StyledTableCell align="right">
+                  <StyledTableCell align="center">
                     <Button 
                     onClick={() => {
                       setOpenRemoveUserPop(true);
