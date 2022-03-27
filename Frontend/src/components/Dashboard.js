@@ -48,7 +48,16 @@ export default function Dashboard() {
         project_id: newProjectId,
         project_title: newProjectTitle,
         professors: newProfessor,
-        grant: newGrant
+        grant: newGrant,
+        manpower:newManpower,
+        consumables:newConsumables,
+        travel:newTravel,
+        field:newDemo,
+        overheads:newOverheads,
+        unforseen:newUnforeseenExpenses,
+        equipments:newEquipment,
+        construction:newConstruction,
+        fabrication:newFabrication
       }),
     });
 

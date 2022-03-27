@@ -110,7 +110,34 @@ app.post("/get_main_table",async function(req,res){
         const db_res = await pool.query(query);
 
         //returning all the rows received from the table
+
+        temp_res = db_res.rows;
+
         res.json(db_res.rows);
+
+        
+    }catch(error){
+        console.error(error.message);
+    }
+
+});
+
+app.post("/get_summary_table",async function(req,res){
+
+    try{
+
+        //getting the details from the project (main) table 
+        var query = "SELECT * from "
+        query = query.concat(req.body.project_id)
+        query=query.concat("_summary_table");
+        const db_res = await pool.query(query);
+
+        //returning all the rows received from the table
+
+        temp_res = db_res.rows;
+
+        res.json(db_res.rows);
+
         
     }catch(error){
         console.error(error.message);
@@ -134,10 +161,95 @@ app.post("/insert_main_table",async function(req,res){
 
         console.log(cnt)
 
+        // adding expenditure and updating the summarrya table balance and expenditure cols
+        query2 = "SELECT * from  ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table ")
+        query2 = query2.concat(" where heads = $1")
+        console.log(query2);
+        console.log(req.body.heads);
+        deb_res2 = await pool.query(query2,[req.body.heads]);
+        
+        var temp_balance = deb_res2.rows[0].balance - req.body.pay;
+        var temp_expenditure = deb_res2.rows[0].expenditure+req.body.pay;
+
+        // updating the balance 
+        query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("balance =  ");
+        query2 = query2.concat(temp_balance);
+        query2 = query2.concat(" where heads = '")
+        query2 = query2.concat(req.body.heads)
+        query2 = query2.concat("'");
+        console.log(query2);
+        deb_res2 = await pool.query(query2);
+
+        // updating the expenditure 
+        query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("expenditure =  ");
+        query2 = query2.concat(temp_expenditure);
+        query2 = query2.concat(" where heads = '")
+        query2 = query2.concat(req.body.heads)
+        query2 = query2.concat("'");
+        console.log(query2);
+        deb_res2 = await pool.query(query2);
+
+        // now updating the total balance and expenditure
+        var feilds_arr = ["'Manpower'","'Consumables'","'Travel'","'Field Testing/Demo/Tranings'","'Overheads'","'Unforseen Expenses'","'Equipments'","'Construction'","'Fabrication'"]
+
+
+        var total_bal = 0;
+        var total_exp=0;
+        for (let step = 0; step < 9; step++) {
+            // updating total balance 
+            query2 = "SELECT * from "
+            query2 = query2.concat(req.body.project_id)
+            query2 = query2.concat("_summary_table WHERE heads = ")
+            query2 = query2.concat(feilds_arr[step]);
+            console.log(query2)
+            db_res2 = await pool.query(query2);
+            var total_bal = total_bal + db_res2.rows[0].balance;
+            var total_exp = total_exp + db_res2.rows[0].expenditure;
+
+        }
+        var query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("balance =  ");
+        query2 = query2.concat(total_bal);
+        query2 = query2.concat(" where heads = 'Total'")
+        console.log(query2);
+        await pool.query(query2);
+
+        // updating balance col
+        query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("balance =  ");
+        query2 = query2.concat(total_bal);
+        query2 = query2.concat(" where heads = 'Total'")
+        console.log(query2);
+        await pool.query(query2);
+
+        // updating expenditure col 
+        query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("expenditure =  ");
+        query2 = query2.concat(total_exp);
+        query2 = query2.concat(" where heads = 'Total'")
+        console.log(query2);
+        await pool.query(query2);
+
+        // finally updating the expenditure table 
         var query = "INSERT INTO "
         query = query.concat(req.body.project_id)
         query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,$6,$7,$8)");
-        const db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,req.body.pay,req.body.balance,req.body.heads]);
+        const db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,req.body.pay,total_bal,req.body.heads]);
+
 
         //returning 1 if the operation was successfull.
         res.json(1);
@@ -157,7 +269,7 @@ app.post("/project",async function(req,res){
         if(req.body.sort==1)
         {
             // sorting by the comment time
-            const db_res = await pool.query("SELECT * from projects ORDER BY comment_time DESC");
+            var db_res = await pool.query("SELECT * from projects ORDER BY comment_time DESC");
             
             console.log("REQUEST RECEIVED");
             
@@ -170,11 +282,25 @@ app.post("/project",async function(req,res){
             for (let step = 0; step < temp_json.length; step++) {
                 
                 temp_json[step].comment_time=temp_json[step].comment_time.toLocaleDateString("en-US")+" "+temp_json[step].comment_time.toLocaleTimeString("en-US")
+                
+                
+                var prof_emails = temp_json[step].professor_list.split(',');
+                var to_ret = ""
+                for (var i in prof_emails) {
+                    // extracting the user names 
+                    db_res = await pool.query("SELECT * FROM users where email_id = $1", [prof_emails[i]]);
+                    
+                    to_ret=to_ret.concat(" ");
+                    to_ret=to_ret.concat(db_res.rows[0].user_name);
+                }
+                temp_json[step].names = to_ret;
             }
 
             console.log(temp_json);
             //returning all the rows
-            res.json(db_res.rows);
+            res.json(temp_json);
+
+
         }
         else
         {
@@ -258,7 +384,7 @@ app.post("/create_project",async function(req,res){
         // creating the main_table:-
         var query="CREATE TABLE ";
         query=query.concat(req.body.project_id)
-        query=query.concat("_main_table (sr text , particulars text , remarks text ,vouchNo text, rec text , pay text , balance text , heads text) ")
+        query=query.concat("_main_table (sr text , particulars text , remarks text ,vouchNo text, rec text , payment int , balance int , heads text) ")
         deb_res = await pool.query(query)
 
         // creating the comments table 
@@ -267,6 +393,71 @@ app.post("/create_project",async function(req,res){
         query = query.concat("_comment_table (sr text,comment text,person text,comment_time TIMESTAMP with time zone,resolved text)")
         deb_res = await pool.query(query)
         
+
+        // creating the sumarry table
+        query="CREATE TABLE ";
+        query=query.concat(req.body.project_id)
+        query=query.concat("_summary_table (sr text , heads text , sanctioned_amount int ,year_1_funds int,year_2_funds int , year_3_funds int ,expenditure int , balance int) ")
+        deb_res = await pool.query(query)
+
+        // creating the comment table for the summary table
+        query = "CREATE TABLE "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_comment_table (sr text,comment text,person text,comment_time TIMESTAMP with time zone,resolved text)")
+
+        deb_res = await pool.query(query)
+
+        // now inserting the initial rows in the table 
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('1','Manpower',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.manpower])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('2','Consumables',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.consumables])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('3','Travel',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.travel])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('4','Field Testing/Demo/Tranings',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.field])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('5','Overheads',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.overheads])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('6','Unforseen Expenses',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.unforseen])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('7','Equipments',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.equipments])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('8','Construction',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.construction])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('9','Fabrication',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.fabrication])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES ('10','Total',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.grant])
+
         //returning 1 since everything was a success 
         res.json(1);
     
@@ -275,6 +466,192 @@ app.post("/create_project",async function(req,res){
     }
 
 })
+
+// now to add a fund
+app.post("/fund",async function(req,res){
+
+    try{
+        // first extracting the total of all the years 
+
+        var query = "SELECT * from "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table WHERE heads = 'Total' ");
+        
+        var db_res = await pool.query(query);
+
+        
+
+        var feilds_arr = ["'Manpower'","'Consumables'","'Travel'","'Field Testing/Demo/Tranings'","'Overheads'","'Unforseen Expenses'","'Equipments'","'Construction'","'Fabrication'"]
+        var val_arr = [Number(req.body.manpower),Number(req.body.consumables),Number(req.body.travel),Number(req.body.field),Number(req.body.overheads),Number(req.body.unforseen),Number(req.body.equipments),Number(req.body.construction),Number(req.body.fabrication)]
+
+        if(db_res.rows[0].year_1_funds == 0 ){
+            
+            var total = 0;
+            for (let step = 0; step < 9; step++) {
+                // updating the rows
+                var query2 = "UPDATE ";
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table set ")
+                query2 = query2.concat("year_1_funds =  ");
+                query2 = query2.concat(val_arr[step]);
+                query2 = query2.concat(" where heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2);
+                deb_res = await pool.query(query2);
+                total = total + val_arr[step]; 
+                
+                // updating total balance 
+                query2 = "SELECT * from "
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table WHERE heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2)
+                db_res = await pool.query(query2);
+                var to_update = val_arr[step]+db_res.rows[0].balance;
+                
+                var query2 = "UPDATE ";
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table set ")
+                query2 = query2.concat("balance =  ");
+                query2 = query2.concat(to_update);
+                query2 = query2.concat(" where heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2);
+                deb_res = await pool.query(query2);
+
+            }
+            var query2 = "UPDATE ";
+            query2 = query2.concat(req.body.project_id)
+            query2 = query2.concat("_summary_table set ")
+            query2 = query2.concat("year_1_funds =  ");
+            query2 = query2.concat(total);
+            query2 = query2.concat(" where heads = 'Total'")
+            console.log(query2);
+            deb_res = await pool.query(query2);
+
+        }
+        else if (db_res.rows[0].year_2_funds == 0){
+            var total = 0;
+            for (let step = 0; step < 9; step++) {
+                // updating the rows
+                var query2 = "UPDATE ";
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table set ")
+                query2 = query2.concat("year_2_funds =  ");
+                query2 = query2.concat(val_arr[step]);
+                query2 = query2.concat(" where heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                deb_res = await pool.query(query2);
+                total = total + val_arr[step];
+                
+                // updating total balance 
+                query2 = "SELECT * from "
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table WHERE heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2)
+                db_res = await pool.query(query2);
+                var to_update = val_arr[step]+db_res.rows[0].balance;
+                
+                var query2 = "UPDATE ";
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table set ")
+                query2 = query2.concat("balance =  ");
+                query2 = query2.concat(to_update);
+                query2 = query2.concat(" where heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2);
+                deb_res = await pool.query(query2);
+                    
+            }
+            var query2 = "UPDATE ";
+            query2 = query2.concat(req.body.project_id)
+            query2 = query2.concat("_summary_table set ")
+            query2 = query2.concat("year_2_funds =  ");
+            query2 = query2.concat(total);
+            query2 = query2.concat(" where heads = 'Total'")
+            console.log(query2);
+            deb_res = await pool.query(query2);
+        }
+        else if(db_res.rows[0].year_3_funds == 0){
+            var total = 0;
+            for (let step = 0; step < 9; step++) {
+                // updating the rows
+                var query2 = "UPDATE ";
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table set ")
+                query2 = query2.concat("year_3_funds =  ");
+                query2 = query2.concat(val_arr[step]);
+                query2 = query2.concat(" where heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                deb_res = await pool.query(query2);
+
+                total = total + val_arr[step]; 
+                // updating total balance 
+                query2 = "SELECT * from "
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table WHERE heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2)
+                db_res = await pool.query(query2);
+                var to_update = val_arr[step]+db_res.rows[0].balance;
+                
+                var query2 = "UPDATE ";
+                query2 = query2.concat(req.body.project_id)
+                query2 = query2.concat("_summary_table set ")
+                query2 = query2.concat("balance =  ");
+                query2 = query2.concat(to_update);
+                query2 = query2.concat(" where heads = ")
+                query2 = query2.concat(feilds_arr[step]);
+                console.log(query2);
+                deb_res = await pool.query(query2);
+                    
+            }
+            var query2 = "UPDATE ";
+            query2 = query2.concat(req.body.project_id)
+            query2 = query2.concat("_summary_table set ")
+            query2 = query2.concat("year_3_funds =  ");
+            query2 = query2.concat(total);
+            query2 = query2.concat(" where heads = 'Total'")
+            console.log(query2);
+            deb_res = await pool.query(query2);
+        }
+
+        var total = 0;
+        for (let step = 0; step < 9; step++) {
+            // updating total balance 
+            query2 = "SELECT * from "
+            query2 = query2.concat(req.body.project_id)
+            query2 = query2.concat("_summary_table WHERE heads = ")
+            query2 = query2.concat(feilds_arr[step]);
+            console.log(query2)
+            db_res = await pool.query(query2);
+            var total = total + db_res.rows[0].balance;
+
+        }
+        var query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("balance =  ");
+        query2 = query2.concat(total);
+        query2 = query2.concat(" where heads = 'Total'")
+        console.log(query2);
+        deb_res = await pool.query(query2);
+
+        //returning 1 since everything was a success 
+        res.json(1);
+        
+
+
+    }catch(error){
+        console.error(error.message);
+    }
+
+});
+
+
+
+
 
 // addding a comment
 app.post("/comment",async function(req,res){
@@ -363,7 +740,7 @@ app.get("/project_prof/:email_id",async function(req,res){
         var query = "SELECT * from "
         query=query.concat(prof_id)
         query=query.concat("_proj_list order by comment_time desc")
-        const db_res = await pool.query(query);
+        var db_res = await pool.query(query);
 
 
         var temp_json = db_res.rows;
@@ -371,6 +748,17 @@ app.get("/project_prof/:email_id",async function(req,res){
         for (let step = 0; step < temp_json.length; step++) {
                 
             temp_json[step].comment_time=temp_json[step].comment_time.toLocaleDateString("en-US")+" "+temp_json[step].comment_time.toLocaleTimeString("en-US")
+            // extracting names of professors and returning that as well
+            var prof_emails = temp_json[step].professor_list.split(',');
+            var to_ret = ""
+            for (var i in prof_emails) {
+                // extracting the user names 
+                db_res = await pool.query("SELECT * FROM users where email_id = $1", [prof_emails[i]]);
+
+                to_ret = to_ret.concat(" ");
+                to_ret = to_ret.concat(db_res.rows[0].user_name);
+            }
+            temp_json[step].names = to_ret;
         }
         
         console.log(temp_json);

@@ -52,11 +52,12 @@ export default function SOE_Table(props) {
   useEffect(() => {
     // Update the document title using the browser API
     set_rows(props.table_data);
-  }, [props.table_data]);
+    setsummaryrows(props.summary_table_data);
+  }, [props.table_data,props.summary_table_data]);
 
   // const [rows,set_rows] = useState(props.data);
   const [rows, set_rows] = useState(props.table_data);
-  const [summaryrows, setsummaryrows] = useState();
+  const [summaryrows, setsummaryrows] = useState(props.summary_table_data);
   console.log("Project id = " + props.projId);
   console.log(rows);
   const [comment, setComment] = useState("");
@@ -130,7 +131,7 @@ export default function SOE_Table(props) {
         remarks: new_remarks,
         vouchno: new_vouchno,
         rec: new_rec,
-        pay: new_pay,
+        pay: Number(new_pay),
         balance: new_balance,
         heads: new_heads,
         project_id: props.projId,
@@ -142,37 +143,39 @@ export default function SOE_Table(props) {
   };
 
   const addNewFunds = async () => {
-    // var server_address2 = "http://localhost:5000/user/" + props.userEmail;
-    // const resp = await fetch(server_address2, {
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" },
-    // });
-    // const response = await resp.json();
-    // console.log("Server response", response);
+     var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+     const resp = await fetch(server_address2, {
+       method: "GET",
+       headers: { "Content-Type": "application/json" },
+     });
+     const response = await resp.json();
+     console.log("Server response", response);
 
-    // if (response != 1) {
-    //   alert("YOU ARE NOT THE ADMIN");
-    //   return;
-    // }
+     if (response != 1) {
+       alert("YOU ARE NOT THE ADMIN");
+       return;
+     }
 
-    // var server_address = "http://localhost:5000/insert_main_table";
-    // const resp2 = await fetch(server_address, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     particulars: new_particulars,
-    //     remarks: new_remarks,
-    //     vouchno: new_vouchno,
-    //     rec: new_rec,
-    //     pay: new_pay,
-    //     balance: new_balance,
-    //     heads: new_heads,
-    //     project_id: props.projId,
-    //   }),
-    // });
+    var server_address = "http://localhost:5000/fund";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        manpower:newManpower,
+        consumables:newConsumables,
+        project_id: props.projId,
+        travel: newTravel,
+        field:newDemo,
+        overheads:newOverheads,
+        unforseen:newUnforeseenExpenses,
+        equipments:newEquipment,
+        construction:newConstruction,
+        fabrication:newFabrication
+      }),
+    });
 
-    // const json_response = await resp2.json();
-    // console.log("RESPONSEEE->" + json_response);
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->" + json_response);
   };
 
   useEffect(() => {
@@ -252,6 +255,20 @@ export default function SOE_Table(props) {
 
               const json_response = await resp2.json();
               set_rows(json_response);
+
+              // update summary table 
+              server_address = "http://localhost:5000/get_summary_table";
+              const resp3 = await fetch(server_address, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ project_id: props.projId }),
+              });
+
+              const json_response2 = await resp3.json();
+              setsummaryrows(json_response2);
+
+
+
             }}
           >
             REFRESH TABLE
@@ -303,7 +320,7 @@ export default function SOE_Table(props) {
                     {row.vouchno}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.rec}</StyledTableCell>
-                  <StyledTableCell align="center">{row.pay}</StyledTableCell>
+                  <StyledTableCell align="center">{row.payment}</StyledTableCell>
                   <StyledTableCell align="center">
                     {row.balance}
                   </StyledTableCell>
@@ -363,22 +380,22 @@ export default function SOE_Table(props) {
                 <StyledTableCell align ="center">Balance</StyledTableCell>
             </TableRow>
             </TableHead>
-            {/* <TableBody>
+            <TableBody>
             {summaryrows.map((row) => (
                 <StyledTableRow key={row.sr}>
                 <StyledTableCell component="th" scope="row">
                     {row.sr}
                 </StyledTableCell>
                 <StyledTableCell align="center">{row.heads}</StyledTableCell>
-                <StyledTableCell align="center">{row.sanctioned}</StyledTableCell>
-                <StyledTableCell align="center">{row.funds1}</StyledTableCell>
-                <StyledTableCell align="center">{row.funds2}</StyledTableCell>
-                <StyledTableCell align="center">{row.funds3}</StyledTableCell>
+                <StyledTableCell align="center">{row.sanctioned_amount}</StyledTableCell>
+                <StyledTableCell align="center">{row.year_1_funds}</StyledTableCell>
+                <StyledTableCell align="center">{row.year_2_funds}</StyledTableCell>
+                <StyledTableCell align="center">{row.year_3_funds}</StyledTableCell>
                 <StyledTableCell align="center">{row.expenditure}</StyledTableCell>
                 <StyledTableCell align="center">{row.balance}</StyledTableCell>
                 </StyledTableRow>
             ))}
-            </TableBody> */}
+            </TableBody>
         </Table>
 
       </div>
@@ -597,9 +614,9 @@ export default function SOE_Table(props) {
                 <MenuItem value={"Manpower"}>Manpower</MenuItem>
                 <MenuItem value={"Consumables"}>Consumables</MenuItem>
                 <MenuItem value={"Travel"}>Travel</MenuItem>
-                <MenuItem value={"Demo"}>Field Testing/Demo/Tranings</MenuItem>
+                <MenuItem value={"Field Testing/Demo/Tranings"}>Field Testing/Demo/Tranings</MenuItem>
                 <MenuItem value={"Overheads"}>Overheads</MenuItem>
-                <MenuItem value={"UnforseenExpenses"}>
+                <MenuItem value={"Unforseen Expenses"}>
                   Unforseen Expenses
                 </MenuItem>
                 <MenuItem value={"Equipment"}>Equipment</MenuItem>

@@ -86,7 +86,7 @@ export default function ProjectTable(props) {
                 </StyledTableCell>
                 <StyledTableCell align="center">{row.project_title}</StyledTableCell>
                 <StyledTableCell align="center">{row.professor_list}</StyledTableCell>
-                <StyledTableCell align="center">TestName</StyledTableCell>
+                <StyledTableCell align="center">{row.names}</StyledTableCell>
                 <StyledTableCell align="center">{row.project_grant}</StyledTableCell>
                 <StyledTableCell align="center">{row.comment_time}</StyledTableCell>
                 <StyledTableCell align="center"><Button onClick={async() => {
@@ -99,8 +99,18 @@ export default function ProjectTable(props) {
                   });
 
                   const json_response = await resp2.json();
+                  
+                  server_address = "http://localhost:5000/get_summary_table";
+                  const resp3 = await fetch(server_address, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ project_id: row.project_id }),
+                  });
 
-                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , table_data : json_response}});
+                  const json_response2 = await resp3.json();
+
+
+                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , table_data : json_response,summary_table_data : json_response2}});
                 
               }}  startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>
