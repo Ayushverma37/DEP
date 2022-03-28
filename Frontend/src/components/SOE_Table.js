@@ -770,7 +770,7 @@ export default function SOE_Table(props) {
                   <MenuItem value={"Unforseen Expenses"}>
                     Unforseen Expenses
                   </MenuItem>
-                  <MenuItem value={"Equipment"}>Equipment</MenuItem>
+                  <MenuItem value={"Equipments"}>Equipment</MenuItem>
                   <MenuItem value={"Construction"}>Construction</MenuItem>
                   <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
                 </Select>
