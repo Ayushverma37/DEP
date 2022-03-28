@@ -99,11 +99,35 @@ export default function SOE_Table(props) {
         row_no: rowId,
         comment_body: comment,
         prof_email: props.userEmail,
+        prof_name: props.userName
       }),
     });
 
     const json_response = await resp2.json();
     console.log(json_response);
+
+    setOpenAddCommentPopup(false);
+  };
+
+  const sendmail = async () => {
+    console.log(comment);
+    console.log(rowId);
+
+    var server_address = "http://localhost:5000/sendMail";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        project_id: props.projId,
+        row_no: rowId,
+        comment_body: comment,
+        prof_email: props.userEmail,
+        prof_name: props.userName
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log(json_response)
 
     setOpenAddCommentPopup(false);
   };
@@ -554,7 +578,8 @@ export default function SOE_Table(props) {
                 <Button
                   variant="contained"
                   endIcon={<SendIcon />}
-                  onClick={handleSubmit}
+                  // onClick={handleSubmit}
+                  onClick={() => { handleSubmit(); sendmail();}}
                 >
                   Send
                 </Button>
