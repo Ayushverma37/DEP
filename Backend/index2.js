@@ -106,7 +106,7 @@ app.post("/get_main_table",async function(req,res){
         //getting the details from the project (main) table 
         var query = "SELECT * from "
         query = query.concat(req.body.project_id)
-        query=query.concat("_main_table");
+        query=query.concat("_main_table order by sr asc");
         const db_res = await pool.query(query);
 
         //returning all the rows received from the table
@@ -129,7 +129,7 @@ app.post("/get_summary_table",async function(req,res){
         //getting the details from the project (main) table 
         var query = "SELECT * from "
         query = query.concat(req.body.project_id)
-        query=query.concat("_summary_table");
+        query=query.concat("_summary_table order by sr asc");
         const db_res = await pool.query(query);
 
         //returning all the rows received from the table
@@ -384,7 +384,7 @@ app.post("/create_project",async function(req,res){
         // creating the main_table:-
         var query="CREATE TABLE ";
         query=query.concat(req.body.project_id)
-        query=query.concat("_main_table (sr text , particulars text , remarks text ,vouchNo text, rec text , payment int , balance int , heads text) ")
+        query=query.concat("_main_table (sr int , particulars text , remarks text ,vouchNo text, rec text , payment int , balance int , heads text) ")
         deb_res = await pool.query(query)
 
         // creating the comments table 
@@ -397,7 +397,7 @@ app.post("/create_project",async function(req,res){
         // creating the sumarry table
         query="CREATE TABLE ";
         query=query.concat(req.body.project_id)
-        query=query.concat("_summary_table (sr text , heads text , sanctioned_amount int ,year_1_funds int,year_2_funds int , year_3_funds int ,expenditure int , balance int) ")
+        query=query.concat("_summary_table (sr int , heads text , sanctioned_amount int ,year_1_funds int,year_2_funds int , year_3_funds int ,expenditure int , balance int) ")
         deb_res = await pool.query(query)
 
         // creating the comment table for the summary table
@@ -410,52 +410,52 @@ app.post("/create_project",async function(req,res){
         // now inserting the initial rows in the table 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('1','Manpower',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (1,'Manpower',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.manpower])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('2','Consumables',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (2,'Consumables',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.consumables])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('3','Travel',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (3,'Travel',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.travel])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('4','Field Testing/Demo/Tranings',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (4,'Field Testing/Demo/Tranings',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.field])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('5','Overheads',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (5,'Overheads',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.overheads])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('6','Unforseen Expenses',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (6,'Unforseen Expenses',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.unforseen])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('7','Equipments',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (7,'Equipments',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.equipments])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('8','Construction',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (8,'Construction',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.construction])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('9','Fabrication',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (9,'Fabrication',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.fabrication])
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES ('10','Total',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (10,'Total',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.grant])
 
         //returning 1 since everything was a success 
@@ -471,6 +471,9 @@ app.post("/create_project",async function(req,res){
 app.post("/fund",async function(req,res){
 
     try{
+
+        
+
         // first extracting the total of all the years 
 
         var query = "SELECT * from "
@@ -637,6 +640,24 @@ app.post("/fund",async function(req,res){
         query2 = query2.concat(" where heads = 'Total'")
         console.log(query2);
         deb_res = await pool.query(query2);
+
+
+        // inserting row in expenditure table 
+        //inserting details in the project (main) table 
+        var query2 = "SELECT COUNT(*) FROM "
+        query2 = query2.concat(req.body.project_id)
+        query2=query2.concat("_main_table")
+        var deb_res2 = await pool.query(query2);
+
+        var cnt= parseInt(deb_res2.rows[0].count)+1;
+
+        console.log(cnt)
+
+        // finally updating the expenditure table 
+        var query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,NULL,$6,$7)");
+        db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,total,"Grant"]);
 
         //returning 1 since everything was a success 
         res.json(1);

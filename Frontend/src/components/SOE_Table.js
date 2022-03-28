@@ -187,6 +187,10 @@ export default function SOE_Table(props) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        particulars: new_particulars,
+        remarks:new_remarks,
+        vouchno:new_vouchno,
+        rec:new_rec,
         manpower: newManpower,
         consumables: newConsumables,
         project_id: props.projId,
