@@ -53,7 +53,7 @@ export default function SOE_Table(props) {
     // Update the document title using the browser API
     set_rows(props.table_data);
     setsummaryrows(props.summary_table_data);
-  }, [props.table_data,props.summary_table_data]);
+  }, [props.table_data, props.summary_table_data]);
 
   // const [rows,set_rows] = useState(props.data);
   const [rows, set_rows] = useState(props.table_data);
@@ -76,15 +76,15 @@ export default function SOE_Table(props) {
   const [new_pay, set_new_pay] = useState("");
   const [new_balance, set_new_balance] = useState("");
   const [new_heads, set_new_heads] = useState("");
-  const [newManpower, setnewManpower] = useState("")
-  const [newConsumables, setnewConsumables] = useState("")
-  const [newTravel, setnewTravel] = useState("")
-  const [newDemo, setnewDemo] = useState("")
-  const [newOverheads, setnewOverheads] = useState("")
-  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState("")
-  const [newEquipment, setnewEquipment] = useState("")
-  const [newConstruction, setnewConstruction] = useState("")
-  const [newFabrication, setnewFabrication] = useState("")
+  const [newManpower, setnewManpower] = useState("");
+  const [newConsumables, setnewConsumables] = useState("");
+  const [newTravel, setnewTravel] = useState("");
+  const [newDemo, setnewDemo] = useState("");
+  const [newOverheads, setnewOverheads] = useState("");
+  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState("");
+  const [newEquipment, setnewEquipment] = useState("");
+  const [newConstruction, setnewConstruction] = useState("");
+  const [newFabrication, setnewFabrication] = useState("");
 
   const handleSubmit = async () => {
     console.log(comment);
@@ -132,7 +132,7 @@ export default function SOE_Table(props) {
         vouchno: new_vouchno,
         rec: new_rec,
         pay: Number(new_pay),
-        balance: new_balance,
+        // balance: new_balance,
         heads: new_heads,
         project_id: props.projId,
       }),
@@ -140,42 +140,94 @@ export default function SOE_Table(props) {
 
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+    set_new_particulars("");
+    set_new_remarks("");
+    set_new_vouchno("");
+    set_new_rec("");
+    set_new_pay("");
   };
 
   const addNewFunds = async () => {
-     var server_address2 = "http://localhost:5000/user/" + props.userEmail;
-     const resp = await fetch(server_address2, {
-       method: "GET",
-       headers: { "Content-Type": "application/json" },
-     });
-     const response = await resp.json();
-     console.log("Server response", response);
+    var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+    const resp = await fetch(server_address2, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const response = await resp.json();
+    console.log("Server response", response);
 
-     if (response != 1) {
-       alert("YOU ARE NOT THE ADMIN");
-       return;
-     }
+    if (response != 1) {
+      alert("YOU ARE NOT THE ADMIN");
+      return;
+    }
 
     var server_address = "http://localhost:5000/fund";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        manpower:newManpower,
-        consumables:newConsumables,
+        manpower: newManpower,
+        consumables: newConsumables,
         project_id: props.projId,
         travel: newTravel,
-        field:newDemo,
-        overheads:newOverheads,
-        unforseen:newUnforeseenExpenses,
-        equipments:newEquipment,
-        construction:newConstruction,
-        fabrication:newFabrication
+        field: newDemo,
+        overheads: newOverheads,
+        unforseen: newUnforeseenExpenses,
+        equipments: newEquipment,
+        construction: newConstruction,
+        fabrication: newFabrication,
       }),
     });
 
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+    set_new_particulars("");
+    set_new_remarks("");
+    set_new_vouchno("");
+    set_new_rec("");
+    set_new_pay("");
   };
 
   useEffect(() => {
@@ -237,9 +289,9 @@ export default function SOE_Table(props) {
             //   }
             //   setOpenAddFundsPopUp(true);
             // }}
-           onClick={()=>{
-             setOpenAddFundsPopUp(true);
-           }}
+            onClick={() => {
+              setOpenAddFundsPopUp(true);
+            }}
           >
             Add Funds
           </Button>
@@ -256,7 +308,7 @@ export default function SOE_Table(props) {
               const json_response = await resp2.json();
               set_rows(json_response);
 
-              // update summary table 
+              // update summary table
               server_address = "http://localhost:5000/get_summary_table";
               const resp3 = await fetch(server_address, {
                 method: "POST",
@@ -266,9 +318,6 @@ export default function SOE_Table(props) {
 
               const json_response2 = await resp3.json();
               setsummaryrows(json_response2);
-
-
-
             }}
           >
             REFRESH TABLE
@@ -301,7 +350,7 @@ export default function SOE_Table(props) {
                 <StyledTableCell align="center">Payment</StyledTableCell>
                 <StyledTableCell align="center">Balance</StyledTableCell>
                 <StyledTableCell align="center">Heads</StyledTableCell>
-                <StyledTableCell align="right">Comment</StyledTableCell>
+                <StyledTableCell align="center">Comment</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -320,7 +369,9 @@ export default function SOE_Table(props) {
                     {row.vouchno}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.rec}</StyledTableCell>
-                  <StyledTableCell align="center">{row.payment}</StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.payment}
+                  </StyledTableCell>
                   <StyledTableCell align="center">
                     {row.balance}
                   </StyledTableCell>
@@ -363,41 +414,105 @@ export default function SOE_Table(props) {
           </Table>
         </TableContainer>
 
-        <br/>
-        
-        <center><h2>Summary Table</h2> </center>
-        <br/>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
+        <br />
+
+        <center>
+          <h2>Summary Table</h2>{" "}
+        </center>
+
+        <ReactHTMLTableToExcel
+          id="test-table-xls-button2"
+          className="download-table-xls-button btn btn-primary mb-3"
+          table="table-to-xls2"
+          filename="Summary"
+          sheet="Sheet1"
+          buttonText="Export Summary Table to Excel Sheet"
+        />
+        <Table
+          sx={{ minWidth: 700 }}
+          aria-label="customized table"
+          className="table"
+          id="table-to-xls2"
+        >
+          <TableHead>
             <TableRow>
-                <StyledTableCell>Sr. No.</StyledTableCell>
-                <StyledTableCell align="center">Heads</StyledTableCell>
-                <StyledTableCell align="center">Sanctioned Amount</StyledTableCell>
-                <StyledTableCell align="center">Fund Received 1st year</StyledTableCell>
-                <StyledTableCell align="center">Fund Received 2nd year</StyledTableCell>
-                <StyledTableCell align="center">Fund Received 3rd year</StyledTableCell>
-                <StyledTableCell align="center">Expenditure</StyledTableCell>
-                <StyledTableCell align ="center">Balance</StyledTableCell>
+              <StyledTableCell>Sr. No.</StyledTableCell>
+              <StyledTableCell align="center">Heads</StyledTableCell>
+              <StyledTableCell align="center">
+                Sanctioned Amount
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                Fund Received 1st year
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                Fund Received 2nd year
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                Fund Received 3rd year
+              </StyledTableCell>
+              <StyledTableCell align="center">Expenditure</StyledTableCell>
+              <StyledTableCell align="center">Balance</StyledTableCell>
+              <StyledTableCell align="center">Comment</StyledTableCell>
             </TableRow>
-            </TableHead>
-            <TableBody>
+          </TableHead>
+          <TableBody>
             {summaryrows.map((row) => (
-                <StyledTableRow key={row.sr}>
+              <StyledTableRow key={row.sr}>
                 <StyledTableCell component="th" scope="row">
-                    {row.sr}
+                  {row.sr}
                 </StyledTableCell>
                 <StyledTableCell align="center">{row.heads}</StyledTableCell>
-                <StyledTableCell align="center">{row.sanctioned_amount}</StyledTableCell>
-                <StyledTableCell align="center">{row.year_1_funds}</StyledTableCell>
-                <StyledTableCell align="center">{row.year_2_funds}</StyledTableCell>
-                <StyledTableCell align="center">{row.year_3_funds}</StyledTableCell>
-                <StyledTableCell align="center">{row.expenditure}</StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.sanctioned_amount}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.year_1_funds}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.year_2_funds}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.year_3_funds}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.expenditure}
+                </StyledTableCell>
                 <StyledTableCell align="center">{row.balance}</StyledTableCell>
-                </StyledTableRow>
-            ))}
-            </TableBody>
-        </Table>
+                <StyledTableCell align="right">
+                  {/* <Stack  direction="row"  spacing={-5}> */}
+                  <Button
+                    startIcon={<RemoveRedEyeIcon />}
+                    // onClick={async () => {
+                    //   setrowIdView(row.sr);
+                    //   var server_address = "http://localhost:5000/get_comment";
+                    //   const resp2 = await fetch(server_address, {
+                    //     method: "POST",
+                    //     headers: { "Content-Type": "application/json" },
+                    //     body: JSON.stringify({
+                    //       row_no: row.sr,
+                    //       project_id: props.projId,
+                    //     }),
+                    //   });
 
+                    //   const json_response = await resp2.json();
+                    //   console.log(json_response);
+                    //   setcommentJsonData(json_response);
+                    //   // ViewComments(row.sr)
+                    // }}
+                  />
+                  <Button
+                    style={{ width: "60px" }}
+                    startIcon={<AddIcon />}
+                    // onClick={() => {
+                    //   setOpenAddCommentPopup(true);
+                    //   setrowId(row.sr);
+                    // }}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
       <AddCommentPopup
         openAddCommentPopup={openAddCommentPopup}
@@ -526,7 +641,13 @@ export default function SOE_Table(props) {
                 }}
               />
             </Stack>
-            <Stack  justifyContent="center"  alignItems="center"  direction="row"  spacing={3}  padding={1}>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
               <TextField
                 style={{ width: 500 }}
                 id="outlined-basic"
@@ -589,7 +710,7 @@ export default function SOE_Table(props) {
                 }}
               />
 
-              <TextField
+              {/* <TextField
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Balance"
@@ -597,33 +718,35 @@ export default function SOE_Table(props) {
                 onChange={(event) => {
                   set_new_balance(event.target.value);
                 }}
-              />
+              /> */}
+
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Heads</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={new_heads}
+                  label="Age"
+                  onChange={(event) => {
+                    set_new_heads(event.target.value);
+                  }}
+                >
+                  <MenuItem value={"Manpower"}>Manpower</MenuItem>
+                  <MenuItem value={"Consumables"}>Consumables</MenuItem>
+                  <MenuItem value={"Travel"}>Travel</MenuItem>
+                  <MenuItem value={"Field Testing/Demo/Tranings"}>
+                    Field Testing/Demo/Tranings
+                  </MenuItem>
+                  <MenuItem value={"Overheads"}>Overheads</MenuItem>
+                  <MenuItem value={"Unforseen Expenses"}>
+                    Unforseen Expenses
+                  </MenuItem>
+                  <MenuItem value={"Equipment"}>Equipment</MenuItem>
+                  <MenuItem value={"Construction"}>Construction</MenuItem>
+                  <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
+                </Select>
+              </FormControl>
             </Stack>
-            <br></br>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Heads</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={new_heads}
-                label="Age"
-                onChange={(event) => {
-                  set_new_heads(event.target.value);
-                }}
-              >
-                <MenuItem value={"Manpower"}>Manpower</MenuItem>
-                <MenuItem value={"Consumables"}>Consumables</MenuItem>
-                <MenuItem value={"Travel"}>Travel</MenuItem>
-                <MenuItem value={"Field Testing/Demo/Tranings"}>Field Testing/Demo/Tranings</MenuItem>
-                <MenuItem value={"Overheads"}>Overheads</MenuItem>
-                <MenuItem value={"Unforseen Expenses"}>
-                  Unforseen Expenses
-                </MenuItem>
-                <MenuItem value={"Equipment"}>Equipment</MenuItem>
-                <MenuItem value={"Construction"}>Construction</MenuItem>
-                <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
-              </Select>
-            </FormControl>
             <center>
               <Button
                 onClick={() => {
@@ -653,17 +776,29 @@ export default function SOE_Table(props) {
           alignItems="center"
         >
           <div className="addFunds">
-          <Stack  justifyContent="right"  alignItems="right"  direction="row"  spacing={3}  padding={1}>
-            <Button
-              className="CloseAddProjectPopup"
-              startIcon={<CloseIcon />}
-              style={{ float: "right" }}
-              onClick={() => {
-                setOpenAddFundsPopUp(false);
-              }}
-            />
+            <Stack
+              justifyContent="right"
+              alignItems="right"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <Button
+                className="CloseAddProjectPopup"
+                startIcon={<CloseIcon />}
+                style={{ float: "right" }}
+                onClick={() => {
+                  setOpenAddFundsPopUp(false);
+                }}
+              />
             </Stack>
-            <Stack  justifyContent="center"  alignItems="center"  direction="row"  spacing={3}  padding={1}>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
               <TextField
                 style={{ width: 500 }}
                 id="outlined-basic"
@@ -682,9 +817,15 @@ export default function SOE_Table(props) {
                   set_new_remarks(event.target.value);
                 }}
               />
-              </Stack>
+            </Stack>
 
-              <Stack  justifyContent="center"  alignItems="center"  direction="row"  spacing={3}  padding={1}>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
               <TextField
                 style={{ width: 500 }}
                 id="outlined-basic"
@@ -703,62 +844,123 @@ export default function SOE_Table(props) {
                   set_new_rec(event.target.value);
                 }}
               />
-              </Stack>
-              <center>Enter the Amount under the following categories/Heads:- </center>
-              <Stack justifyContent="center" alignItems="center"  direction="row"spacing={3}  padding={1} >
-            <TextField style = {{width: 500}} id="outlined-basic" label="Manpower" variant="outlined" 
-              onChange={(event) => {
-                setnewManpower(event.target.value);
-              }}
-            />
-            <TextField style = {{width: 500}}  id="outlined-basic" label="Consumables" variant="outlined"
-              onChange={(event) => {
-                setnewConsumables(event.target.value);
-              }}
-            />
             </Stack>
-            <Stack justifyContent="center" alignItems="center"  direction="row"spacing={3}  padding={1} >
-            <TextField id="outlined-basic" label="Travel" variant="outlined"
-              onChange={(event) => {
-                setnewTravel(event.target.value);
-              }}
-            />
-            <TextField id="outlined-basic" label="Field Testing/Demo/Tranings" variant="outlined"
-              onChange={(event) => {
-                setnewDemo(event.target.value);
-              }}
-            />
+            <center>
+              Enter the Amount under the following categories/Heads:-{" "}
+            </center>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Manpower"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewManpower(event.target.value);
+                }}
+              />
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Consumables"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewConsumables(event.target.value);
+                }}
+              />
             </Stack>
-            <Stack justifyContent="center" alignItems="center"  direction="row"spacing={3}  padding={1} >
-            <TextField id="outlined-basic" label="Overhead" variant="outlined"
-              onChange={(event) => {
-                setnewOverheads(event.target.value);
-              }}
-            />
-            <TextField id="outlined-basic" label="Unforseen Expenses" variant="outlined"
-              onChange={(event) => {
-                setnewUnforeseenExpenses(event.target.value);
-              }}
-            />
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Travel"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewTravel(event.target.value);
+                }}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Field Testing/Demo/Tranings"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewDemo(event.target.value);
+                }}
+              />
             </Stack>
-            <Stack justifyContent="center" alignItems="center"  direction="row"spacing={3}  padding={1} >
-            <TextField id="outlined-basic" label="Equipment" variant="outlined"
-              onChange={(event) => {
-                setnewEquipment(event.target.value);
-              }}
-            />
-            <TextField id="outlined-basic" label="Construction" variant="outlined"
-              onChange={(event) => {
-                setnewConstruction(event.target.value);
-              }}
-            />
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Overhead"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewOverheads(event.target.value);
+                }}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Unforseen Expenses"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewUnforeseenExpenses(event.target.value);
+                }}
+              />
             </Stack>
-            <Stack justifyContent="center" alignItems="center"  direction="row"spacing={3}  padding={1} >
-            <TextField id="outlined-basic" label="Fabrication" variant="outlined"
-              onChange={(event) => {
-                setnewFabrication(event.target.value);
-              }}
-            />
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Equipment"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewEquipment(event.target.value);
+                }}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Construction"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewConstruction(event.target.value);
+                }}
+              />
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Fabrication"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewFabrication(event.target.value);
+                }}
+              />
             </Stack>
             <center>
               <Button
@@ -778,4 +980,3 @@ export default function SOE_Table(props) {
     </>
   );
 }
-

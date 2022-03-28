@@ -65,6 +65,7 @@ export default function Dashboard() {
     console.log("RESPONSEEE->" + json_response);
     console.log(newProjectTitle);
     setopenAddProjectPopup(false);
+    fetch_proj_on_click();
   };
 
   let obj = {
