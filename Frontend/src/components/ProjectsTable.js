@@ -70,8 +70,8 @@ export default function ProjectTable(props) {
                 
                 <StyledTableCell><Button style={{color:"white"}} onClick={sortByID}>ID</Button></StyledTableCell>
                 <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByTitle}>title</Button></StyledTableCell>
-                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByProfessor}>Professor Email id</Button></StyledTableCell>
                 <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByProfessor}>Professor Name</Button></StyledTableCell>
+                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByProfessor}>Professor Email id</Button></StyledTableCell>
                 <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByGrant}>Grant</Button></StyledTableCell>
                 <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByCommentTime}>Comment Time</Button></StyledTableCell>
                 <StyledTableCell align="center">View Project</StyledTableCell>
@@ -85,8 +85,8 @@ export default function ProjectTable(props) {
                     {row.project_id}
                 </StyledTableCell>
                 <StyledTableCell align="center">{row.project_title}</StyledTableCell>
-                <StyledTableCell align="center">{row.professor_list}</StyledTableCell>
                 <StyledTableCell align="center">{row.names}</StyledTableCell>
+                <StyledTableCell align="center">{row.professor_list}</StyledTableCell> 
                 <StyledTableCell align="center">{row.project_grant}</StyledTableCell>
                 <StyledTableCell align="center">{row.comment_time}</StyledTableCell>
                 <StyledTableCell align="center"><Button onClick={async() => {

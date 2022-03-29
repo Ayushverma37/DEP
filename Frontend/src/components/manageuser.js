@@ -209,8 +209,9 @@ export default function Manageuser() {
               <TableRow>
               
 
-                <StyledTableCell align="center">Email</StyledTableCell>
+                
                 <StyledTableCell align="center">Name</StyledTableCell>
+                <StyledTableCell align="center">Email</StyledTableCell>
                 
 
                 <StyledTableCell align="center">Role</StyledTableCell>
@@ -225,8 +226,9 @@ export default function Manageuser() {
                   
                 >
                  
-                  <StyledTableCell align="center">{row.email_id}</StyledTableCell>
+                  
                   <StyledTableCell align="center">{row.user_name}</StyledTableCell>
+                  <StyledTableCell align="center">{row.email_id}</StyledTableCell>
                   {row.admin==1 ? (
                     <StyledTableCell align="center">Admin</StyledTableCell>
                   ) : (
