@@ -35,8 +35,10 @@ router.post("/sendMail",async function(req,res){
     var admin_emails =admins.split(',');
     let admin_length = admin_emails.length;
     for (let i = 0; i < admin_length; i++) {
-            // if(admin_emails[i]!=)
-            senderAddresses.push(admin_emails[i]);
+            if(admin_emails[i]!=req.body.prof_email)
+            {
+              senderAddresses.push(admin_emails[i]);
+            }   
     }
     console.log(senderAddresses);
     async function sendMail() {
