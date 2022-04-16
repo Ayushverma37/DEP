@@ -510,31 +510,31 @@ export default function SOE_Table(props) {
                   {/* <Stack  direction="row"  spacing={-5}> */}
                   <Button
                     startIcon={<RemoveRedEyeIcon />}
-                    // onClick={async () => {
-                    //   setrowIdView(row.sr);
-                    //   var server_address = "http://localhost:5000/get_comment";
-                    //   const resp2 = await fetch(server_address, {
-                    //     method: "POST",
-                    //     headers: { "Content-Type": "application/json" },
-                    //     body: JSON.stringify({
-                    //       row_no: row.sr,
-                    //       project_id: props.projId,
-                    //     }),
-                    //   });
+                    onClick={async () => {
+                      setrowIdView(row.sr);
+                      var server_address = "http://localhost:5000/get_comment_summary";
+                      const resp2 = await fetch(server_address, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          row_no: row.sr,
+                          project_id: props.projId,
+                        }),
+                      });
 
-                    //   const json_response = await resp2.json();
-                    //   console.log(json_response);
-                    //   setcommentJsonData(json_response);
-                    //   // ViewComments(row.sr)
-                    // }}
+                      const json_response = await resp2.json();
+                      console.log(json_response);
+                      setcommentJsonData(json_response);
+                      // ViewComments(row.sr)
+                    }}
                   />
                   <Button
                     style={{ width: "60px" }}
                     startIcon={<AddIcon />}
-                    // onClick={() => {
-                    //   setOpenAddCommentPopup(true);
-                    //   setrowId(row.sr);
-                    // }}
+                    onClick={() => {
+                      setOpenAddCommentPopup(true);
+                      setrowId(row.sr);
+                    }}
                   />
                 </StyledTableCell>
               </StyledTableRow>
