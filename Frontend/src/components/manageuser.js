@@ -109,6 +109,7 @@ export default function Manageuser() {
 
   function removeUser() {
     //To DO; //Curreent user email is stored in currentUserEmail handled by useState
+    
   }
   function addUser() {
     //To DO; //Curreent user email and role is stored in newUserEmail,newUserRole  handled by useState
