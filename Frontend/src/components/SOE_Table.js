@@ -719,6 +719,7 @@ export default function SOE_Table(props) {
                 }}
               />
               <TextField
+                type = "number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Receipt"
@@ -736,6 +737,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
+                type = "number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Payment"
@@ -871,6 +873,7 @@ export default function SOE_Table(props) {
                 }}
               />
               <TextField
+                type = "number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Receipt (Total Funds to be Added)"
@@ -891,6 +894,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
+                type = "number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Manpower"
@@ -900,6 +904,7 @@ export default function SOE_Table(props) {
                 }}
               />
               <TextField
+                type = "number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Consumables"
@@ -917,6 +922,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Travel"
                 variant="outlined"
@@ -925,6 +931,7 @@ export default function SOE_Table(props) {
                 }}
               />
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Field Testing/Demo/Tranings"
                 variant="outlined"
@@ -941,6 +948,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Overhead"
                 variant="outlined"
@@ -949,6 +957,7 @@ export default function SOE_Table(props) {
                 }}
               />
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Unforseen Expenses"
                 variant="outlined"
@@ -965,6 +974,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Equipment"
                 variant="outlined"
@@ -973,6 +983,7 @@ export default function SOE_Table(props) {
                 }}
               />
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Construction"
                 variant="outlined"
@@ -989,6 +1000,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
+                type = "number"
                 id="outlined-basic"
                 label="Fabrication"
                 variant="outlined"
