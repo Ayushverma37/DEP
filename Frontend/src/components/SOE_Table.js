@@ -85,12 +85,16 @@ export default function SOE_Table(props) {
   const [newEquipment, setnewEquipment] = useState("");
   const [newConstruction, setnewConstruction] = useState("");
   const [newFabrication, setnewFabrication] = useState("");
+  const [whichTable, setwhichTable] = useState(0)
 
   const handleSubmit = async () => {
     console.log(comment);
     console.log(rowId);
-
+    console.log("Table", whichTable)
+    if(whichTable === 1)
     var server_address = "http://localhost:5000/comment";
+    if(whichTable === 2)
+    var server_address = "http://localhost:5000/comment_summary";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -433,6 +437,7 @@ export default function SOE_Table(props) {
                       onClick={() => {
                         setOpenAddCommentPopup(true);
                         setrowId(row.sr);
+                        setwhichTable(1);
                       }}
                     />
                   </StyledTableCell>
@@ -534,6 +539,7 @@ export default function SOE_Table(props) {
                     onClick={() => {
                       setOpenAddCommentPopup(true);
                       setrowId(row.sr);
+                      setwhichTable(2);
                     }}
                   />
                 </StyledTableCell>
