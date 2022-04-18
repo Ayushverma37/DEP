@@ -4,6 +4,8 @@ var app = express();
 // cors allows communication from differnt domains(requests to our server) 
 const cors = require("cors");
 
+const PORT = process.env.PORT|| 5000
+
 //creating middleware
 app.use(cors());
 
@@ -27,8 +29,8 @@ app.use(require('./components/addComment'));
 app.use(require('./components/sendMail'));
 app.use(require('./components/getComment'));
 app.use(require('./components/showProjects'));    
-
-
-app.listen(5000,function(){
+app.use(require('./components/addSummaryComment'));    
+app.use(require('./components/getSummaryComment'));    
+app.listen(PORT,function(){
     console.log("Listening ");
 })

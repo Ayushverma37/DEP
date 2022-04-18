@@ -29,6 +29,12 @@ router.post("/insert_main_table",async function(req,res){
         deb_res2 = await pool.query(query2,[req.body.heads]);
         
         var temp_balance = deb_res2.rows[0].balance - req.body.pay;
+        // if the balance now available is less than 0 now
+        if(temp_balance<0)
+        {
+            
+            res.json(-1); 
+        }
         var temp_expenditure = deb_res2.rows[0].expenditure+req.body.pay;
 
         // updating the balance 

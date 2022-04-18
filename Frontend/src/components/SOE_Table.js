@@ -91,10 +91,11 @@ export default function SOE_Table(props) {
     console.log(comment);
     console.log(rowId);
     console.log("Table", whichTable)
+    var server_address;
     if(whichTable === 1)
-    var server_address = "http://localhost:5000/comment";
+    server_address = "http://localhost:5000/comment";
     if(whichTable === 2)
-    var server_address = "http://localhost:5000/comment_summary";
+    server_address = "http://localhost:5000/summary_comment";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -168,6 +169,11 @@ export default function SOE_Table(props) {
 
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
+
+    if(json_response == -1){
+      alert("Insufficient balance in this category!!")
+      return
+    }
 
     var server_address3 = "http://localhost:5000/get_main_table";
     const resp3 = await fetch(server_address3, {
@@ -517,7 +523,7 @@ export default function SOE_Table(props) {
                     startIcon={<RemoveRedEyeIcon />}
                     onClick={async () => {
                       setrowIdView(row.sr);
-                      var server_address = "http://localhost:5000/get_comment_summary";
+                      var server_address = "http://localhost:5000/get_summary_comment";
                       const resp2 = await fetch(server_address, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
