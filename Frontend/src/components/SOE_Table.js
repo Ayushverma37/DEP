@@ -76,6 +76,7 @@ export default function SOE_Table(props) {
   const [new_pay, set_new_pay] = useState("");
   const [new_balance, set_new_balance] = useState("");
   const [new_heads, set_new_heads] = useState("");
+  const [new_heads2, set_new_heads2] = useState("");
   const [newManpower, setnewManpower] = useState("");
   const [newConsumables, setnewConsumables] = useState("");
   const [newTravel, setnewTravel] = useState("");
@@ -165,6 +166,7 @@ export default function SOE_Table(props) {
         pay: Number(new_pay),
         // balance: new_balance,
         heads: new_heads,
+        heads2: new_heads2,
         project_id: props.projId,
       }),
     });
@@ -218,7 +220,7 @@ export default function SOE_Table(props) {
       return;
     }
 
-    var server_address = "http://localhost:5000/fund";
+    var server_address = "http://localhost:5000/updated_add_fund";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -227,16 +229,19 @@ export default function SOE_Table(props) {
         remarks:new_remarks,
         vouchno:new_vouchno,
         rec:new_rec,
-        manpower: newManpower,
-        consumables: newConsumables,
-        project_id: props.projId,
-        travel: newTravel,
-        field: newDemo,
-        overheads: newOverheads,
-        unforseen: newUnforeseenExpenses,
-        equipments: newEquipment,
-        construction: newConstruction,
-        fabrication: newFabrication,
+        recur:newRecurring,
+        non_recur:newNonRecurring,
+        project_id: props.projId
+        // manpower: newManpower,
+        // consumables: newConsumables,
+        // project_id: props.projId,
+        // travel: newTravel,
+        // field: newDemo,
+        // overheads: newOverheads,
+        // unforseen: newUnforeseenExpenses,
+        // equipments: newEquipment,
+        // construction: newConstruction,
+        // fabrication: newFabrication,
       }),
     });
 
@@ -502,23 +507,23 @@ export default function SOE_Table(props) {
                 <StyledTableCell component="th" scope="row">
                   {row.sr}
                 </StyledTableCell>
-                <StyledTableCell align="center"><span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.heads}</span></StyledTableCell>
+                <StyledTableCell align="center"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.heads}</span></StyledTableCell>
                 <StyledTableCell align="center">
-                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.sanctioned_amount}</span>
+                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.sanctioned_amount}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_1_funds}</span>
+                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_1_funds}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_2_funds}</span>
+                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_2_funds}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span>
+                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.expenditure}</span>
+                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.expenditure}</span>
                 </StyledTableCell>
-                <StyledTableCell align="center"><span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.balance}</span></StyledTableCell>
+                <StyledTableCell align="center"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.balance}</span></StyledTableCell>
                 <StyledTableCell align="right">
                   {/* <Stack  direction="row"  spacing={-5}> */}
                   <Button
@@ -765,8 +770,8 @@ export default function SOE_Table(props) {
                 }}
               /> */}
 
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Heads</InputLabel>
+<FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Category</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -774,6 +779,21 @@ export default function SOE_Table(props) {
                   label="Age"
                   onChange={(event) => {
                     set_new_heads(event.target.value);
+                  }}
+                >
+                  <MenuItem value={"Rec."}>Recurring</MenuItem>
+                  <MenuItem value={"Non-Rec."}>Non-Recurring</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label2"
+                  id="demo-simple-select2"
+                  value={new_heads2}
+                  label="Age"
+                  onChange={(event) => {
+                    set_new_heads2(event.target.value);
                   }}
                 >
                   <MenuItem value={"Manpower"}>Manpower</MenuItem>
@@ -789,8 +809,8 @@ export default function SOE_Table(props) {
                   <MenuItem value={"Equipments"}>Equipment</MenuItem>
                   <MenuItem value={"Construction"}>Construction</MenuItem>
                   <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
-                  <MenuItem value={"Recurring_Miscellaneous"}>Miscellaneous(Recurring)</MenuItem>
-                  <MenuItem value={"Non_Recurring_Miscellaneous"}>Miscellaneous(Non-Recurring)</MenuItem>
+                  <MenuItem value={"Misc Rec."}>Miscellaneous(Recurring)</MenuItem>
+                  <MenuItem value={"Misc Non Rec."}>Miscellaneous(Non-Recurring)</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
