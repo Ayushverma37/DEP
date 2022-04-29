@@ -60,52 +60,72 @@ router.post("/create_project",async function(req,res){
         // now inserting the initial rows in the table 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (1,'Manpower',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.manpower])
+        query = query.concat("_summary_table VALUES (3,'Manpower',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (2,'Consumables',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.consumables])
+        query = query.concat("_summary_table VALUES (4,'Consumables',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (3,'Travel',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.travel])
+        query = query.concat("_summary_table VALUES (5,'Travel',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (4,'Field Testing/Demo/Tranings',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.field])
+        query = query.concat("_summary_table VALUES (6,'Field Testing/Demo/Tranings',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (5,'Overheads',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.overheads])
+        query = query.concat("_summary_table VALUES (7,'Overheads',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (6,'Unforseen Expenses',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.unforseen])
+        query = query.concat("_summary_table VALUES (8,'Unforseen Expenses',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (7,'Equipments',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.equipments])
+        query = query.concat("_summary_table VALUES (9,'Equipments',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (8,'Construction',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.construction])
+        query = query.concat("_summary_table VALUES (10,'Construction',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (9,'Fabrication',$1,0,0,0,0,0)");
-        deb_res = await pool.query(query,[req.body.fabrication])
+        query = query.concat("_summary_table VALUES (11,'Fabrication',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
 
         query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query = query.concat("_summary_table VALUES (10,'Total',$1,0,0,0,0,0)");
+        query = query.concat("_summary_table VALUES (12,'Misc Rec.',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES (13,'Misc Non Rec.',0,0,0,0,0,0)");
+        deb_res = await pool.query(query)
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES (1,'Rec.',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.rec_sanctioned_amount])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES (2,'Non-Rec.',$1,0,0,0,0,0)");
+        deb_res = await pool.query(query,[req.body.nonrec_sanctioned_amount])
+
+        query = "INSERT INTO "
+        query = query.concat(req.body.project_id)
+        query = query.concat("_summary_table VALUES (14,'Total',$1,0,0,0,0,0)");
         deb_res = await pool.query(query,[req.body.grant])
 
         //returning 1 since everything was a success 
