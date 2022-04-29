@@ -31,6 +31,8 @@ export default function Dashboard() {
   const [newEquipment, setnewEquipment] = useState("")
   const [newConstruction, setnewConstruction] = useState("")
   const [newFabrication, setnewFabrication] = useState("")
+  const [newRecurring, setnewRecurring] = useState("")
+  const [newNonRecurring, setnewNonRecurring] = useState("")
 
   console.log(state.userImg);
   console.log("HELPL");
@@ -154,11 +156,29 @@ export default function Dashboard() {
     //We will use the setall_project state to update the JSON file with new data
   }
 
+  async function search_project_prof() {
+
+    
+    var server_address = "http://localhost:5000/project/" + searchProject;
+    const resp2 = await fetch(server_address, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const json_response = await resp2.json();
+    setall_projects(json_response);
+    setTableShow(true);
+    return;
+    //TODO
+    //We will use the setall_project state to update the JSON file with new data
+  }
   const [searchProject, setsearchProject] = useState("");
   return (
     <div>
       <NavbarComp />
+      <div className="searchDiv">
 
+      
       <Stack
         justifyContent="center"
         alignItems="center"
@@ -169,19 +189,25 @@ export default function Dashboard() {
         <Box>
           <TextField
             id="standard-basic"
-            label="Search Project"
+            label="Search"
             variant="standard"
             onChange={(event) => {
               setsearchProject(event.target.value);
             }}
           />
-          <Button
+          {/* <Button
             onClick={search_project}
             color="primary"
             size="large"
             startIcon={<SearchIcon />}
-          ></Button>
+          ></Button> */}
         </Box>
+        <Button variant="contained" onClick={search_project}>
+          Search by Title{" "}
+        </Button>
+        <Button variant="contained" onClick={search_project_prof}>
+        Search by Professor{" "}
+        </Button>
 
         <Button variant="contained" onClick={fetch_proj_on_click}>
           Fetch All Projects{" "}
@@ -190,6 +216,7 @@ export default function Dashboard() {
           Add new project{" "}
         </Button>
       </Stack>
+      </div>
       {tableShow ? <ProjectTable {...obj} /> : null}
       <AddProjectPopup
         openAddProjectPopup={openAddProjectPopup}
@@ -243,8 +270,17 @@ export default function Dashboard() {
               }}
             />
             <center>Enter the Sanctioned Amount under the following categories:- </center>
-
-            <Stack justifyContent="center" alignItems="center"  direction="row" >
+            <TextField type="number" id="outlined-basic" label="Recurring" variant="outlined"
+              onChange={(event) => {
+                setnewRecurring(event.target.value);
+              }}
+            />
+            <TextField type="number" id="outlined-basic" label="Non-recurring" variant="outlined"
+              onChange={(event) => {
+                setnewNonRecurring(event.target.value);
+              }}
+            />
+            {/* <Stack justifyContent="center" alignItems="center"  direction="row" >
             <TextField type="number" style = {{width: 500}} id="outlined-basic" label="Manpower" variant="outlined" 
               onChange={(event) => {
                 setnewManpower(event.target.value);
@@ -296,7 +332,7 @@ export default function Dashboard() {
               onChange={(event) => {
                 setnewFabrication(event.target.value);
               }}
-            />
+            /> */}
             
             <center>
               <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitAddProject}>

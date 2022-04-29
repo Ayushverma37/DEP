@@ -110,7 +110,7 @@ export default function ProjectTable(props) {
                   const json_response2 = await resp3.json();
 
 
-                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , table_data : json_response,summary_table_data : json_response2}});
+                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , project_title: row.project_title, projProfName: row.names, project_grant: row.project_grant, table_data : json_response,summary_table_data : json_response2}});
                 
               }}  startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>

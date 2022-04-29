@@ -86,6 +86,8 @@ export default function SOE_Table(props) {
   const [newConstruction, setnewConstruction] = useState("");
   const [newFabrication, setnewFabrication] = useState("");
   const [whichTable, setwhichTable] = useState(0)
+  const [newRecurring, setnewRecurring] = useState("")
+  const [newNonRecurring, setnewNonRecurring] = useState("")
 
   const handleSubmit = async () => {
     console.log(comment);
@@ -500,23 +502,23 @@ export default function SOE_Table(props) {
                 <StyledTableCell component="th" scope="row">
                   {row.sr}
                 </StyledTableCell>
-                <StyledTableCell align="center">{row.heads}</StyledTableCell>
+                <StyledTableCell align="center"><span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.heads}</span></StyledTableCell>
                 <StyledTableCell align="center">
-                  {row.sanctioned_amount}
+                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.sanctioned_amount}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {row.year_1_funds}
+                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_1_funds}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {row.year_2_funds}
+                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_2_funds}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {row.year_3_funds}
+                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {row.expenditure}
+                <span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.expenditure}</span>
                 </StyledTableCell>
-                <StyledTableCell align="center">{row.balance}</StyledTableCell>
+                <StyledTableCell align="center"><span style={row.heads === "Recurring" || row.heads === "Non-recurring" ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.balance}</span></StyledTableCell>
                 <StyledTableCell align="right">
                   {/* <Stack  direction="row"  spacing={-5}> */}
                   <Button
@@ -787,6 +789,8 @@ export default function SOE_Table(props) {
                   <MenuItem value={"Equipments"}>Equipment</MenuItem>
                   <MenuItem value={"Construction"}>Construction</MenuItem>
                   <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
+                  <MenuItem value={"Recurring_Miscellaneous"}>Miscellaneous(Recurring)</MenuItem>
+                  <MenuItem value={"Non_Recurring_Miscellaneous"}>Miscellaneous(Non-Recurring)</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
@@ -892,7 +896,18 @@ export default function SOE_Table(props) {
             <center>
               Enter the Amount under the following categories/Heads:-{" "}
             </center>
-            <Stack
+            <TextField type="number" id="outlined-basic" label="Recurring" variant="outlined"
+              onChange={(event) => {
+                setnewRecurring(event.target.value);
+              }}
+            />
+            <br></br><br></br>
+            <TextField type="number" id="outlined-basic" label="Non-recurring" variant="outlined"
+              onChange={(event) => {
+                setnewNonRecurring(event.target.value);
+              }}
+            />
+            {/* <Stack
               justifyContent="center"
               alignItems="center"
               direction="row"
@@ -1014,7 +1029,7 @@ export default function SOE_Table(props) {
                   setnewFabrication(event.target.value);
                 }}
               />
-            </Stack>
+            </Stack> */}
             <center>
               <Button
                 onClick={() => {

@@ -70,7 +70,19 @@ export default function SOE() {
     <div>
       <NavbarComp />
       {/* {tableShow ? <SOE_Table data={all_projects} /> : null} */}
+      {/* <div className="projectInfo"> */}
+        
+      {/* </div> */}
       <div className="projectHeading">
+        <div className="projInfo">
+        <span>Project Id: {state.projId}</span>
+        <span>Project Title: {state.project_title}</span>
+
+        <span>Professors: {state.projProfName}</span>
+        <span>Total Cost: INR {state.project_grant}</span>
+
+        </div>
+        <div className="hr"></div>
         <h2>Statement of Expenditure</h2>
       </div>
       <SOE_Table {...obj}/>

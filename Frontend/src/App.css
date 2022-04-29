@@ -326,3 +326,30 @@ padding-top: 20px;
   width: 600px;
   background-color: white;
 }
+.searchDiv{
+  margin-left: 150px;
+}
+
+.projInfo{
+  font-weight: bolder;
+  letter-spacing: 1px;
+  font-size: large;
+  width: max-content;
+  position: relative;
+  left: -300px;
+  margin-bottom: 10px;
+}
+
+.projInfo span{
+  margin-right: 80px;
+}
+
+.hr{
+  
+  height: 2px;
+  background-color: black;
+  position: relative;
+  width: 157%;
+  left: -500px;
+  margin-bottom: 10px;
+}
