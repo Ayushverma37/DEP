@@ -31,6 +31,7 @@ app.use(require('./components/getComment'));
 app.use(require('./components/showProjects'));    
 app.use(require('./components/addSummaryComment'));    
 app.use(require('./components/getSummaryComment'));    
+app.use(require('./components/updatedAddFund'));    
 app.listen(PORT,function(){
     console.log("Listening ");
 })

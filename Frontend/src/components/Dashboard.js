@@ -51,15 +51,8 @@ export default function Dashboard() {
         project_title: newProjectTitle,
         professors: newProfessor,
         grant: newGrant,
-        manpower:newManpower,
-        consumables:newConsumables,
-        travel:newTravel,
-        field:newDemo,
-        overheads:newOverheads,
-        unforseen:newUnforeseenExpenses,
-        equipments:newEquipment,
-        construction:newConstruction,
-        fabrication:newFabrication
+        rec_sanctioned_amount: newRecurring,
+        nonrec_sanctioned_amount: newNonRecurring
       }),
     });
 

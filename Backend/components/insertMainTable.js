@@ -30,14 +30,15 @@ router.post("/insert_main_table",async function(req,res){
         
         var temp_balance = deb_res2.rows[0].balance - req.body.pay;
         // if the balance now available is less than 0 now
-        if(temp_balance<0)
+        
+        /*if(temp_balance<0)
         {
             
             res.json(-1); 
-        }
+        }*/
         var temp_expenditure = deb_res2.rows[0].expenditure+req.body.pay;
 
-        // updating the balance 
+        // updating the balance of recurring or non recurring
         query2 = "UPDATE ";
         query2 = query2.concat(req.body.project_id)
         query2 = query2.concat("_summary_table set ")
@@ -49,7 +50,7 @@ router.post("/insert_main_table",async function(req,res){
         console.log(query2);
         deb_res2 = await pool.query(query2);
 
-        // updating the expenditure 
+        // updating the expenditure of recurring or non recurring 
         query2 = "UPDATE ";
         query2 = query2.concat(req.body.project_id)
         query2 = query2.concat("_summary_table set ")
@@ -62,12 +63,12 @@ router.post("/insert_main_table",async function(req,res){
         deb_res2 = await pool.query(query2);
 
         // now updating the total balance and expenditure
-        var feilds_arr = ["'Manpower'","'Consumables'","'Travel'","'Field Testing/Demo/Tranings'","'Overheads'","'Unforseen Expenses'","'Equipments'","'Construction'","'Fabrication'"]
-
+        //var feilds_arr = ["'Manpower'","'Consumables'","'Travel'","'Field Testing/Demo/Tranings'","'Overheads'","'Unforseen Expenses'","'Equipments'","'Construction'","'Fabrication'"]
+        var feilds_arr = ["'Rec.'","'Non-Rec.'"]
 
         var total_bal = 0;
         var total_exp=0;
-        for (let step = 0; step < 9; step++) {
+        for (let step = 0; step < 2; step++) {
             // updating total balance 
             query2 = "SELECT * from "
             query2 = query2.concat(req.body.project_id)
@@ -79,6 +80,7 @@ router.post("/insert_main_table",async function(req,res){
             var total_exp = total_exp + db_res2.rows[0].expenditure;
 
         }
+        /*
         var query2 = "UPDATE ";
         query2 = query2.concat(req.body.project_id)
         query2 = query2.concat("_summary_table set ")
@@ -86,7 +88,7 @@ router.post("/insert_main_table",async function(req,res){
         query2 = query2.concat(total_bal);
         query2 = query2.concat(" where heads = 'Total'")
         console.log(query2);
-        await pool.query(query2);
+        await pool.query(query2);*/
 
         // updating balance col
         query2 = "UPDATE ";
@@ -112,8 +114,30 @@ router.post("/insert_main_table",async function(req,res){
         var query = "INSERT INTO "
         query = query.concat(req.body.project_id)
         query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,$6,$7,$8)");
-        const db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,req.body.pay,total_bal,req.body.heads]);
+        const db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,req.body.pay,total_bal,req.body.heads2]);
+        
+        // updating the expenditure of the particular heads: - 
 
+        query2 = "SELECT * from  ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table ")
+        query2 = query2.concat(" where heads = $1")
+        
+        deb_res2 = await pool.query(query2,[req.body.heads2]);
+        
+        var temp_expenditure = deb_res2.rows[0].expenditure+req.body.pay;
+
+
+        query2 = "UPDATE ";
+        query2 = query2.concat(req.body.project_id)
+        query2 = query2.concat("_summary_table set ")
+        query2 = query2.concat("expenditure =  ");
+        query2 = query2.concat(temp_expenditure);
+        query2 = query2.concat(" where heads = '")
+        query2 = query2.concat(req.body.heads2)
+        query2 = query2.concat("'");
+        console.log(query2);
+        deb_res2 = await pool.query(query2);
 
         //returning 1 if the operation was successfull.
         res.json(1);
