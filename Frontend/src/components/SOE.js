@@ -28,7 +28,8 @@ export default function SOE() {
     userImg: state.userImg,
     projId: state.projId,
     table_data : state.table_data,
-    summary_table_data : state.summary_table_data
+    summary_table_data : state.summary_table_data,
+    userFlag: state.userFlag,
   };
   
 

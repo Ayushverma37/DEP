@@ -69,6 +69,7 @@ export default function Dashboard() {
     userImg: state.userImg,
     isDashboard: state.isDashboard,
     allProjectData: all_projects,
+    userFlag: state.userFlag,
   };
 
   async function add_proj_on_click() {

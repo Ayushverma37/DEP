@@ -39,9 +39,10 @@ function Login() {
       
       
     }
+    
     else{
-     
-      navigate("/dashboard", { state: { userName:res.profileObj.givenName,userImg:res.profileObj.imageUrl,userEmail:res.profileObj.email}});
+    //  console.log("This is: ", flag);
+      navigate("/dashboard", { state: { userName:res.profileObj.givenName,userImg:res.profileObj.imageUrl,userEmail:res.profileObj.email, userFlag: flag}});
       console.log(res.profileObj);
       setShowloginButton(false);
       setShowlogoutButton(true);
