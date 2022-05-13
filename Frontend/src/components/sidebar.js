@@ -47,7 +47,7 @@ export default function PermanentDrawerLeft(props) {
   }
   const toDashboard= () =>{
     
-    navigate("/dashboard", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail}});
+    navigate("/dashboard", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, userFlag: props.userFlag}});
 
    
    
@@ -70,7 +70,7 @@ export default function PermanentDrawerLeft(props) {
       return;
     }
 
-    navigate("/manageuser", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail}});
+    navigate("/manageuser", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, userFlag: props.userFlag}});
 
     
   }
@@ -116,6 +116,49 @@ export default function PermanentDrawerLeft(props) {
 
        
         <Divider />
+        {props.userFlag==1 ? (
+        <ul className='ulSideBar'>
+
+          
+        <li onClick={toDashboard} className='liSideBar'>
+          <span className='iconSideBar'><FaHome/></span>
+          <span className='titleSideBar'>Dashboard</span>
+          </li> 
+          
+          <li onClick={toManageUser} className='liSideBar'>
+          <span className='iconSideBar'><FaUsersCog/></span>
+
+          <span className='titleSideBar'>Manage Users</span>
+          </li>
+
+          
+          
+
+
+          <li onClick={logout} className='liSideBar'>
+          <span className='iconSideBar'><FaUserMinus/></span>
+          
+          <GoogleLogout  
+        clientId={clientId} 
+        render={(renderProps) => (
+          <span
+            className='titleSideBar'
+            onClick={renderProps.onClick}
+            disabled={renderProps.disabled}
+          >
+            Logout
+          </span>
+        )}
+        buttonText="Sign Out"
+        onLogoutSuccess={onSignoutSuccess}
+      ></GoogleLogout>
+
+
+          </li>
+       
+       
+      </ul>
+      ) : (
         <ul className='ulSideBar'>
 
           
@@ -123,10 +166,8 @@ export default function PermanentDrawerLeft(props) {
             <span className='iconSideBar'><FaHome/></span>
             <span className='titleSideBar'>Dashboard</span>
             </li> 
-            <li onClick={toManageUser} className='liSideBar'>
-            <span className='iconSideBar'><FaUsersCog/></span>
-            <span className='titleSideBar'>Manage Users</span>
-            </li>
+            
+           
 
             
             
@@ -155,6 +196,8 @@ export default function PermanentDrawerLeft(props) {
          
          
         </ul>
+      )}
+        
         <Divider />
       </Drawer>
     </Box>

@@ -27,6 +27,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import AddFundsPopUp from "./AddFundsPopup";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -295,51 +297,38 @@ export default function SOE_Table(props) {
           spacing={3}
           padding={1}
         >
-          <Button
-            variant="contained"
-            onClick={async () => {
-              var server_address2 =
-                "http://localhost:5000/user/" + props.userEmail;
-              const resp = await fetch(server_address2, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-              });
-              const response = await resp.json();
-              console.log("Server response", response);
+          {props.userFlag==1 ? (
+        <><Button
+              variant="contained"
+              onClick={async () => {
+                var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+                const resp = await fetch(server_address2, {
+                  method: "GET",
+                  headers: { "Content-Type": "application/json" },
+                });
+                const response = await resp.json();
+                console.log("Server response", response);
 
-              if (response != 1) {
-                alert("YOU ARE NOT THE ADMIN");
-                return;
-              }
-              setAddExpensesRowPop(true);
-            }}
-          >
-            Add new expense
-          </Button>
-          <Button
-            variant="contained"
-            // onClick={async () => {
-            //   var server_address2 =
-            //     "http://localhost:5000/user/" + props.userEmail;
-            //   const resp = await fetch(server_address2, {
-            //     method: "GET",
-            //     headers: { "Content-Type": "application/json" },
-            //   });
-            //   const response = await resp.json();
-            //   console.log("Server response", response);
-
-            //   if (response != 1) {
-            //     alert("YOU ARE NOT THE ADMIN");
-            //     return;
-            //   }
-            //   setOpenAddFundsPopUp(true);
-            // }}
-            onClick={() => {
-              setOpenAddFundsPopUp(true);
-            }}
-          >
-            Add Funds
-          </Button>
+                if (response != 1) {
+                  alert("YOU ARE NOT THE ADMIN");
+                  return;
+                }
+                setAddExpensesRowPop(true);
+              } }
+            >
+              Add new expense
+            </Button><Button
+              variant="contained"
+              onClick={() => {
+                setOpenAddFundsPopUp(true);
+              } }
+            >
+                Add Funds
+              </Button></>
+      ) : (
+        <></>
+      )}
+          
           <Button
             variant="contained"
             onClick={async () => {
@@ -396,6 +385,7 @@ export default function SOE_Table(props) {
                 <StyledTableCell align="center">Balance</StyledTableCell>
                 <StyledTableCell align="center">Heads</StyledTableCell>
                 <StyledTableCell align="center">Comment</StyledTableCell>
+                <StyledTableCell align="center"></StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -453,7 +443,22 @@ export default function SOE_Table(props) {
                         setwhichTable(1);
                       }}
                     />
+                    
                   </StyledTableCell>
+                  <StyledTableCell>
+                    <Button startIcon={<DeleteIcon/>} 
+                    onClick={() => {
+                      if(row.heads=="Grant"){
+                        alert("You cannot delete Grant row");
+                      }
+                      else if(window.confirm("Are you sure, you want to delete"))
+                      {
+
+                      }
+
+                    }}
+                    />
+                    </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

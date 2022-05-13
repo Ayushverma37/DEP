@@ -72,6 +72,7 @@ export default function Manageuser() {
     userEmail: state.userEmail,
     userImg: state.userImg,
     isDashboard: state.isDashboard,
+    userFlag: state.userFlag,
   };
 
   const [openRemoveUserPop, setOpenRemoveUserPop] = useState(false);
