@@ -16,6 +16,17 @@ router.post("/comment",async function(req,res){
         query=query.concat("_comment_table VALUES ($1,$2,$3,current_timestamp,'NO')");
         const db_res = await pool.query(query,[req.body.row_no,req.body.comment_body,req.body.prof_email]);
 
+        // now updating the row of main table where the comment has been made ,setting the comm_flag to 1 
+        if(req.body.is_admin == 0)
+        {
+            query = "UPDATE ";
+            query = query.concat(req.body.project_id)
+            query = query.concat("_main_table set comm_flag = 1 where sr = ")
+            query = query.concat(req.body.row_no);
+            var temp_db = await pool.query(query);
+        }
+        
+
 
         const db_res2 = await pool.query("UPDATE projects set comment_time = current_timestamp where project_id = $1",[req.body.project_id]);
 

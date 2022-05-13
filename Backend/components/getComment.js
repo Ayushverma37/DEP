@@ -17,6 +17,17 @@ router.post("/get_comment",async function(req,res){
 
         var temp_json = db_res.rows;
 
+        // now updating the row of main table where the comment has been made ,setting the comm_flag to 0
+        if(req.body.is_admin == 1)
+        {
+            query = "UPDATE ";
+            query = query.concat(req.body.project_id)
+            query = query.concat("_main_table set comm_flag = 0 where sr = ")
+            query = query.concat(req.body.row_no);
+            var temp_db = await pool.query(query);
+        }
+
+
         for (let step = 0; step < temp_json.length; step++) {
                 
             temp_json[step].comment_time=temp_json[step].comment_time.toLocaleDateString("en-US")+" "+temp_json[step].comment_time.toLocaleTimeString("en-US")
