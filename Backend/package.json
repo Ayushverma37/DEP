@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "server that will connect to db and serve requests",
   "main": "index.js",
-  "engines":{
-    "node" : "14.17.1",
-    "npm" : "6.14.13"
-
+  "engines": {
+    "node": "14.17.1",
+    "npm": "6.14.13"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,10 +14,12 @@
   "author": "vd",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
-    "express": "^4.17.3",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
     "googleapis": "^99.0.0",
     "nodemailer": "^6.7.3",
     "pg": "^8.7.3"
