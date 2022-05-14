@@ -20,7 +20,7 @@ router.post("/user",async function(req,res){
             var str_query = "CREATE TABLE ";
             str_query=str_query.concat(email.substring(0,index));
             str_query= str_query.concat("_proj_list");
-            str_query=str_query.concat(" (project_id text,project_title text,professor_list text,project_grant int,comment_time TIMESTAMP with time zone)");
+            str_query=str_query.concat(" (project_id text, project_title text, professor_list text, project_grant integer, comment_time timestamp with time zone, pi text, co_pi text, dept text, fund_agency text, sanc_order_no text, sanctioned_date text, duration text, dos text, doc text, start_year text)");
             console.log(str_query);
             const db_res2= await pool.query(str_query)
         }        

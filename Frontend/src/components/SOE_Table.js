@@ -18,6 +18,7 @@ import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
 import AddCommentPopup from "./AddCommentPopup";
+import EditPopup from "./EditPopup";
 import ViewCommentPopup from "./ViewCommentPopup";
 import CommentViewData from "./CommentViewData.json";
 import AddExpensesRowPopUp from "./AddExpensesRowPop";
@@ -28,7 +29,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import AddFundsPopUp from "./AddFundsPopup";
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import EditIcon from '@mui/icons-material/Edit';
+import { green } from "@mui/material/colors";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,7 +44,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+    // backgroundColor: theme.palette.action.hover,
   },
   // hide last border
   "&:last-child td, &:last-child th": {
@@ -64,6 +66,8 @@ export default function SOE_Table(props) {
   console.log(rows);
   const [comment, setComment] = useState("");
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
+  const [openEditPopup, setOpenEditPopup] = useState(false);
+  const [Edit, setEdit] = useState("")
   const [openViewCommentPopup, setOpenViewCommentPopup] = useState(false);
   const [openAddFundsPopUp, setOpenAddFundsPopUp] = useState(false);
   const [rowId, setrowId] = useState(0);
@@ -91,6 +95,7 @@ export default function SOE_Table(props) {
   const [whichTable, setwhichTable] = useState(0)
   const [newRecurring, setnewRecurring] = useState("")
   const [newNonRecurring, setnewNonRecurring] = useState("")
+  const [currUpdateheads, setcurrUpdateheads] = useState("")
 
   const handleSubmit = async () => {
     console.log(comment);
@@ -109,7 +114,8 @@ export default function SOE_Table(props) {
         row_no: rowId,
         comment_body: comment,
         prof_email: props.userEmail,
-        prof_name: props.userName
+        prof_name: props.userName,
+        is_admin: props.userFlag,
       }),
     });
 
@@ -118,6 +124,8 @@ export default function SOE_Table(props) {
 
     setOpenAddCommentPopup(false);
   };
+
+  
 
   const sendmail = async () => {
     console.log(comment);
@@ -141,6 +149,65 @@ export default function SOE_Table(props) {
 
     setOpenAddCommentPopup(false);
   };
+
+  var tablesToExcel = (function() {
+    var uri = 'data:application/vnd.ms-excel;base64,'
+    , tmplWorkbookXML = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
+      + '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Axel Richter</Author><Created>{created}</Created></DocumentProperties>'
+      + '<Styles>'
+      + '<Style ss:ID="Currency"><NumberFormat ss:Format="Currency"></NumberFormat></Style>'
+      + '<Style ss:ID="Date"><NumberFormat ss:Format="Medium Date"></NumberFormat></Style>'
+      + '</Styles>' 
+      + '{worksheets}</Workbook>'
+    , tmplWorksheetXML = '<Worksheet ss:Name="{nameWS}"><Table>{rows}</Table></Worksheet>'
+    , tmplCellXML = '<Cell{attributeStyleID}{attributeFormula}><Data ss:Type="{nameType}">{data}</Data></Cell>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+    return function(tables, wsnames, wbname, appname) {
+      var ctx = "";
+      var workbookXML = "";
+      var worksheetsXML = "";
+      var rowsXML = "";
+    
+      for (var i = 0; i < tables.length; i++) {
+        if (!tables[i].nodeType) tables[i] = document.getElementById(tables[i]);
+        for (var j = 0; j < tables[i].rows.length; j++) {
+          rowsXML += '<Row>'
+          for (var k = 0; k < tables[i].rows[j].cells.length; k++) {
+            var dataType = tables[i].rows[j].cells[k].getAttribute("data-type");
+            var dataStyle = tables[i].rows[j].cells[k].getAttribute("data-style");
+            var dataValue = tables[i].rows[j].cells[k].getAttribute("data-value");
+            dataValue = (dataValue)?dataValue:tables[i].rows[j].cells[k].innerHTML;
+            var dataFormula = tables[i].rows[j].cells[k].getAttribute("data-formula");
+            dataFormula = (dataFormula)?dataFormula:(appname=='Calc' && dataType=='DateTime')?dataValue:null;
+            ctx = {  attributeStyleID: (dataStyle=='Currency' || dataStyle=='Date')?' ss:StyleID="'+dataStyle+'"':''
+                   , nameType: (dataType=='Number' || dataType=='DateTime' || dataType=='Boolean' || dataType=='Error')?dataType:'String'
+                   , data: (dataFormula)?'':dataValue
+                   , attributeFormula: (dataFormula)?' ss:Formula="'+dataFormula+'"':''
+                  };
+            rowsXML += format(tmplCellXML, ctx);
+          }
+          rowsXML += '</Row>'
+        }
+        ctx = {rows: rowsXML, nameWS: wsnames[i] || 'Sheet' + i};
+        worksheetsXML += format(tmplWorksheetXML, ctx);
+        rowsXML = "";
+      }
+    
+      ctx = {created: (new Date()).getTime(), worksheets: worksheetsXML};
+      workbookXML = format(tmplWorkbookXML, ctx);
+    
+    console.log(workbookXML);
+    
+      var link = document.createElement("A");
+      link.href = uri + base64(workbookXML);
+      link.download = wbname || 'Workbook.xls';
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+     })();
 
   const addNewExpensesRecord = async () => {
     var server_address2 = "http://localhost:5000/user/" + props.userEmail;
@@ -177,8 +244,8 @@ export default function SOE_Table(props) {
     console.log("RESPONSEEE->" + json_response);
 
     if(json_response == -1){
-      alert("Insufficient balance in this category!!")
-      return
+      alert("Expenditure exceeds Sanctioned Amount, Request Denied!!")
+      return;
     }
 
     var server_address3 = "http://localhost:5000/get_main_table";
@@ -287,6 +354,15 @@ export default function SOE_Table(props) {
     }
   }, [rowIdView]);
 
+
+  function rowSelector(flag){
+    // console.log("GG")
+    
+    if(flag===1) return 'green';
+    else return '';
+  }
+
+
   return (
     <>
       <div className="soeTable">
@@ -357,6 +433,7 @@ export default function SOE_Table(props) {
             REFRESH TABLE
           </Button>
         </Stack>
+        
         <ReactHTMLTableToExcel
           id="test-table-xls-button"
           className="download-table-xls-button btn btn-primary mb-3"
@@ -370,11 +447,11 @@ export default function SOE_Table(props) {
             sx={{ minWidth: 700 }}
             aria-label="customized table"
             className="table"
-            id="table-to-xls"
+            id="tbl1"
           >
             <TableHead>
               <TableRow>
-                <StyledTableCell>Sr. No.</StyledTableCell>
+                <StyledTableCell align="center">Sr. No.</StyledTableCell>
                 <StyledTableCell align="center">Particulars</StyledTableCell>
                 <StyledTableCell align="center">Remarks</StyledTableCell>
                 <StyledTableCell align="center">
@@ -390,8 +467,8 @@ export default function SOE_Table(props) {
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <StyledTableRow key={row.sr}>
-                  <StyledTableCell component="th" scope="row">
+                <StyledTableRow key={row.sr} className={rowSelector(row.comm_flag)}>
+                  <StyledTableCell align="center" component="th" scope="row">
                     {row.sr}
                   </StyledTableCell>
                   <StyledTableCell align="center">
@@ -425,6 +502,7 @@ export default function SOE_Table(props) {
                           body: JSON.stringify({
                             row_no: row.sr,
                             project_id: props.projId,
+                            is_admin:props.userFlag,
                           }),
                         });
 
@@ -447,13 +525,47 @@ export default function SOE_Table(props) {
                   </StyledTableCell>
                   <StyledTableCell>
                     <Button startIcon={<DeleteIcon/>} 
-                    onClick={() => {
+                    onClick={async() => {
                       if(row.heads=="Grant"){
                         alert("You cannot delete Grant row");
                       }
                       else if(window.confirm("Are you sure, you want to delete"))
                       {
+                        var server_address =
+                        "http://localhost:5000/del_row";
+                      const resp2 = await fetch(server_address, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          sr: row.sr,
+                          project_id: props.projId,
+                          heads: row.heads,
+                        }),
+                      });
 
+                      const json_response = await resp2.json();
+                      console.log(json_response);
+
+                      var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
                       }
 
                     }}
@@ -488,48 +600,66 @@ export default function SOE_Table(props) {
           <TableHead>
             <TableRow>
               <StyledTableCell>Sr. No.</StyledTableCell>
-              <StyledTableCell align="center">Heads</StyledTableCell>
-              <StyledTableCell align="center">
+              <StyledTableCell align="left">Heads</StyledTableCell>
+              <StyledTableCell align="left">
                 Sanctioned Amount
               </StyledTableCell>
-              <StyledTableCell align="center">
-                Fund Received 1st year
+              <StyledTableCell align="left">
+                Funds 1YR
               </StyledTableCell>
-              <StyledTableCell align="center">
-                Fund Received 2nd year
+              <StyledTableCell align="left">
+              Funds 2YR
               </StyledTableCell>
-              <StyledTableCell align="center">
-                Fund Received 3rd year
+              <StyledTableCell align="left">
+              Funds 3YR
               </StyledTableCell>
-              <StyledTableCell align="center">Expenditure</StyledTableCell>
-              <StyledTableCell align="center">Balance</StyledTableCell>
-              <StyledTableCell align="center">Comment</StyledTableCell>
+              <StyledTableCell align="left">
+              Funds 4YR
+              </StyledTableCell>
+              <StyledTableCell align="left">
+              Funds 5YR
+              </StyledTableCell>
+              <StyledTableCell align="left">Expenditure</StyledTableCell>
+              <StyledTableCell align="left">Balance</StyledTableCell>
+              <StyledTableCell align="left">Comment</StyledTableCell>
+              <StyledTableCell align="left"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {summaryrows.map((row) => (
-              <StyledTableRow key={row.sr}>
+              <StyledTableRow key={row.sr} className={rowSelector(row.comm_flag)}>
                 <StyledTableCell component="th" scope="row">
                   {row.sr}
                 </StyledTableCell>
-                <StyledTableCell align="center"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.heads}</span></StyledTableCell>
-                <StyledTableCell align="center">
-                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.sanctioned_amount}</span>
+                <StyledTableCell align="left"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.heads}</span></StyledTableCell>
+                <StyledTableCell align="left">
+                {row.heads==="Misc Rec." || row.heads==="Misc Non Rec." ? (
+                  <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>0</span>
+                ):(
+                  <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.sanctioned_amount}</span>
+                )}
+                
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                <StyledTableCell align="left">
                 <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_1_funds}</span>
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                <StyledTableCell align="left">
                 <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_2_funds}</span>
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                <StyledTableCell align="left">
                 <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span>
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                <StyledTableCell align="left">
+                {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                </StyledTableCell>
+                <StyledTableCell align="left">
+                {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                </StyledTableCell>
+                <StyledTableCell align="left">
                 <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.expenditure}</span>
                 </StyledTableCell>
-                <StyledTableCell align="center"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.balance}</span></StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="left"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.balance}</span></StyledTableCell>
+                <StyledTableCell align="left">
                   {/* <Stack  direction="row"  spacing={-5}> */}
                   <Button
                     startIcon={<RemoveRedEyeIcon />}
@@ -542,6 +672,7 @@ export default function SOE_Table(props) {
                         body: JSON.stringify({
                           row_no: row.sr,
                           project_id: props.projId,
+                          is_admin:props.userFlag,
                         }),
                       });
 
@@ -561,6 +692,16 @@ export default function SOE_Table(props) {
                     }}
                   />
                 </StyledTableCell>
+                <StyledTableCell align="left"><Button
+                    
+                    startIcon={<EditIcon />}
+                    onClick={() => {
+                      setcurrUpdateheads(row.heads);
+                      setOpenEditPopup(true);
+                      setrowId(row.sr);
+                      
+                    }}
+                  /></StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -622,7 +763,27 @@ export default function SOE_Table(props) {
             <Button
               startIcon={<CloseIcon />}
               style={{ float: "right" }}
-              onClick={() => {
+              onClick={async() => {
+                var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
                 setOpenViewCommentPopup(false);
                 setrowIdView(0);
               }}
@@ -662,7 +823,81 @@ export default function SOE_Table(props) {
           </span>
         </div>
       </ViewCommentPopup>
+      <EditPopup
+        openEditPopup={openEditPopup}
+        setOpenEditPopup={setOpenEditPopup}
+      >
+        <Box
+          component="form"
+          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
+          noValidate
+          autoComplete="off"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <div className="Edit">
+            <span>
+              <Button
+                startIcon={<CloseIcon />}
+                style={{ float: "right" }}
+                onClick={() => setOpenEditPopup(false)}
+              />
+              <TextField
+                id="outlined-multiline-static"
+                label="New Sanctioned Amount"
+                multiline
+                rows={4}
+                defaultValue=""
+                bgcolor="white"
+                sx={{ zIndex: "tooltip" }}
+                onChange={(event) => {
+                  setEdit(event.target.value);
+                }}
+              />
+              <center>
+                <Button
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  // onClick={handleSubmit}
+                  onClick={async() => {
 
+                    var server_address = "http://localhost:5000/edit_sanctioned";
+                    const resp2 = await fetch(server_address, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        project_id: props.projId,
+                        sanc: Edit,
+                        heads: currUpdateheads,
+
+                      }),
+                    });
+                
+                    const json_response = await resp2.json();
+                    console.log(json_response)
+                    setOpenEditPopup(false);
+
+                    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+                    
+                    
+                  }}
+                >
+                  Update
+                </Button>
+              </center>
+            </span>
+          </div>
+        </Box>
+      </EditPopup>
       <AddExpensesRowPopUp
         AddExpensesRowPop={AddExpensesRowPop}
         setAddExpensesRowPop={setAddExpensesRowPop}
@@ -790,7 +1025,8 @@ export default function SOE_Table(props) {
                   <MenuItem value={"Non-Rec."}>Non-Recurring</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl fullWidth>
+              {new_heads==="Rec." ?(
+                <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
                 <Select
                   labelId="demo-simple-select-label2"
@@ -801,6 +1037,7 @@ export default function SOE_Table(props) {
                     set_new_heads2(event.target.value);
                   }}
                 >
+                  
                   <MenuItem value={"Manpower"}>Manpower</MenuItem>
                   <MenuItem value={"Consumables"}>Consumables</MenuItem>
                   <MenuItem value={"Travel"}>Travel</MenuItem>
@@ -811,13 +1048,33 @@ export default function SOE_Table(props) {
                   <MenuItem value={"Unforseen Expenses"}>
                     Unforseen Expenses
                   </MenuItem>
-                  <MenuItem value={"Equipments"}>Equipment</MenuItem>
-                  <MenuItem value={"Construction"}>Construction</MenuItem>
                   <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
                   <MenuItem value={"Misc Rec."}>Miscellaneous(Recurring)</MenuItem>
+                  
+                </Select>
+              </FormControl>
+              ):(
+<FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label2"
+                  id="demo-simple-select2"
+                  value={new_heads2}
+                  label="Age"
+                  onChange={(event) => {
+                    set_new_heads2(event.target.value);
+                  }}
+                >
+                  
+                 
+                  <MenuItem value={"Equipments"}>Equipment</MenuItem>
+                  <MenuItem value={"Construction"}>Construction</MenuItem>
+                 
                   <MenuItem value={"Misc Non Rec."}>Miscellaneous(Non-Recurring)</MenuItem>
                 </Select>
               </FormControl>
+              )}
+              
             </Stack>
             <center>
               <Button

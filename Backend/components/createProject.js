@@ -24,8 +24,8 @@ router.post("/create_project",async function(req,res){
             console.log(prof_id)
             var query = "INSERT INTO "
             query=query.concat(prof_id)
-            query=query.concat("_proj_list VALUES ($1,$2,$3,$4,current_timestamp)");
-            db_res = await pool.query(query,[req.body.project_id,req.body.project_title,req.body.professors,req.body.grant]);            
+            query=query.concat("_proj_list VALUES ($1,$2,$3,$4,current_timestamp,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)");
+            db_res = await pool.query(query,[req.body.project_id,req.body.project_title,req.body.professors,req.body.grant,req.body.pi,req.body.co_pi,req.body.dept,req.body.fund_agency,req.body.sanc_order_no,req.body.sanctioned_date,req.body.duration,req.body.dos,req.body.doc,req.body.start_year]);            
 
         }
 

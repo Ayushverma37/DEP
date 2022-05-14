@@ -68,13 +68,20 @@ export default function ProjectTable(props) {
             <TableHead>
             <TableRow>
                 
-                <StyledTableCell><Button style={{color:"white"}} onClick={sortByID}>ID</Button></StyledTableCell>
-                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByTitle}>title</Button></StyledTableCell>
-                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByProfessor}>Professor Name</Button></StyledTableCell>
-                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByProfessor}>Professor Email id</Button></StyledTableCell>
-                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByGrant}>Grant</Button></StyledTableCell>
-                <StyledTableCell align="center"><Button style={{color:"white"}} onClick={sortByCommentTime}>Comment Time</Button></StyledTableCell>
-                <StyledTableCell align="center">View Project</StyledTableCell>
+                <StyledTableCell>ID</StyledTableCell>
+                <StyledTableCell>PI</StyledTableCell>
+                <StyledTableCell>Co-PI</StyledTableCell>
+                <StyledTableCell>Dept</StyledTableCell>
+                <StyledTableCell>Funding Agency</StyledTableCell>
+                <StyledTableCell >title</StyledTableCell>
+                <StyledTableCell>Sanctioned order no.</StyledTableCell>
+                <StyledTableCell >Sanctioned date</StyledTableCell>
+                <StyledTableCell >Total Project Cost</StyledTableCell>
+                <StyledTableCell >Duration</StyledTableCell>
+                <StyledTableCell >Year</StyledTableCell>
+                <StyledTableCell >DOS</StyledTableCell>
+                <StyledTableCell >DOC</StyledTableCell>
+                <StyledTableCell >View Project</StyledTableCell>
 
             </TableRow>
             </TableHead>
@@ -84,11 +91,18 @@ export default function ProjectTable(props) {
                 <StyledTableCell component="th" scope="row" align="center">
                     {row.project_id}
                 </StyledTableCell>
+                <StyledTableCell align="center">{row.pi}</StyledTableCell>
+                <StyledTableCell align="center">{row.co_pi}</StyledTableCell>
+                <StyledTableCell align="center">{row.dept}</StyledTableCell>
+                <StyledTableCell align="center">{row.fund_agency}</StyledTableCell>
                 <StyledTableCell align="center">{row.project_title}</StyledTableCell>
-                <StyledTableCell align="center">{row.names}</StyledTableCell>
-                <StyledTableCell align="center">{row.professor_list}</StyledTableCell> 
+                <StyledTableCell align="center">{row.sanc_order_no}</StyledTableCell>
+                <StyledTableCell align="center">{row.sanctioned_date}</StyledTableCell>
                 <StyledTableCell align="center">{row.project_grant}</StyledTableCell>
-                <StyledTableCell align="center">{row.comment_time}</StyledTableCell>
+                <StyledTableCell align="center">{row.duration}</StyledTableCell>
+                <StyledTableCell align="center">{row.start_year}</StyledTableCell>
+                <StyledTableCell align="center">{row.dos}</StyledTableCell>
+                <StyledTableCell align="center">{row.doc}</StyledTableCell>
                 <StyledTableCell align="center"><Button onClick={async() => {
 
                   var server_address = "http://localhost:5000/get_main_table";
@@ -110,7 +124,7 @@ export default function ProjectTable(props) {
                   const json_response2 = await resp3.json();
 
 
-                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , project_title: row.project_title, projProfName: row.names, project_grant: row.project_grant, table_data : json_response,summary_table_data : json_response2, userFlag: props.userFlag}});
+                navigate("/soe", { state: { userName:props.userName,userImg:props.userImg,userEmail:props.userEmail, projId: row.project_id , project_title: row.project_title, projProfName: row.pi, project_grant: row.project_grant, table_data : json_response,summary_table_data : json_response2, userFlag: props.userFlag}});
                 
               }}  startIcon={<ArrowCircleRightIcon />} /></StyledTableCell>
                 </StyledTableRow>

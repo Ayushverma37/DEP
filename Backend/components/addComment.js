@@ -17,7 +17,7 @@ router.post("/comment",async function(req,res){
         const db_res = await pool.query(query,[req.body.row_no,req.body.comment_body,req.body.prof_email]);
 
         // now updating the row of main table where the comment has been made ,setting the comm_flag to 1 
-        if(req.body.is_admin == 0)
+        if(req.body.is_admin == 2)
         {
             query = "UPDATE ";
             query = query.concat(req.body.project_id)

@@ -12,6 +12,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import AddProjectPopup from "./AddProjectPopup";
 import CloseIcon from "@mui/icons-material/Close";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 
 export default function Dashboard() {
   const { state } = useLocation();
@@ -33,6 +38,17 @@ export default function Dashboard() {
   const [newFabrication, setnewFabrication] = useState("")
   const [newRecurring, setnewRecurring] = useState("")
   const [newNonRecurring, setnewNonRecurring] = useState("")
+  const [searchOption, setsearchOption] = useState("")
+  const [newPI, setnewPI] = useState("")
+  const [newCOPI, setnewCOPI] = useState("")
+  const [newDepartment, setnewDepartment] = useState("")
+  const [newAgency, setnewAgency] = useState("")
+  const [newSanctionedNumber, setnewSanctionedNumber] = useState("")
+  const [newSanctionedDate, setnewSanctionedDate] = useState("")
+  const [newDOC, setnewDOC] = useState("")
+  const [newDOS, setnewDOS] = useState("")
+  const [newYear, setnewYear] = useState("")
+  const [newDuration, setnewDuration] = useState("")
 
   console.log(state.userImg);
   console.log("HELPL");
@@ -51,8 +67,29 @@ export default function Dashboard() {
         project_title: newProjectTitle,
         professors: newProfessor,
         grant: newGrant,
+        pi: newPI,
+        co_pi: newCOPI,
+        dept: newDepartment,
+        fund_agency: newAgency,
+        sanc_order_no: newSanctionedNumber,
+        sanctioned_date: newSanctionedDate,
+        duration: newDuration,
+        dos: newDOS,
+        doc:newDOC,
+        start_year: newYear,
         rec_sanctioned_amount: newRecurring,
-        nonrec_sanctioned_amount: newNonRecurring
+        nonrec_sanctioned_amount: newNonRecurring,
+        man_sanc: newManpower,
+        cons_sanc: newConsumables,
+        travel_sanc: newTravel,
+        testing_sanc: newTravel,
+        overhead_sanc: newOverheads,
+        unforseen_sanc: newUnforeseenExpenses,
+        equip_sanc: newEquipment,
+        const_sanc: newConstruction,
+        fab_sanc: newFabrication
+
+
       }),
     });
 
@@ -171,45 +208,62 @@ export default function Dashboard() {
     <div>
       <NavbarComp />
       <div className="searchDiv">
-
-      
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        direction="row"
-        spacing={3}
-        padding={4}
-      >
-        <Box>
-          <TextField
-            id="standard-basic"
-            label="Search"
-            variant="standard"
-            onChange={(event) => {
-              setsearchProject(event.target.value);
-            }}
-          />
-          {/* <Button
+        <Stack
+          justifyContent="center"
+          alignItems="center"
+          direction="row"
+          spacing={3}
+          padding={4}
+        >
+          <Box>
+            <TextField
+              id="standard-basic"
+              label="Search"
+              variant="standard"
+              onChange={(event) => {
+                setsearchProject(event.target.value);
+              }}
+            />
+            {/* <Button
             onClick={search_project}
             color="primary"
             size="large"
             startIcon={<SearchIcon />}
           ></Button> */}
-        </Box>
-        <Button variant="contained" onClick={search_project}>
-          Search by Title{" "}
-        </Button>
-        <Button variant="contained" onClick={search_project_prof}>
-        Search by Professor{" "}
-        </Button>
+          </Box>
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="demo-simple-select-label">Search By</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={searchOption}
+              label="Age"
+              onChange={(event) => {
+                setsearchOption(event.target.value);
+              }}
+            >
+              <MenuItem value={"id"}>ID</MenuItem>
+              <MenuItem value={"title"}>Title</MenuItem>
+              <MenuItem value={"pi"}>Name of PI</MenuItem>
+              <MenuItem value={"dept"}>Department</MenuItem>
+              <MenuItem value={"year"}>Year</MenuItem>
+              <MenuItem value={"agency"}>Funding Agency</MenuItem>
+            </Select>
+          </FormControl>
+          <Button variant="contained" onClick={search_project}>
+            Search{" "}
+          </Button>
+          {/* <Button variant="contained" onClick={search_project_prof}>
+            Search by Professor{" "}
+          </Button> */}
 
-        <Button variant="contained" onClick={fetch_proj_on_click}>
-          Fetch All Projects{" "}
-        </Button>
-        <Button variant="contained" onClick={add_proj_on_click}>
-          Add new project{" "}
-        </Button>
-      </Stack>
+          <Button variant="contained" onClick={fetch_proj_on_click}>
+            Fetch All Projects{" "}
+          </Button>
+          <Button variant="contained" onClick={add_proj_on_click}>
+            Add new project{" "}
+          </Button>
+        </Stack>
       </div>
       {tableShow ? <ProjectTable {...obj} /> : null}
       <AddProjectPopup
@@ -244,6 +298,46 @@ export default function Dashboard() {
             />
             <TextField
               id="outlined-basic"
+              label="Professors"
+              variant="outlined"
+              onChange={(event) => {
+                setnewProfessor(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Name of PI"
+              variant="outlined"
+              onChange={(event) => {
+                setnewPI(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Name of Co-PI"
+              variant="outlined"
+              onChange={(event) => {
+                setnewCOPI(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Department"
+              variant="outlined"
+              onChange={(event) => {
+                setnewDepartment(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Funding Agency"
+              variant="outlined"
+              onChange={(event) => {
+                setnewAgency(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
               label="Project Title"
               variant="outlined"
               onChange={(event) => {
@@ -252,29 +346,93 @@ export default function Dashboard() {
             />
             <TextField
               id="outlined-basic"
-              label="Professors"
+              label="Sanctioned order number"
               variant="outlined"
               onChange={(event) => {
-                setnewProfessor(event.target.value);
+                setnewSanctionedNumber(event.target.value);
               }}
             />
-            <TextField type="number" id="outlined-basic" label="Grant" variant="outlined"
+            <TextField
+              id="outlined-basic"
+              label="Sanctioned Date"
+              variant="outlined"
+              onChange={(event) => {
+                setnewSanctionedDate(event.target.value);
+              }}
+            />
+            <TextField
+              type="number"
+              id="outlined-basic"
+              label="Total Project Cost"
+              variant="outlined"
               onChange={(event) => {
                 setnewGrant(event.target.value);
               }}
             />
-            <center>Enter the Sanctioned Amount under the following categories:- </center>
-            <TextField type="number" id="outlined-basic" label="Recurring" variant="outlined"
+            <TextField
+              id="outlined-basic"
+              label="Duration"
+              variant="outlined"
+              
+              onChange={(event) => {
+                setnewDuration(event.target.value);
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Year"
+              variant="outlined"
+              
+              onChange={(event) => {
+                setnewYear(event.target.value);
+              }}
+            />
+            <TextField 
+              type="date"
+              id="outlined-basic"
+              label="Date of Start"
+              variant="outlined"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(event) => {
+                setnewDOS(event.target.value);
+              }}
+            />
+            <TextField
+              type="date"
+              id="outlined-basic"
+              label="Date of Completion"
+              variant="outlined"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(event) => {
+                setnewDOC(event.target.value);
+              }}
+            />
+            <center>
+              Enter the Sanctioned Amount under the following categories:-{" "}
+            </center>
+            <TextField
+              type="number"
+              id="outlined-basic"
+              label="Recurring"
+              variant="outlined"
               onChange={(event) => {
                 setnewRecurring(event.target.value);
               }}
             />
-            <TextField type="number" id="outlined-basic" label="Non-recurring" variant="outlined"
+            <TextField
+              type="number"
+              id="outlined-basic"
+              label="Non-recurring"
+              variant="outlined"
               onChange={(event) => {
                 setnewNonRecurring(event.target.value);
               }}
             />
-            {/* <Stack justifyContent="center" alignItems="center"  direction="row" >
+            <Stack justifyContent="center" alignItems="center"  direction="row" >
             <TextField type="number" style = {{width: 500}} id="outlined-basic" label="Manpower" variant="outlined" 
               onChange={(event) => {
                 setnewManpower(event.target.value);
@@ -326,10 +484,14 @@ export default function Dashboard() {
               onChange={(event) => {
                 setnewFabrication(event.target.value);
               }}
-            /> */}
-            
+            />
+
             <center>
-              <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitAddProject}>
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
+                onClick={SubmitAddProject}
+              >
                 Add Project
               </Button>
             </center>
