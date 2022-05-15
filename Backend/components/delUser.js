@@ -27,8 +27,6 @@ router.post("/del_user",async function(req,res){
 
         db_res = await pool.query(query);
         
-
-
     }catch(error){
         console.error(error.message);
     }
