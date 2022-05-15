@@ -193,7 +193,7 @@ router.post("/fund",async function(req,res){
         // finally updating the expenditure table 
         var query = "INSERT INTO "
         query = query.concat(req.body.project_id)
-        query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,NULL,$6,$7)");
+        query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,NULL,$6,$7,0)");
         db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,total,"Grant"]);
 
         //returning 1 since everything was a success 

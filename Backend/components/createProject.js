@@ -34,7 +34,7 @@ router.post("/create_project",async function(req,res){
         // creating the main_table:-
         var query="CREATE TABLE ";
         query=query.concat(req.body.project_id)
-        query=query.concat("_main_table (sr int , particulars text , remarks text ,vouchNo text, rec text , payment int , balance int , heads text , comm_flag int) ")
+        query=query.concat("_main_table (sr int , particulars text , remarks text ,vouchNo text, rec text , payment int , balance int , heads text , comm_flag int , actual_flag int) ")
         deb_res = await pool.query(query)
 
         // creating the comments table 
