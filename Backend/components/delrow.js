@@ -8,7 +8,7 @@ router.post("/del_row",async function(req,res){
 
     try{
         console.log("REQ");
-
+        console.log(req.body);
         // extracting the content via the select query
         var query = "SELECT * FROM ";
         query = query.concat(req.body.project_id)
@@ -64,10 +64,11 @@ router.post("/del_row",async function(req,res){
         query = query.concat(" where heads = '");
         query = query.concat(req.body.heads);
         query = query.concat("'");
+        console.log(query);
 
         db_res = await pool.query(query);
 
-        if(req.body.heads == 'Equipments'){
+        if(req.body.heads == 'Equipments' || req.body.heads == 'Construction'){
             // this is non recurring 
             // updating the balance of non recurring
             query = "UPDATE ";
@@ -103,6 +104,22 @@ router.post("/del_row",async function(req,res){
             query=query.concat("_summary_table set expenditure = expenditure - ");
             query=query.concat(pay);
             query = query.concat(" where heads = 'Rec.' ");
+
+            db_res = await pool.query(query);
+
+            query = "UPDATE ";
+            query = query.concat(req.body.project_id)
+            query=query.concat("_summary_table set balance = balance + ");
+            query=query.concat(pay);
+            query = query.concat(" where heads = 'Total' ");
+
+            db_res = await pool.query(query);
+
+            query = "UPDATE ";
+            query = query.concat(req.body.project_id)
+            query=query.concat("_summary_table set expenditure = expenditure - ");
+            query=query.concat(pay);
+            query = query.concat(" where heads = 'Total' ");
 
             db_res = await pool.query(query);
         }

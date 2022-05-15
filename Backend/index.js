@@ -33,6 +33,7 @@ app.use(require('./components/addSummaryComment'));
 app.use(require('./components/getSummaryComment'));    
 app.use(require('./components/updatedAddFund'));    
 app.use(require('./components/delrow'));    
+app.use(require('./components/editSanctioned'));    
 app.listen(PORT,function(){
     console.log("Listening ");
 })
