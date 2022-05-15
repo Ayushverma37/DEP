@@ -19,9 +19,9 @@ router.post("/project_search",async function(req,res){
             }
             else if(req.body.type == 2)
             {   
-                query = "SELECT * FROM projects WHERE project_id LIKE '%"
+                query = "SELECT * FROM projects WHERE project_id ='"
                 query = query.concat(req.body.id)
-                query = query.concat("%' ")
+                query = query.concat("' ")
             }
             else if(req.body.type == 3)
             {
@@ -37,9 +37,9 @@ router.post("/project_search",async function(req,res){
             }
             else if(req.body.type == 5)
             {
-                query = "SELECT * FROM projects WHERE start_year LIKE '%"
+                query = "SELECT * FROM projects WHERE start_year = '"
                 query = query.concat(req.body.year)
-                query = query.concat("%' ")
+                query = query.concat("' ")
             }
             else if(req.body.type == 6)
             {
@@ -49,7 +49,7 @@ router.post("/project_search",async function(req,res){
             }
             
             //running the select command
-
+            console.log(query);
             var db_res = await pool.query(query);
 
 
@@ -69,12 +69,12 @@ router.post("/project_search",async function(req,res){
             //returning all the rows
             res.json(temp_json);
         }
-        else if(req.body.admin == 0)
+        else if(req.body.admin == 2)
         {
 
-            var index = req.params.email_id.indexOf("@");
+            var index = req.body.email_id.indexOf("@");
 
-            var prof_id = req.params.email_id.substring(0,index);
+            var prof_id = req.body.email_id.substring(0,index);
             
             var query = "";
             if(req.body.type == 1)
@@ -89,9 +89,9 @@ router.post("/project_search",async function(req,res){
             {   
                 query = "SELECT * FROM "
                 query = query.concat(prof_id)
-                query = query.concat("_proj_list WHERE project_id LIKE '%")
+                query = query.concat("_proj_list WHERE project_id = '")
                 query = query.concat(req.body.id)
-                query = query.concat("%' ")
+                query = query.concat("' ")
             }
             else if(req.body.type == 3)
             {
@@ -103,7 +103,7 @@ router.post("/project_search",async function(req,res){
             }
             else if(req.body.type == 4)
             {
-                qquery = "SELECT * FROM "
+                query = "SELECT * FROM "
                 query = query.concat(prof_id)
                 query = query.concat("_proj_list WHERE dept LIKE '%")
                 query = query.concat(req.body.dept)
@@ -113,9 +113,9 @@ router.post("/project_search",async function(req,res){
             {
                 query = "SELECT * FROM "
                 query = query.concat(prof_id)
-                query = query.concat("_proj_list WHERE start_year LIKE '%")
+                query = query.concat("_proj_list WHERE start_year = '")
                 query = query.concat(req.body.year)
-                query = query.concat("%' ")
+                query = query.concat("' ")
             }
             else if(req.body.type == 6)
             {
@@ -127,7 +127,7 @@ router.post("/project_search",async function(req,res){
             }
             
             //running the select command
-
+            console.log(query);
             var db_res = await pool.query(query);
 
 

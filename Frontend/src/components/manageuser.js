@@ -108,8 +108,28 @@ export default function Manageuser() {
     console.log("THis is rows ->"+rows);  
   }
 
-  function removeUser() {
-    //To DO; //Curreent user email is stored in currentUserEmail handled by useState
+  async function removeUser() {
+    var server_address = "http://localhost:5000/del_user";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        e_id : currentUserEmail,
+       }),
+    });
+
+    const response = await resp2.json();
+    server_address = "http://localhost:5000/get_user";
+    const resp3 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+       }),
+    });
+
+    const response2 = await resp3.json();
+    console.log("Server response", response2);
+    set_rows(response2);
     
   }
   function addUser() {
@@ -237,12 +257,14 @@ export default function Manageuser() {
                     <StyledTableCell align="center">Professor</StyledTableCell>
                   )}
                   <StyledTableCell align="center">
-                    <Button 
+                    {row.email_id===state.userEmail ? (null):(<Button 
                     onClick={() => {
                       setOpenRemoveUserPop(true);
                       setcurrentUserEmail(row.email_id);
                     }}
-                    startIcon={<RemoveCircleOutlineIcon />} />
+                    startIcon={<RemoveCircleOutlineIcon />} />)}
+                   
+                    {/* startIcon={<RemoveCircleOutlineIcon />} /> */}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}

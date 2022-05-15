@@ -43,14 +43,7 @@
   background-image: -webkit-linear-gradient(180deg, white 50%, #dfe7fd 50%);
 
 }
-@keyframes swing {
-  0% { transform: scale(2); }
-  100% { transform: scale(1); }
-}
-.dangle {
-  animation: swing ease-in 1s forwards;
 
-}
 .homeText{
   padding-top: 25vh;
   font-weight: bold;
@@ -124,7 +117,7 @@ td {
   margin-right: auto;
   margin-left: 20%;
   border-collapse: collapse;
-  width: 60%;
+  width: 70%;
 }
 
 

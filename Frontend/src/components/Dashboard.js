@@ -63,7 +63,7 @@ export default function Dashboard() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        project_id: newProjectId,
+        project_id: "p"+newProjectId,
         project_title: newProjectTitle,
         professors: newProfessor,
         grant: newGrant,
@@ -82,7 +82,7 @@ export default function Dashboard() {
         man_sanc: newManpower,
         cons_sanc: newConsumables,
         travel_sanc: newTravel,
-        testing_sanc: newTravel,
+        testing_sanc: newDemo,
         overhead_sanc: newOverheads,
         unforseen_sanc: newUnforeseenExpenses,
         equip_sanc: newEquipment,
@@ -94,6 +94,14 @@ export default function Dashboard() {
     });
 
     const json_response = await resp2.json();
+    if(json_response==-1){
+      alert("Total project cost is not equal to the sum of recurring and non recurring");
+      return;
+    }
+    else if(json_response==-2){
+      alert("Either recurring or non recurring total is less than sum of corresponding subheads");
+      return;
+    }
     console.log("RESPONSEEE->" + json_response);
     console.log(newProjectTitle);
     setopenAddProjectPopup(false);
@@ -110,7 +118,32 @@ export default function Dashboard() {
   };
 
   async function add_proj_on_click() {
-    
+    setnewProjectId("")
+    setnewProjectTitle("")
+    setnewProfessor("")
+    setnewGrant("")
+    setnewManpower("")
+    setnewConsumables("")
+    setnewTravel("")
+    setnewDemo("")
+    setnewOverheads("")
+    setnewUnforeseenExpenses("")
+    setnewEquipment("")
+    setnewConstruction("")
+    setnewFabrication("")
+    setnewRecurring("")
+    setnewNonRecurring("")
+    setsearchOption("")
+    setnewPI("")
+    setnewCOPI("")
+    setnewDepartment("")
+    setnewAgency("")
+    setnewSanctionedNumber("")
+    setnewSanctionedDate("")
+    setnewDOC("")
+    setnewDOS("")
+    setnewYear("")
+    setnewDuration("")
     var server_address = "http://localhost:5000/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
@@ -173,12 +206,22 @@ export default function Dashboard() {
   async function search_project() {
 
     
-    var server_address = "http://localhost:5000/project/" + searchProject;
+    var server_address = "http://localhost:5000/project_search";
     const resp2 = await fetch(server_address, {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        admin: state.userFlag,
+        type: searchOption,
+        title: searchProject,
+        id:"p"+searchProject,
+        pi: searchProject,
+        dept: searchProject,
+        year: searchProject,
+        fund_agency:searchProject,
+        email_id: state.userEmail,
+      }),
     });
-
     const json_response = await resp2.json();
     setall_projects(json_response);
     setTableShow(true);
@@ -187,22 +230,7 @@ export default function Dashboard() {
     //We will use the setall_project state to update the JSON file with new data
   }
 
-  async function search_project_prof() {
-
-    
-    var server_address = "http://localhost:5000/project/" + searchProject;
-    const resp2 = await fetch(server_address, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const json_response = await resp2.json();
-    setall_projects(json_response);
-    setTableShow(true);
-    return;
-    //TODO
-    //We will use the setall_project state to update the JSON file with new data
-  }
+  
   const [searchProject, setsearchProject] = useState("");
   return (
     <div>
@@ -242,12 +270,12 @@ export default function Dashboard() {
                 setsearchOption(event.target.value);
               }}
             >
-              <MenuItem value={"id"}>ID</MenuItem>
-              <MenuItem value={"title"}>Title</MenuItem>
-              <MenuItem value={"pi"}>Name of PI</MenuItem>
-              <MenuItem value={"dept"}>Department</MenuItem>
-              <MenuItem value={"year"}>Year</MenuItem>
-              <MenuItem value={"agency"}>Funding Agency</MenuItem>
+              <MenuItem value={"2"}>ID</MenuItem>
+              <MenuItem value={"1"}>Title</MenuItem>
+              <MenuItem value={"3"}>Name of PI</MenuItem>
+              <MenuItem value={"4"}>Department</MenuItem>
+              <MenuItem value={"5"}>Year</MenuItem>
+              <MenuItem value={"6"}>Funding Agency</MenuItem>
             </Select>
           </FormControl>
           <Button variant="contained" onClick={search_project}>
@@ -260,9 +288,10 @@ export default function Dashboard() {
           <Button variant="contained" onClick={fetch_proj_on_click}>
             Fetch All Projects{" "}
           </Button>
-          <Button variant="contained" onClick={add_proj_on_click}>
+          {state.userFlag===1?(<Button variant="contained" onClick={add_proj_on_click}>
             Add new project{" "}
-          </Button>
+          </Button>):(null)}
+          
         </Stack>
       </div>
       {tableShow ? <ProjectTable {...obj} /> : null}
@@ -298,7 +327,7 @@ export default function Dashboard() {
             />
             <TextField
               id="outlined-basic"
-              label="Professors"
+              label="Email-id of collaborators"
               variant="outlined"
               onChange={(event) => {
                 setnewProfessor(event.target.value);
@@ -353,9 +382,13 @@ export default function Dashboard() {
               }}
             />
             <TextField
+              type="date"
               id="outlined-basic"
               label="Sanctioned Date"
               variant="outlined"
+              InputLabelProps={{
+                shrink: true,
+              }}
               onChange={(event) => {
                 setnewSanctionedDate(event.target.value);
               }}
@@ -468,6 +501,11 @@ export default function Dashboard() {
               }}
             />
             </Stack>
+            <TextField type = "number" id="outlined-basic" label="Fabrication" variant="outlined"
+              onChange={(event) => {
+                setnewFabrication(event.target.value);
+              }}
+            />
             <Stack justifyContent="center" alignItems="center"  direction="row">
             <TextField type = "number" id="outlined-basic" label="Equipment" variant="outlined"
               onChange={(event) => {
@@ -480,11 +518,7 @@ export default function Dashboard() {
               }}
             />
             </Stack>
-            <TextField type = "number" id="outlined-basic" label="Fabrication" variant="outlined"
-              onChange={(event) => {
-                setnewFabrication(event.target.value);
-              }}
-            />
+            
 
             <center>
               <Button

@@ -20,13 +20,16 @@ export default function SOE() {
   console.log("HELPL");
   console.log(state.userName);
   console.log(state.userEmail);
-  console.log("The project id is: "+ state.projId)
+  console.log("The project id is: "+ (state.projId).toString().substring(1))
 
   let obj = {
     userName: state.userName,
     userEmail: state.userEmail,
     userImg: state.userImg,
     projId: state.projId,
+    project_title: state.project_title,
+    projProfName:state.projProfName,
+    project_grant:state.project_grant,
     table_data : state.table_data,
     summary_table_data : state.summary_table_data,
     userFlag: state.userFlag,
@@ -76,11 +79,11 @@ export default function SOE() {
       {/* </div> */}
       <div className="projectHeading">
         <div className="projInfo">
-        <span>Project Id: {state.projId}</span>
+        <span>Project Id: {(state.projId).toString().substring(1)}</span>
         <span>Project Title: {state.project_title}</span>
 
-        <span>Professors: {state.projProfName}</span>
-        <span>Total Cost: INR {state.project_grant}</span>
+        <span>PI Name: {state.projProfName}</span>
+        <span>Total Cost: ₹{state.project_grant}</span>
 
         </div>
         <div className="hr"></div>

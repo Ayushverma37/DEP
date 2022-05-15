@@ -26,16 +26,16 @@ router.post("/project",async function(req,res){
                 temp_json[step].comment_time=temp_json[step].comment_time.toLocaleDateString("en-US")+" "+temp_json[step].comment_time.toLocaleTimeString("en-US")
                 
                 
-                var prof_emails = temp_json[step].professor_list.split(',');
-                var to_ret = ""
-                for (var i in prof_emails) {
-                    // extracting the user names 
-                    db_res = await pool.query("SELECT * FROM users where email_id = $1", [prof_emails[i]]);
+                // var prof_emails = temp_json[step].professor_list.split(',');
+                // var to_ret = ""
+                // for (var i in prof_emails) {
+                //     // extracting the user names 
+                //     db_res = await pool.query("SELECT * FROM users where email_id = $1", [prof_emails[i]]);
                     
-                    to_ret=to_ret.concat(" ");
-                    to_ret=to_ret.concat(db_res.rows[0].user_name);
-                }
-                temp_json[step].names = to_ret;
+                //     to_ret=to_ret.concat(" ");
+                //     to_ret=to_ret.concat(db_res.rows[0].user_name);
+                // }
+                // temp_json[step].names = to_ret;
             }
 
             console.log(temp_json);

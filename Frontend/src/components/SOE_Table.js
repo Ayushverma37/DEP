@@ -21,6 +21,7 @@ import AddCommentPopup from "./AddCommentPopup";
 import EditPopup from "./EditPopup";
 import ViewCommentPopup from "./ViewCommentPopup";
 import CommentViewData from "./CommentViewData.json";
+import CommitPopup from "./CommitPopup"
 import AddExpensesRowPopUp from "./AddExpensesRowPop";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import InputLabel from "@mui/material/InputLabel";
@@ -31,6 +32,10 @@ import AddFundsPopUp from "./AddFundsPopup";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { green } from "@mui/material/colors";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -70,7 +75,9 @@ export default function SOE_Table(props) {
   const [Edit, setEdit] = useState("")
   const [openViewCommentPopup, setOpenViewCommentPopup] = useState(false);
   const [openAddFundsPopUp, setOpenAddFundsPopUp] = useState(false);
+  const [openCommitPopup, setOpenCommitPopup] = useState(false)
   const [rowId, setrowId] = useState(0);
+  const [NewExpense, setNewExpense] = useState("");
   const [rowIdView, setrowIdView] = useState(0);
   const [commentJsonData, setcommentJsonData] = useState(CommentViewData);
   const [AddExpensesRowPop, setAddExpensesRowPop] = useState(false);
@@ -96,7 +103,8 @@ export default function SOE_Table(props) {
   const [newRecurring, setnewRecurring] = useState("")
   const [newNonRecurring, setnewNonRecurring] = useState("")
   const [currUpdateheads, setcurrUpdateheads] = useState("")
-
+  const [committedOrNot, setcommittedOrNot] = useState("")
+  const [oldPay, setoldPay] = useState("")
   const handleSubmit = async () => {
     console.log(comment);
     console.log(rowId);
@@ -121,8 +129,27 @@ export default function SOE_Table(props) {
 
     const json_response = await resp2.json();
     console.log(json_response);
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
 
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
     setOpenAddCommentPopup(false);
+
   };
 
   
@@ -146,68 +173,11 @@ export default function SOE_Table(props) {
 
     const json_response = await resp2.json();
     console.log(json_response)
-
+    
     setOpenAddCommentPopup(false);
   };
 
-  var tablesToExcel = (function() {
-    var uri = 'data:application/vnd.ms-excel;base64,'
-    , tmplWorkbookXML = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
-      + '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Axel Richter</Author><Created>{created}</Created></DocumentProperties>'
-      + '<Styles>'
-      + '<Style ss:ID="Currency"><NumberFormat ss:Format="Currency"></NumberFormat></Style>'
-      + '<Style ss:ID="Date"><NumberFormat ss:Format="Medium Date"></NumberFormat></Style>'
-      + '</Styles>' 
-      + '{worksheets}</Workbook>'
-    , tmplWorksheetXML = '<Worksheet ss:Name="{nameWS}"><Table>{rows}</Table></Worksheet>'
-    , tmplCellXML = '<Cell{attributeStyleID}{attributeFormula}><Data ss:Type="{nameType}">{data}</Data></Cell>'
-    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-    return function(tables, wsnames, wbname, appname) {
-      var ctx = "";
-      var workbookXML = "";
-      var worksheetsXML = "";
-      var rowsXML = "";
-    
-      for (var i = 0; i < tables.length; i++) {
-        if (!tables[i].nodeType) tables[i] = document.getElementById(tables[i]);
-        for (var j = 0; j < tables[i].rows.length; j++) {
-          rowsXML += '<Row>'
-          for (var k = 0; k < tables[i].rows[j].cells.length; k++) {
-            var dataType = tables[i].rows[j].cells[k].getAttribute("data-type");
-            var dataStyle = tables[i].rows[j].cells[k].getAttribute("data-style");
-            var dataValue = tables[i].rows[j].cells[k].getAttribute("data-value");
-            dataValue = (dataValue)?dataValue:tables[i].rows[j].cells[k].innerHTML;
-            var dataFormula = tables[i].rows[j].cells[k].getAttribute("data-formula");
-            dataFormula = (dataFormula)?dataFormula:(appname=='Calc' && dataType=='DateTime')?dataValue:null;
-            ctx = {  attributeStyleID: (dataStyle=='Currency' || dataStyle=='Date')?' ss:StyleID="'+dataStyle+'"':''
-                   , nameType: (dataType=='Number' || dataType=='DateTime' || dataType=='Boolean' || dataType=='Error')?dataType:'String'
-                   , data: (dataFormula)?'':dataValue
-                   , attributeFormula: (dataFormula)?' ss:Formula="'+dataFormula+'"':''
-                  };
-            rowsXML += format(tmplCellXML, ctx);
-          }
-          rowsXML += '</Row>'
-        }
-        ctx = {rows: rowsXML, nameWS: wsnames[i] || 'Sheet' + i};
-        worksheetsXML += format(tmplWorksheetXML, ctx);
-        rowsXML = "";
-      }
-    
-      ctx = {created: (new Date()).getTime(), worksheets: worksheetsXML};
-      workbookXML = format(tmplWorkbookXML, ctx);
-    
-    console.log(workbookXML);
-    
-      var link = document.createElement("A");
-      link.href = uri + base64(workbookXML);
-      link.download = wbname || 'Workbook.xls';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-     })();
+  
 
   const addNewExpensesRecord = async () => {
     var server_address2 = "http://localhost:5000/user/" + props.userEmail;
@@ -231,9 +201,10 @@ export default function SOE_Table(props) {
         particulars: new_particulars,
         remarks: new_remarks,
         vouchno: new_vouchno,
-        rec: new_rec,
+        // rec: new_rec,
         pay: Number(new_pay),
         // balance: new_balance,
+        actual: committedOrNot,
         heads: new_heads,
         heads2: new_heads2,
         project_id: props.projId,
@@ -297,7 +268,7 @@ export default function SOE_Table(props) {
         particulars: new_particulars,
         remarks:new_remarks,
         vouchno:new_vouchno,
-        rec:new_rec,
+        // rec:new_rec,
         recur:newRecurring,
         non_recur:newNonRecurring,
         project_id: props.projId
@@ -373,38 +344,42 @@ export default function SOE_Table(props) {
           spacing={3}
           padding={1}
         >
-          {props.userFlag==1 ? (
-        <><Button
-              variant="contained"
-              onClick={async () => {
-                var server_address2 = "http://localhost:5000/user/" + props.userEmail;
-                const resp = await fetch(server_address2, {
-                  method: "GET",
-                  headers: { "Content-Type": "application/json" },
-                });
-                const response = await resp.json();
-                console.log("Server response", response);
+          {props.userFlag == 1 ? (
+            <>
+              <Button
+                variant="contained"
+                onClick={async () => {
+                  var server_address2 =
+                    "http://localhost:5000/user/" + props.userEmail;
+                  const resp = await fetch(server_address2, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                  });
+                  const response = await resp.json();
+                  console.log("Server response", response);
 
-                if (response != 1) {
-                  alert("YOU ARE NOT THE ADMIN");
-                  return;
-                }
-                setAddExpensesRowPop(true);
-              } }
-            >
-              Add new expense
-            </Button><Button
-              variant="contained"
-              onClick={() => {
-                setOpenAddFundsPopUp(true);
-              } }
-            >
+                  if (response != 1) {
+                    alert("YOU ARE NOT THE ADMIN");
+                    return;
+                  }
+                  setAddExpensesRowPop(true);
+                }}
+              >
+                Add new expense
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setOpenAddFundsPopUp(true);
+                }}
+              >
                 Add Funds
-              </Button></>
-      ) : (
-        <></>
-      )}
-          
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
+
           <Button
             variant="contained"
             onClick={async () => {
@@ -433,12 +408,12 @@ export default function SOE_Table(props) {
             REFRESH TABLE
           </Button>
         </Stack>
-        
+
         <ReactHTMLTableToExcel
           id="test-table-xls-button"
           className="download-table-xls-button btn btn-primary mb-3"
-          table="table-to-xls"
-          filename="StatementOfExpenses"
+          table="tbl1"
+          filename={"StatementOfExpenses_" + (props.projId).toString().substring(1)}
           sheet="Sheet1"
           buttonText="Export Expense Table to Excel Sheet"
         />
@@ -451,6 +426,13 @@ export default function SOE_Table(props) {
           >
             <TableHead>
               <TableRow>
+                <StyledTableCell colspan={11} align="center">
+                  Project ID: {(props.projId).toString().substring(1)}, Project Title:{" "}
+                  {props.project_title}, PI Name: {props.projProfName}, Total
+                  Cost: INR {props.project_grant}
+                </StyledTableCell>
+              </TableRow>
+              <TableRow>
                 <StyledTableCell align="center">Sr. No.</StyledTableCell>
                 <StyledTableCell align="center">Particulars</StyledTableCell>
                 <StyledTableCell align="center">Remarks</StyledTableCell>
@@ -461,13 +443,18 @@ export default function SOE_Table(props) {
                 <StyledTableCell align="center">Payment</StyledTableCell>
                 <StyledTableCell align="center">Balance</StyledTableCell>
                 <StyledTableCell align="center">Heads</StyledTableCell>
-                <StyledTableCell align="center">Comment</StyledTableCell>
-                <StyledTableCell align="center"></StyledTableCell>
+                <StyledTableCell align="center">Comment</StyledTableCell>             
+                <StyledTableCell align="left">Actual Expense</StyledTableCell>
+                {props.userFlag===1?(<StyledTableCell align="center"></StyledTableCell>):(null)}
+                
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <StyledTableRow key={row.sr} className={rowSelector(row.comm_flag)}>
+                <StyledTableRow
+                  key={row.sr}
+                  className={rowSelector(row.comm_flag)}
+                >
                   <StyledTableCell align="center" component="th" scope="row">
                     {row.sr}
                   </StyledTableCell>
@@ -480,12 +467,12 @@ export default function SOE_Table(props) {
                   <StyledTableCell align="center">
                     {row.vouchno}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{row.rec}</StyledTableCell>
+                  <StyledTableCell align="center">{((row.rec!=null)?("₹"+row.rec):(null))}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.payment}
+                    {((row.payment!=null)?("₹"+row.payment):(null))}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.balance}
+                    {((row.balance!=null)?("₹"+row.balance):(null))}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.heads}</StyledTableCell>
                   <StyledTableCell align="right">
@@ -502,7 +489,7 @@ export default function SOE_Table(props) {
                           body: JSON.stringify({
                             row_no: row.sr,
                             project_id: props.projId,
-                            is_admin:props.userFlag,
+                            is_admin: props.userFlag,
                           }),
                         });
 
@@ -521,56 +508,91 @@ export default function SOE_Table(props) {
                         setwhichTable(1);
                       }}
                     />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.heads==="Grant"?(null):(<FormControl>
+                      {/* <FormLabel id="demo-controlled-radio-buttons-group">
+                        Gender
+                      </FormLabel> */}
+                      <RadioGroup
+                        aria-labelledby="demo-controlled-radio-buttons-group"
+                        name="controlled-radio-buttons-group"
+                        // value={value}
+                        onChange={ () => {
+                          if(props.userFlag===2){
+                            alert("You don't have admin access");
+                          }
+                          else{
+                            setOpenCommitPopup(true);
+                            setoldPay(row.payment);
+                          setrowId(row.sr);
+                          set_new_heads(row.heads);
+                          }
+
+                          
+                        }}
+                      >
+                        
+                        <FormControlLabel
+                          value="Actual"
+                          checked={row.actual_flag==0}
+                          control={<Radio />}
+                          label=""
+                        />
+                      </RadioGroup>
+                    </FormControl>)}
                     
                   </StyledTableCell>
-                  <StyledTableCell>
-                    <Button startIcon={<DeleteIcon/>} 
-                    onClick={async() => {
-                      if(row.heads=="Grant"){
-                        alert("You cannot delete Grant row");
-                      }
-                      else if(window.confirm("Are you sure, you want to delete"))
-                      {
-                        var server_address =
-                        "http://localhost:5000/del_row";
-                      const resp2 = await fetch(server_address, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          sr: row.sr,
-                          project_id: props.projId,
-                          heads: row.heads,
-                        }),
-                      });
+                  {props.userFlag===1?(<StyledTableCell>
+                    <Button
+                      startIcon={<DeleteIcon />}
+                      onClick={async () => {
+                        if (row.heads == "Grant") {
+                          alert("You cannot delete Grant row");
+                        } else if (
+                          window.confirm("Are you sure, you want to delete")
+                        ) {
+                          var server_address = "http://localhost:5000/del_row";
+                          const resp2 = await fetch(server_address, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              sr: row.sr,
+                              project_id: props.projId,
+                              heads: row.heads,
+                            }),
+                          });
 
-                      const json_response = await resp2.json();
-                      console.log(json_response);
+                          const json_response = await resp2.json();
+                          console.log(json_response);
 
-                      var server_address3 = "http://localhost:5000/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+                          var server_address3 =
+                            "http://localhost:5000/get_main_table";
+                          const resp3 = await fetch(server_address3, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ project_id: props.projId }),
+                          });
 
-    const json_response3 = await resp3.json();
-    set_rows(json_response3);
+                          const json_response3 = await resp3.json();
+                          set_rows(json_response3);
 
-    // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+                          // update summary table
+                          var server_address4 =
+                            "http://localhost:5000/get_summary_table";
+                          const resp4 = await fetch(server_address4, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ project_id: props.projId }),
+                          });
 
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
-                      }
-
-                    }}
+                          const json_response4 = await resp4.json();
+                          setsummaryrows(json_response4);
+                        }
+                      }}
                     />
-                    </StyledTableCell>
+                  </StyledTableCell>):(null)}
+                  
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -587,7 +609,7 @@ export default function SOE_Table(props) {
           id="test-table-xls-button2"
           className="download-table-xls-button btn btn-primary mb-3"
           table="table-to-xls2"
-          filename="Summary"
+          filename={"Summary_" + (props.projId).toString().substring(1)}
           sheet="Sheet1"
           buttonText="Export Summary Table to Excel Sheet"
         />
@@ -599,80 +621,148 @@ export default function SOE_Table(props) {
         >
           <TableHead>
             <TableRow>
+              <StyledTableCell colspan={12} align="center">
+                Project ID: {(props.projId).toString().substring(1)}, Project Title: {props.project_title}
+                , PI Name: {props.projProfName}, Total Cost: INR{" "}
+                {props.project_grant}
+              </StyledTableCell>
+            </TableRow>
+            <TableRow>
               <StyledTableCell>Sr. No.</StyledTableCell>
               <StyledTableCell align="left">Heads</StyledTableCell>
-              <StyledTableCell align="left">
-                Sanctioned Amount
-              </StyledTableCell>
-              <StyledTableCell align="left">
-                Funds 1YR
-              </StyledTableCell>
-              <StyledTableCell align="left">
-              Funds 2YR
-              </StyledTableCell>
-              <StyledTableCell align="left">
-              Funds 3YR
-              </StyledTableCell>
-              <StyledTableCell align="left">
-              Funds 4YR
-              </StyledTableCell>
-              <StyledTableCell align="left">
-              Funds 5YR
-              </StyledTableCell>
+              <StyledTableCell align="left">Sanctioned Amount</StyledTableCell>
+              <StyledTableCell align="left">Funds 1YR</StyledTableCell>
+              <StyledTableCell align="left">Funds 2YR</StyledTableCell>
+              <StyledTableCell align="left">Funds 3YR</StyledTableCell>
+              {/* <StyledTableCell align="left">Funds 4YR</StyledTableCell>
+              <StyledTableCell align="left">Funds 5YR</StyledTableCell> */}
               <StyledTableCell align="left">Expenditure</StyledTableCell>
               <StyledTableCell align="left">Balance</StyledTableCell>
               <StyledTableCell align="left">Comment</StyledTableCell>
-              <StyledTableCell align="left"></StyledTableCell>
+              {props.userFlag===1?(<StyledTableCell align="left"></StyledTableCell>):(null)}
+              
             </TableRow>
           </TableHead>
           <TableBody>
             {summaryrows.map((row) => (
-              <StyledTableRow key={row.sr} className={rowSelector(row.comm_flag)}>
+              <StyledTableRow
+                key={row.sr}
+                className={rowSelector(row.comm_flag)}
+              >
                 <StyledTableCell component="th" scope="row">
                   {row.sr}
                 </StyledTableCell>
-                <StyledTableCell align="left"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.heads}</span></StyledTableCell>
                 <StyledTableCell align="left">
-                {row.heads==="Misc Rec." || row.heads==="Misc Non Rec." ? (
-                  <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>0</span>
-                ):(
-                  <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.sanctioned_amount}</span>
-                )}
-                
+                  <span
+                    style={
+                      row.heads === "Rec." || row.heads === "Non-Rec."
+                        ? { fontWeight: "bold" }
+                        : { fontWeight: "" }
+                    }
+                  >
+                    {row.heads}
+                  </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_1_funds}</span>
+                  {row.heads === "Misc Rec." ||
+                  row.heads === "Misc Non Rec." ? (
+                    <span
+                      style={
+                        row.heads === "Rec." || row.heads === "Non-Rec."
+                          ? { fontWeight: "bold" }
+                          : { fontWeight: "" }
+                      }
+                    >
+                      0
+                    </span>
+                  ) : (
+                    <span
+                      style={
+                        row.heads === "Rec." || row.heads === "Non-Rec."
+                          ? { fontWeight: "bold" }
+                          : { fontWeight: "" }
+                      }
+                    >
+                      {"₹"+row.sanctioned_amount}
+                    </span>
+                  )}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_2_funds}</span>
+                  <span
+                    style={
+                      row.heads === "Rec." || row.heads === "Non-Rec."
+                        ? { fontWeight: "bold" }
+                        : { fontWeight: "" }
+                    }
+                  >
+                    {"₹"+row.year_1_funds}
+                  </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span>
+                  <span
+                    style={
+                      row.heads === "Rec." || row.heads === "Non-Rec."
+                        ? { fontWeight: "bold" }
+                        : { fontWeight: "" }
+                    }
+                  >
+                    {"₹"+row.year_2_funds}
+                  </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                  <span
+                    style={
+                      row.heads === "Rec." || row.heads === "Non-Rec."
+                        ? { fontWeight: "bold" }
+                        : { fontWeight: "" }
+                    }
+                  >
+                    {"₹"+row.year_3_funds}
+                  </span>
+                </StyledTableCell>
+                {/* <StyledTableCell align="left"> */}
+                  {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                {/* </StyledTableCell> */}
+                {/* <StyledTableCell align="left"> */}
+                  {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                {/* </StyledTableCell> */}
+                <StyledTableCell align="left">
+                  <span
+                    style={
+                      row.heads === "Rec." || row.heads === "Non-Rec."
+                        ? { fontWeight: "bold" }
+                        : { fontWeight: "" }
+                    }
+                  >
+                    {"₹"+row.expenditure}
+                  </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                  <span
+                    style={
+                      row.heads === "Rec." || row.heads === "Non-Rec."
+                        ? { fontWeight: "bold" }
+                        : { fontWeight: "" }
+                    }
+                  >
+                    {"₹"+row.balance}
+                  </span>
                 </StyledTableCell>
-                <StyledTableCell align="left">
-                <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.expenditure}</span>
-                </StyledTableCell>
-                <StyledTableCell align="left"><span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.balance}</span></StyledTableCell>
                 <StyledTableCell align="left">
                   {/* <Stack  direction="row"  spacing={-5}> */}
                   <Button
                     startIcon={<RemoveRedEyeIcon />}
                     onClick={async () => {
                       setrowIdView(row.sr);
-                      var server_address = "http://localhost:5000/get_summary_comment";
+                      var server_address =
+                        "http://localhost:5000/get_summary_comment";
                       const resp2 = await fetch(server_address, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                           row_no: row.sr,
                           project_id: props.projId,
-                          is_admin:props.userFlag,
+                          is_admin: props.userFlag,
                         }),
                       });
 
@@ -692,16 +782,17 @@ export default function SOE_Table(props) {
                     }}
                   />
                 </StyledTableCell>
-                <StyledTableCell align="left"><Button
-                    
+                {props.userFlag===1?(<StyledTableCell align="left">
+                  <Button
                     startIcon={<EditIcon />}
                     onClick={() => {
                       setcurrUpdateheads(row.heads);
                       setOpenEditPopup(true);
                       setrowId(row.sr);
-                      
                     }}
-                  /></StyledTableCell>
+                  />
+                </StyledTableCell>):(null)}
+                
               </StyledTableRow>
             ))}
           </TableBody>
@@ -744,7 +835,10 @@ export default function SOE_Table(props) {
                   variant="contained"
                   endIcon={<SendIcon />}
                   // onClick={handleSubmit}
-                  onClick={() => { handleSubmit(); sendmail();}}
+                  onClick={() => {
+                    handleSubmit();
+                    sendmail();
+                  }}
                 >
                   Send
                 </Button>
@@ -753,6 +847,7 @@ export default function SOE_Table(props) {
           </div>
         </Box>
       </AddCommentPopup>
+
 
       <ViewCommentPopup
         openViewCommentPopup={openViewCommentPopup}
@@ -763,27 +858,27 @@ export default function SOE_Table(props) {
             <Button
               startIcon={<CloseIcon />}
               style={{ float: "right" }}
-              onClick={async() => {
+              onClick={async () => {
                 var server_address3 = "http://localhost:5000/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+                const resp3 = await fetch(server_address3, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ project_id: props.projId }),
+                });
 
-    const json_response3 = await resp3.json();
-    set_rows(json_response3);
+                const json_response3 = await resp3.json();
+                set_rows(json_response3);
 
-    // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+                // update summary table
+                var server_address4 = "http://localhost:5000/get_summary_table";
+                const resp4 = await fetch(server_address4, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ project_id: props.projId }),
+                });
 
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
+                const json_response4 = await resp4.json();
+                setsummaryrows(json_response4);
                 setOpenViewCommentPopup(false);
                 setrowIdView(0);
               }}
@@ -797,7 +892,7 @@ export default function SOE_Table(props) {
                     <StyledTableCell align="right">
                       Comment Date/Time
                     </StyledTableCell>
-                    <StyledTableCell align="right">Resolved</StyledTableCell>
+                    {/* <StyledTableCell align="right">Resolved</StyledTableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -812,9 +907,9 @@ export default function SOE_Table(props) {
                       <StyledTableCell align="right">
                         {row.comment_time}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      {/* <StyledTableCell align="right">
                         {row.resolved}
-                      </StyledTableCell>
+                      </StyledTableCell> */}
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -823,6 +918,89 @@ export default function SOE_Table(props) {
           </span>
         </div>
       </ViewCommentPopup>
+      <CommitPopup
+        openCommitPopup={openCommitPopup}
+        setOpenCommitPopup={setOpenCommitPopup}
+      >
+        <Box
+          component="form"
+          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
+          noValidate
+          autoComplete="off"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <div className="AddComment">
+            <span>
+              <Button
+                startIcon={<CloseIcon />}
+                style={{ float: "right" }}
+                onClick={() => setOpenCommitPopup(false)}
+              />
+              <TextField
+               type="number"
+               id="outlined-basic"
+               label="New Expense"
+               variant="outlined"
+                onChange={(event) => {
+                  setNewExpense(event.target.value);
+                }}
+              />
+              <center>
+                <Button
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  // onClick={handleSubmit}
+                  onClick={async() => {
+                    var server_address = "http://localhost:5000/to_actual";
+                          const resp2 = await fetch(server_address, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              sr: rowId,
+                              p_id: props.projId,
+                              new_pay: Number(NewExpense),
+                              old_pay: oldPay,
+                              heads: new_heads,
+                            }),
+                          });
+
+                          const json_response = await resp2.json();
+                          console.log(json_response);
+                          var server_address4 =
+                            "http://localhost:5000/get_summary_table";
+                          const resp4 = await fetch(server_address4, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ project_id: props.projId }),
+                          });
+
+                          const json_response4 = await resp4.json();
+                          setsummaryrows(json_response4);
+
+                          var server_address3 =
+                            "http://localhost:5000/get_main_table";
+                          const resp3 = await fetch(server_address3, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ project_id: props.projId }),
+                          });
+
+                          const json_response3 = await resp3.json();
+                          set_rows(json_response3);
+                          setOpenCommitPopup(false);
+
+
+                  }}
+                >
+                  Update
+                </Button>
+              </center>
+            </span>
+          </div>
+        </Box>
+      </CommitPopup>
       <EditPopup
         openEditPopup={openEditPopup}
         setOpenEditPopup={setOpenEditPopup}
@@ -844,13 +1022,10 @@ export default function SOE_Table(props) {
                 onClick={() => setOpenEditPopup(false)}
               />
               <TextField
-                id="outlined-multiline-static"
-                label="New Sanctioned Amount"
-                multiline
-                rows={4}
-                defaultValue=""
-                bgcolor="white"
-                sx={{ zIndex: "tooltip" }}
+                 type="number"
+                 id="outlined-basic"
+                 label="New Sanctioned Amount"
+                 variant="outlined"
                 onChange={(event) => {
                   setEdit(event.target.value);
                 }}
@@ -860,9 +1035,9 @@ export default function SOE_Table(props) {
                   variant="contained"
                   endIcon={<SendIcon />}
                   // onClick={handleSubmit}
-                  onClick={async() => {
-
-                    var server_address = "http://localhost:5000/edit_sanctioned";
+                  onClick={async () => {
+                    var server_address =
+                      "http://localhost:5000/edit_sanctioned";
                     const resp2 = await fetch(server_address, {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
@@ -870,25 +1045,23 @@ export default function SOE_Table(props) {
                         project_id: props.projId,
                         sanc: Edit,
                         heads: currUpdateheads,
-
                       }),
                     });
-                
+
                     const json_response = await resp2.json();
-                    console.log(json_response)
+                    console.log(json_response);
                     setOpenEditPopup(false);
 
-                    var server_address4 = "http://localhost:5000/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+                    var server_address4 =
+                      "http://localhost:5000/get_summary_table";
+                    const resp4 = await fetch(server_address4, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ project_id: props.projId }),
+                    });
 
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
-                    
-                    
+                    const json_response4 = await resp4.json();
+                    setsummaryrows(json_response4);
                   }}
                 >
                   Update
@@ -971,8 +1144,8 @@ export default function SOE_Table(props) {
                   set_new_vouchno(event.target.value);
                 }}
               />
-              <TextField
-                type = "number"
+              {/* <TextField
+                type="number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Receipt"
@@ -980,7 +1153,7 @@ export default function SOE_Table(props) {
                 onChange={(event) => {
                   set_new_rec(event.target.value);
                 }}
-              />
+              /> */}
             </Stack>
             <Stack
               justifyContent="center"
@@ -990,7 +1163,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
-                type = "number"
+                type="number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Payment"
@@ -1010,7 +1183,7 @@ export default function SOE_Table(props) {
                 }}
               /> */}
 
-<FormControl fullWidth>
+              <FormControl variant="standard" fullWidth>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -1025,56 +1198,81 @@ export default function SOE_Table(props) {
                   <MenuItem value={"Non-Rec."}>Non-Recurring</MenuItem>
                 </Select>
               </FormControl>
-              {new_heads==="Rec." ?(
-                <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label2"
-                  id="demo-simple-select2"
-                  value={new_heads2}
-                  label="Age"
-                  onChange={(event) => {
-                    set_new_heads2(event.target.value);
-                  }}
-                >
-                  
-                  <MenuItem value={"Manpower"}>Manpower</MenuItem>
-                  <MenuItem value={"Consumables"}>Consumables</MenuItem>
-                  <MenuItem value={"Travel"}>Travel</MenuItem>
-                  <MenuItem value={"Field Testing/Demo/Tranings"}>
-                    Field Testing/Demo/Tranings
-                  </MenuItem>
-                  <MenuItem value={"Overheads"}>Overheads</MenuItem>
-                  <MenuItem value={"Unforseen Expenses"}>
-                    Unforseen Expenses
-                  </MenuItem>
-                  <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
-                  <MenuItem value={"Misc Rec."}>Miscellaneous(Recurring)</MenuItem>
-                  
-                </Select>
-              </FormControl>
-              ):(
-<FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label2"
-                  id="demo-simple-select2"
-                  value={new_heads2}
-                  label="Age"
-                  onChange={(event) => {
-                    set_new_heads2(event.target.value);
-                  }}
-                >
-                  
-                 
-                  <MenuItem value={"Equipments"}>Equipment</MenuItem>
-                  <MenuItem value={"Construction"}>Construction</MenuItem>
-                 
-                  <MenuItem value={"Misc Non Rec."}>Miscellaneous(Non-Recurring)</MenuItem>
-                </Select>
-              </FormControl>
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              {new_heads === "Rec." ? (
+                <FormControl variant="standard" fullWidth>
+                  <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label2"
+                    id="demo-simple-select2"
+                    value={new_heads2}
+                    label="Age"
+                    onChange={(event) => {
+                      set_new_heads2(event.target.value);
+                    }}
+                  >
+                    <MenuItem value={"Manpower"}>Manpower</MenuItem>
+                    <MenuItem value={"Consumables"}>Consumables</MenuItem>
+                    <MenuItem value={"Travel"}>Travel</MenuItem>
+                    <MenuItem value={"Field Testing/Demo/Tranings"}>
+                      Field Testing/Demo/Tranings
+                    </MenuItem>
+                    <MenuItem value={"Overheads"}>Overheads</MenuItem>
+                    <MenuItem value={"Unforseen Expenses"}>
+                      Unforseen Expenses
+                    </MenuItem>
+                    <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
+                    <MenuItem value={"Misc Rec."}>
+                      Miscellaneous(Recurring)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <FormControl variant="standard" fullWidth>
+                  <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label2"
+                    id="demo-simple-select2"
+                    value={new_heads2}
+                    label="Age"
+                    onChange={(event) => {
+                      set_new_heads2(event.target.value);
+                    }}
+                  >
+                    <MenuItem value={"Equipments"}>Equipment</MenuItem>
+                    <MenuItem value={"Construction"}>Construction</MenuItem>
+
+                    <MenuItem value={"Misc Non Rec."}>
+                      Miscellaneous(Non-Recurring)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
               )}
-              
+
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Commit Type
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"OpenAddFundsPopUp
+                  value={committedOrNot}
+                  label="Age"
+                  onChange={(event) => {
+                    setcommittedOrNot(event.target.value);
+                  }}
+                >
+                  <MenuItem value={"1"}>Committed</MenuItem>
+                  <MenuItem value={"0"}>Actual</MenuItem>
+                </Select>
+              </FormControl>
             </Stack>
             <center>
               <Button
@@ -1164,8 +1362,8 @@ export default function SOE_Table(props) {
                   set_new_vouchno(event.target.value);
                 }}
               />
-              <TextField
-                type = "number"
+              {/* <TextField
+                type="number"
                 style={{ width: 500 }}
                 id="outlined-basic"
                 label="Receipt (Total Funds to be Added)"
@@ -1173,18 +1371,27 @@ export default function SOE_Table(props) {
                 onChange={(event) => {
                   set_new_rec(event.target.value);
                 }}
-              />
+              /> */}
             </Stack>
             <center>
               Enter the Amount under the following categories/Heads:-{" "}
             </center>
-            <TextField type="number" id="outlined-basic" label="Recurring" variant="outlined"
+            <TextField
+              type="number"
+              id="outlined-basic"
+              label="Recurring"
+              variant="outlined"
               onChange={(event) => {
                 setnewRecurring(event.target.value);
               }}
             />
-            <br></br><br></br>
-            <TextField type="number" id="outlined-basic" label="Non-recurring" variant="outlined"
+            <br></br>
+            <br></br>
+            <TextField
+              type="number"
+              id="outlined-basic"
+              label="Non-recurring"
+              variant="outlined"
               onChange={(event) => {
                 setnewNonRecurring(event.target.value);
               }}
