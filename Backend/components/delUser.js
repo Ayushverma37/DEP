@@ -9,7 +9,7 @@ router.post("/del_user",async function(req,res){
     try{
 
 
-        query = "DELETE FROM users where email_id = '"
+        var query = "DELETE FROM users where email_id = '"
         query = query.concat(req.body.e_id)
         query = query.concat("'")
 
@@ -26,7 +26,7 @@ router.post("/del_user",async function(req,res){
         query = query.concat("_proj_list ");
 
         db_res = await pool.query(query);
-        
+        res.json(1);
 
 
     }catch(error){

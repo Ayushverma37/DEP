@@ -194,7 +194,7 @@ router.post("/updated_add_fund",async function(req,res){
         var query = "INSERT INTO "
         query = query.concat(req.body.project_id)
         query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,NULL,$6,$7,0)");
-        db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,total,"Grant"]);
+        db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,Number(req.body.recur)+Number(req.body.non_recur),total,"Grant"]);
 
         //returning 1 since everything was a success 
         res.json(1);

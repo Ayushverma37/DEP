@@ -19,7 +19,21 @@ router.post("/del_project",async function(req,res){
 
             var prof_id = prof_emails[i].substring(0,index);
             console.log(prof_id)
-            var query = "DELETE FROM "
+
+            // checking whether the prof exists as a user or not
+
+            var query = "SELECT count(*) FROM users where email_id = '";
+            query = query.concat(prof_emails[i])
+            query = query.concat("' ")
+            var db_temp_res = await pool.query(query)
+
+            console.log( parseInt(db_temp_res.rows[0].count) )
+            if( parseInt(db_temp_res.rows[0].count) == 0 )
+            {
+                continue;
+            }
+
+            query = "DELETE FROM "
             query=query.concat(prof_id)
             query=query.concat("_proj_list where project_id = '");
             query = query.concat(req.body.p_id)
@@ -58,7 +72,7 @@ router.post("/del_project",async function(req,res){
         query = query.concat("_summary_table ");
 
         db_res = await pool.query(query);
-
+        res.json(1);
     }catch(error){
         console.error(error.message);
     }

@@ -34,6 +34,9 @@ app.use(require('./components/getSummaryComment'));
 app.use(require('./components/updatedAddFund'));    
 app.use(require('./components/delrow'));    
 app.use(require('./components/editSanctioned'));    
+app.use(require('./components/delUser'));  
+app.use(require('./components/delProject'));  
+app.use(require('./components/ToActual'));  
 app.listen(PORT,function(){
     console.log("Listening ");
 })

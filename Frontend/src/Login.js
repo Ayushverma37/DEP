@@ -41,7 +41,7 @@ function Login() {
     }
     
     else{
-    //  console.log("This is: ", flag);
+     console.log("This is: ", flag);
       navigate("/dashboard", { state: { userName:res.profileObj.givenName,userImg:res.profileObj.imageUrl,userEmail:res.profileObj.email, userFlag: flag}});
       console.log(res.profileObj);
       setShowloginButton(false);

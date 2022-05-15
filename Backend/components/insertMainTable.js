@@ -137,7 +137,7 @@ router.post("/insert_main_table",async function(req,res){
             var query = "INSERT INTO "
             query = query.concat(req.body.project_id)
             query=query.concat("_main_table VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0,$9)");
-            const db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,req.body.rec,req.body.pay,total_bal,req.body.heads2,req.body.actual]);
+            const db_res = await pool.query(query,[cnt,req.body.particulars,req.body.remarks,req.body.vouchno,null,req.body.pay,total_bal,req.body.heads2,req.body.actual]);
             
             // updating the expenditure of the particular heads: - 
 
