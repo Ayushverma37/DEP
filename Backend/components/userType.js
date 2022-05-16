@@ -4,7 +4,7 @@ var router = express.Router();
 const pool = require("./db");
 
 // to get the type of the user
-router.get("/user/:email",async function(req,res){
+async function userType(req,res){
     try{
 
         console.log(req.params.email);
@@ -30,7 +30,6 @@ router.get("/user/:email",async function(req,res){
     } catch (error) {
         console.error(error.message);
     }
-});
+}
 
-
-module.exports = router;
+module.exports = {userType:userType};

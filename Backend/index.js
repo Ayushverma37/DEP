@@ -1,22 +1,76 @@
 var express = require("express");
 var app = express();
 
+const Pool = require("pg").Pool;
+
+require("dotenv").config();
+
+const devconfig={
+    user: process.env.PG_USER,
+    password: "password",
+    host: "localhost",
+    port: 5432,
+    database: "research_mgmt"
+}
+
+const proConfig={
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+}
+
+const pool = new Pool({
+    
+    connectionString:"postgres://hjzkfaxfmpyjjo:6cf4a3fc572c16c2360d1536115d1d52abbfd38e7ca7b586b36a3a86330e4d67@ec2-52-54-212-232.compute-1.amazonaws.com:5432/d756afv3qeuka0",
+    ssl: {
+        rejectUnauthorized: false,
+    },
+} );
+
+module.exports = pool;
+
+
+const listOfProjects =  require('./components/listOfProjects');
+const addUser = require('./components/addUser');
+const userType = require('./components/userType');
+const getUser = require('./components/getUser');
+const getMainTable = require('./components/getMainTable');
+const getSummaryTable = require('./components/getSummaryTable');
+const insertMainTable = require('./components/insertMainTable');
+const specificProject = require('./components/specificProject');
+const createProject = require('./components/createProject');
+const addFund = require('./components/addFund');
+const addComment = require('./components/addComment');
+const sendMail = require('./components/sendMail');
+const getComment = require('./components/getComment');
+const showProjects = require('./components/showProjects');
+const addSummaryComment = require('./components/addSummaryComment');
+const getSummaryComment = require('./components/getSummaryComment');
+const updatedAddFund = require('./components/updatedAddFund');
+const delrow = require('./components/delrow');
+const editSanctioned = require('./components/editSanctioned');
+const delUser = require('./components/delUser');
+const delProject = require('./components/delProject');
+const ToActual = require('./components/ToActual');
+
 // cors allows communication from differnt domains(requests to our server) 
 const cors = require("cors");
 
 const PORT = process.env.PORT|| 5000
 
-const jwt = require("jsonwebtoken")
-
 //creating middleware
 app.use(cors());
+
+
+const jwt = require("jsonwebtoken")
+
+const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client("277372439327-34b2v50u9nner2fulahklo3au5vbh911.apps.googleusercontent.com")
 
 //allowing us to extract json data from a request
 app.use(express.json());
 
 app.use(express.static('public'));
-const { OAuth2Client } = require('google-auth-library')
-const client = new OAuth2Client("277372439327-34b2v50u9nner2fulahklo3au5vbh911.apps.googleusercontent.com")
+
 
 function verifyToken(req,res,next){
     // extracting token from the header of the request 
@@ -45,6 +99,7 @@ function verifyToken(req,res,next){
     }
 }
 
+
 app.post("/test_temp",verifyToken,(req,res)=>{
     res.json(699)
 })
@@ -57,6 +112,8 @@ app.post("/authenticate",async function(req,res){
         var query2 = "SELECT * FROM users where email_id = '"
         query2 = query2.concat(req.body.email)
         query2 = query2.concat("'")
+
+        console.log(query2);
 
         const db_res = await pool.query(query2)
         
@@ -100,28 +157,36 @@ app.post("/authenticate",async function(req,res){
 
 
 //Routes
-app.use(require('./components/userType'));
-app.use(require('./components/addUser'));  
-app.use(require('./components/getUser'));
-app.use(require('./components/getMainTable')); 
-app.use(require('./components/getSummaryTable'));  
-app.use(require('./components/insertMainTable'));   
-app.use(require('./components/listOfProjects'));     
-app.use(require('./components/specificProject'));      
-app.use(require('./components/createProject')); 
-app.use(require('./components/addFund'));
-app.use(require('./components/addComment'));           
-app.use(require('./components/sendMail'));
-app.use(require('./components/getComment'));
-app.use(require('./components/showProjects'));    
-app.use(require('./components/addSummaryComment'));    
-app.use(require('./components/getSummaryComment'));    
-app.use(require('./components/updatedAddFund'));    
-app.use(require('./components/delrow'));    
-app.use(require('./components/editSanctioned'));    
-app.use(require('./components/delUser'));  
-app.use(require('./components/delProject'));  
-app.use(require('./components/ToActual'));  
+app.get("/user/:email",verifyToken,userType.userType);
+app.post("/user",verifyToken,addUser.addUser);  
+app.post("/get_user",verifyToken,getUser.getUser);
+app.post("/get_main_table",verifyToken,getMainTable.getMainTable); 
+app.post("/get_summary_table",verifyToken,getSummaryTable.getSummaryTable);  
+app.post("/insert_main_table",verifyToken,insertMainTable.insertMainTable);   
+app.post("/project",verifyToken,listOfProjects.listOfProjects);
+app.post("/project_search",verifyToken,specificProject.specificProject);      
+app.post("/create_project",verifyToken,createProject.createProject); 
+app.post("/fund",verifyToken,addFund.addFund);
+app.post("/comment",verifyToken,addComment.addComment);           
+app.post("/sendMail",verifyToken,sendMail.sendMail);
+app.post("/get_comment",verifyToken,getComment.getComment);
+app.get("/project_prof/:email_id",verifyToken,showProjects.showProjects);    
+app.post("/summary_comment",verifyToken,addSummaryComment.addSummaryComment);     
+app.post("/get_summary_comment",verifyToken,getSummaryComment.getSummaryComment);    
+app.post("/updated_add_fund",verifyToken,updatedAddFund.updatedAddFund);    
+app.post("/del_row",verifyToken,delrow.delrow);    
+app.post("/edit_sanctioned",verifyToken,editSanctioned.editSanctioned);    
+app.post("/del_user",verifyToken,delUser.delUser);  
+app.post("/del_project",verifyToken,delProject.delProject);  
+app.post("/to_actual",verifyToken,ToActual.ToActual);  
+
+app.get("/final_deploy_test",(req,res)=>{
+    
+  
+    res.send("SERVER UP");
+
+})
+
 app.listen(PORT,function(){
     console.log("Listening ");
 })

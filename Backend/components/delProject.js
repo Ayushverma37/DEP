@@ -4,8 +4,7 @@ var router = express.Router();
 const pool = require("./db");
 
 // to get a specific project 
-
-router.post("/del_project",async function(req,res){
+async function delProject(req,res){
 
     try{
 
@@ -78,6 +77,6 @@ router.post("/del_project",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+module.exports = {delProject:delProject}

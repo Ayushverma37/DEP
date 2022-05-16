@@ -17,63 +17,34 @@ const oAuth2Client = new google.auth.OAuth2(
 );
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-router.post("/sendMail",async function(req,res){
-    var db_res1 = await pool.query("SELECT professor_list from projects where project_id = $1",[req.body.project_id]);
-    var professors = db_res1.rows[0].professor_list;
-    var prof_emails =professors.split(',');
-    var senderAddresses = [];
-    let prof_length = prof_emails.length;
-    for (let i = 0; i < prof_length; i++) {
-        if(prof_emails[i]!=req.body.prof_email)
-        {
-            senderAddresses.push(prof_emails[i]);
-        }
-    }
+async function sendMail(req,res){
+  try{
 
-    var db_res2 = await pool.query("SELECT email_id from users WHERE admin = '1'");
-    var admins = db_res2.rows[0].email_id;
-    var admin_emails =admins.split(',');
-    let admin_length = admin_emails.length;
-    for (let i = 0; i < admin_length; i++) {
-            if(admin_emails[i]!=req.body.prof_email)
-            {
-              senderAddresses.push(admin_emails[i]);
-            }   
-    }
-    console.log(senderAddresses);
-    async function sendMail() {
-        try {
-          const accessToken = await oAuth2Client.getAccessToken();
+      console.log(req.params.email);
+
+      // this will extract the neccessary row from the users table 
+      const db_res = await pool.query(" SELECT * from users WHERE email_id = $1 ",[req.params.email]);
       
-          const transport = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              type: 'OAuth2',
-              user: 'researchmanagementiitrpr@gmail.com',
-              clientId: CLIENT_ID,
-              clientSecret: CLEINT_SECRET,
-              refreshToken: REFRESH_TOKEN,
-              accessToken: accessToken,
-            },
-          });
-          var subject_ = req.body.prof_name + ' commented on ' + req.body.project_id;
-          const mailOptions = {
-            from: 'Research Management <researchmanagementiitrpr@gmail.com>',
-            to: senderAddresses,
-            subject: subject_,
-            html: req.body.comment_body
-          };
-      
-          const result = await transport.sendMail(mailOptions);
-          return result;
-        } catch (error) {
-          return error;
-        }
+      //console.log(db_res.rows[0].email_id);
+
+      if(db_res.rows[0]==undefined)
+      {
+          // if the user himself is not valid then send -1
+          res.json(-1);    
       }
-      sendMail()
-        .then((result) => console.log('Email sent...', result))
-        .catch((error) => console.log(error.message));
+      else
+      {
+          
+          console.log(db_res.rows[0]);
+          // this will send 1 if the current user is an admin , or it will send 0
+          res.json(db_res.rows[0].admin);            
+      }
+      
+  } catch (error) {
+      console.error(error.message);
+  }
 }
-);
 
-module.exports = router;
+
+
+module.exports = {sendMail:sendMail};

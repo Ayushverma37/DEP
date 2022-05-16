@@ -3,8 +3,7 @@ var router = express.Router();
 
 const pool = require("./db");
 
-// to add a user 
-router.post("/user",async function(req,res){
+async function addUser(req,res){
     try {
         // the data we get from request , just printing it 
         console.log(req.body);
@@ -32,6 +31,6 @@ router.post("/user",async function(req,res){
     } catch (error) {
         console.error(error.message);
     }
-})
+}
 
-module.exports = router;
+module.exports = {addUser:addUser}

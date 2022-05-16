@@ -4,7 +4,7 @@ const pool = require("./db");
 
 
 // to get the details of main table of a project 
-router.post("/get_main_table",async function(req,res){
+async function getMainTable(req,res){
 
     try{
 
@@ -25,6 +25,7 @@ router.post("/get_main_table",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+
+module.exports = {getMainTable:getMainTable};

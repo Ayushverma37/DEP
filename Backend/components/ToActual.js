@@ -4,7 +4,7 @@ var router = express.Router();
 const pool = require("./db");
 
 
-router.post("/to_actual",async function(req,res){
+async function ToActual(req,res){
 
     try{
         console.log(req.body);
@@ -106,6 +106,6 @@ router.post("/to_actual",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+module.exports = {ToActual:ToActual};

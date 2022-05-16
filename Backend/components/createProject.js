@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 const pool = require("./db");
 
-// to create a new project
-router.post("/create_project",async function(req,res){
+async function createProject(req,res){
 
     try {
 
@@ -165,7 +164,5 @@ router.post("/create_project",async function(req,res){
         console.error(error.message);
     }
 
-})
-
-
-module.exports = router;
+}
+module.exports = {createProject:createProject}

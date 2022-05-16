@@ -4,7 +4,8 @@ const pool = require("./db");
 
 
 // to get the details of main table of a project 
-router.post("/edit_sanctioned",async function(req,res){
+
+async function editSanctioned(req,res){
 
     try{
 
@@ -29,6 +30,7 @@ router.post("/edit_sanctioned",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+
+module.exports = {editSanctioned:editSanctioned};

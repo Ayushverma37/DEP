@@ -3,7 +3,7 @@ var router = express.Router();
 
 const pool = require("./db");
 
-router.post("/get_user",async function(req,res){
+async function getUser(req,res){
     try {
         // the data we get from request , just printing it 
         console.log(req.body);
@@ -15,6 +15,5 @@ router.post("/get_user",async function(req,res){
     } catch (error) {
         console.error(error.message);
     }
-})
-
-module.exports = router;
+}
+module.exports = {getUser:getUser};

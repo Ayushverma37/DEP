@@ -5,7 +5,7 @@ const pool = require("./db");
 
 
 // now to add a fund
-router.post("/updated_add_fund",async function(req,res){
+async function updatedAddFund(req,res){
 
     try{
 
@@ -205,7 +205,7 @@ router.post("/updated_add_fund",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
 
-module.exports = router;
+module.exports = {updatedAddFund:updatedAddFund};

@@ -2,10 +2,7 @@ var express = require('express');
 var router = express.Router();
 const pool = require("./db");
 
-
-
-// now to add a fund
-router.post("/fund",async function(req,res){
+async function addFund(req,res){
 
     try{
 
@@ -205,7 +202,6 @@ router.post("/fund",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-
-module.exports = router;
+module.exports = {addFund:addFund}

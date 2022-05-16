@@ -4,7 +4,7 @@ const pool = require("./db");
 
 
 // to delete a particular row
-router.post("/del_row",async function(req,res){
+async function delrow(req,res){
 
     try{
         console.log("REQ");
@@ -130,6 +130,7 @@ router.post("/del_row",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+
+module.exports = {delrow:delrow}

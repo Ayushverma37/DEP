@@ -4,8 +4,7 @@ const pool = require("./db");
 
 
 // to insert into a main table of a project 
-
-router.post("/insert_main_table",async function(req,res){
+async function insertMainTable(req,res){
 
     try{
 
@@ -174,6 +173,6 @@ router.post("/insert_main_table",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+module.exports = {insertMainTable:insertMainTable};

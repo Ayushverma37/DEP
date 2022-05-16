@@ -4,7 +4,7 @@ const pool = require("./db");
 
 
 // to give projects on profs dashboard
-router.get("/project_prof/:email_id",async function(req,res){
+async function showProjects(req,res){
 
     try{
 
@@ -51,6 +51,6 @@ router.get("/project_prof/:email_id",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+module.exports = {showProjects:showProjects};

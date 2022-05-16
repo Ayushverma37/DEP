@@ -5,7 +5,7 @@ const pool = require("./db");
 
 
 // to get a comment
-router.post("/get_comment",async function(req,res){
+async function getComment(req,res){
 
     try{
 
@@ -42,6 +42,5 @@ router.post("/get_comment",async function(req,res){
         console.error(error.message);
     }
 }
-);
 
-module.exports = router;
+module.exports = {getComment:getComment}

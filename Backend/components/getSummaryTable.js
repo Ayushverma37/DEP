@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const pool = require("./db");
 
-router.post("/get_summary_table",async function(req,res){
+async function getSummaryTable(req,res){
 
     try{
 
@@ -23,6 +23,8 @@ router.post("/get_summary_table",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+
+
+module.exports = {getSummaryTable:getSummaryTable};

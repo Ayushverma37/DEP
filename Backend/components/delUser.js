@@ -3,11 +3,9 @@ var express = require('express');
 var router = express.Router();
 const pool = require("./db");
 
-
-router.post("/del_user",async function(req,res){
+async function delUser(req,res){
 
     try{
-
 
         var query = "DELETE FROM users where email_id = '"
         query = query.concat(req.body.e_id)
@@ -33,6 +31,7 @@ router.post("/del_user",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+
+module.exports = {delUser:delUser}

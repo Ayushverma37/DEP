@@ -4,7 +4,7 @@ const pool = require("./db");
 
 // to get a specific project 
 
-router.post("/project_search",async function(req,res){
+async function specificProject(req,res){
 
     try{
 
@@ -153,6 +153,6 @@ router.post("/project_search",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
 
-module.exports = router;
+module.exports = {specificProject:specificProject};

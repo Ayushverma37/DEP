@@ -2,9 +2,7 @@ var express = require('express');
 var router = express.Router();
 const pool = require("./db");
 
-
-// to get the list of all projects 
-router.post("/project",async function(req,res){
+async function listOfProjects(req,res){
 
     try{
         //running the select command
@@ -58,7 +56,10 @@ router.post("/project",async function(req,res){
         console.error(error.message);
     }
 
-});
+}
+// to get the list of all projects 
+// router.post("/project",listOfProj);
 
 
-module.exports = router;
+// module.exports = router;
+module.exports = {listOfProjects:listOfProjects}

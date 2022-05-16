@@ -2,12 +2,9 @@ var express = require('express');
 var router = express.Router();
 const pool = require("./db");
 
-
-// addding a comment
-router.post("/comment",async function(req,res){
+async function addComment(req,res){
 
     try{
-
         
         // adding a comment for a particular project.
         
@@ -57,7 +54,8 @@ router.post("/comment",async function(req,res){
     }catch(error){
         console.error(error.message);
     }
-}
-);
 
-module.exports = router;
+// addding a comment
+}
+
+module.exports = {addComment:addComment}
