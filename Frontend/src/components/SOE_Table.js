@@ -1136,7 +1136,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
-                style={{ width: 500 }}
+                style={{ width: 700 }}
                 id="outlined-basic"
                 label="Voucher No. and Date"
                 variant="outlined"
@@ -1144,16 +1144,7 @@ export default function SOE_Table(props) {
                   set_new_vouchno(event.target.value);
                 }}
               />
-              {/* <TextField
-                type="number"
-                style={{ width: 500 }}
-                id="outlined-basic"
-                label="Receipt"
-                variant="outlined"
-                onChange={(event) => {
-                  set_new_rec(event.target.value);
-                }}
-              /> */}
+              
             </Stack>
             <Stack
               justifyContent="center"
@@ -1354,7 +1345,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
-                style={{ width: 500 }}
+                style={{ width: 800 }}
                 id="outlined-basic"
                 label="Voucher No. and Date"
                 variant="outlined"
@@ -1373,8 +1364,8 @@ export default function SOE_Table(props) {
                 }}
               /> */}
             </Stack>
-            <center>
-              Enter the Amount under the following categories/Heads:-{" "}
+            <center className='paddingFix'>
+              <h6>Enter the Amount under the following categories/Heads : </h6>{" "}
             </center>
             <TextField
               type="number"

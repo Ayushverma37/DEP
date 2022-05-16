@@ -16,9 +16,9 @@ router.post("/del_user",async function(req,res){
         var db_res = await pool.query(query);
         
         
-        var index = req.body.e_id.indexOf("@");
+        var index = req.body.new_e_id.indexOf("@");
 
-        var prof_id = req.body.e_id.substring(0,index);
+        var prof_id = req.body.new_e_id.substring(0,index);
         console.log(prof_id)
 
         query = "DROP TABLE "

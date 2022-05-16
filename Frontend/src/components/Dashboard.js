@@ -144,18 +144,18 @@ export default function Dashboard() {
     setnewDOS("")
     setnewYear("")
     setnewDuration("")
-    var server_address = "http://localhost:5000/user/" + obj.userEmail;
-    const resp = await fetch(server_address, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    const response = await resp.json();
-    console.log("Server response", response);
+    // var server_address = "http://localhost:5000/user/" + obj.userEmail;
+    // const resp = await fetch(server_address, {
+    //   method: "GET",
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    // const response = await resp.json();
+    // console.log("Server response", response);
 
-    if(response!=1){
-      alert("YOU ARE NOT THE ADMIN")
-      return
-    }
+    // if(response!=1){
+    //   alert("YOU ARE NOT THE ADMIN")
+    //   return
+    // }
 
     setopenAddProjectPopup(true);
 

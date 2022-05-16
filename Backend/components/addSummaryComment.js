@@ -39,6 +39,7 @@ router.post("/summary_comment",async function(req,res){
             var index = prof_emails[i].indexOf("@");
 
             var prof_id = prof_emails[i].substring(0,index);
+            prof_id=prof_id.replace(".","dot");
             console.log(prof_id)
             var query = "UPDATE "
             query=query.concat(prof_id)

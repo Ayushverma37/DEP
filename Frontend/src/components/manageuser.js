@@ -78,24 +78,17 @@ export default function Manageuser() {
   const [openRemoveUserPop, setOpenRemoveUserPop] = useState(false);
 
   async function add_user_on_click() {
-    /*
-    var server_address = "http://localhost:5000/user/" + obj.userEmail;
-    const resp = await fetch(server_address, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    const response = await resp.json();
-    console.log("Server response", response);
-    if (response != 1) {
-      alert("You Are not an Admin , access Denied ");
-      return;
-    }*/
-
+    var index = newUserEmail.indexOf("@");
+    var pre = newUserEmail.substring(0, index);
+    var post = newUserEmail.substring(index);
+    pre = pre.replace(".", "dot");
+    var newEmail_id=pre+post;
     var server_address = "http://localhost:5000/user";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
+        new_email_id:newEmail_id,
         email_id : newUserEmail,
         name: newUsername,
         admin : newUserRole
@@ -109,12 +102,18 @@ export default function Manageuser() {
   }
 
   async function removeUser() {
+    var index = currentUserEmail.indexOf("@");
+    var pre = currentUserEmail.substring(0, index);
+    var post = currentUserEmail.substring(index);
+    pre = pre.replace(".", "dot");
+    var newEmail_id=pre+post;
     var server_address = "http://localhost:5000/del_user";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
         e_id : currentUserEmail,
+        new_e_id: newEmail_id,
        }),
     });
 
