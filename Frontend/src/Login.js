@@ -21,8 +21,39 @@ function Login() {
   const [showlogoutButton, setShowlogoutButton] = useState(false);
   const navigate = useNavigate();
   const onLoginSuccess = async (res) => {
-    console.log("Login Success:", res.profileObj);
-     var server_address = "http://localhost:5000/user/" + res.profileObj.email;
+    console.log("Login Success:", res);
+
+     var server_address = "http://localhost:5000/authenticate"
+     const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token : res.tokenId }),
+    }); 
+
+    const jwt_data = await resp2.json();
+
+    console.log("JWT->",jwt_data)
+
+    // the token received from the backend 
+
+    // setting the token in local storage 
+    localStorage.setItem("token",jwt_data.token)
+
+    server_address = "http://localhost:5000/test_temp"
+     const resp34 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+                  "jwt-token" : localStorage.getItem("token"),
+    },
+      body: JSON.stringify({ }),
+    }); 
+
+    const data34 = await resp34.json();
+
+    console.log("checking jwt->",data34)
+
+
+     server_address = "http://localhost:5000/user/" + res.profileObj.email;
      const resp = await fetch(server_address, {
        method: "GET",
        headers: { "Content-Type": "application/json" },
