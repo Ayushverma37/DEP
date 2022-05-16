@@ -21,7 +21,7 @@ import AddCommentPopup from "./AddCommentPopup";
 import EditPopup from "./EditPopup";
 import ViewCommentPopup from "./ViewCommentPopup";
 import CommentViewData from "./CommentViewData.json";
-import CommitPopup from "./CommitPopup"
+import CommitPopup from "./CommitPopup";
 import AddExpensesRowPopUp from "./AddExpensesRowPop";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import InputLabel from "@mui/material/InputLabel";
@@ -29,13 +29,17 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import AddFundsPopUp from "./AddFundsPopup";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { green } from "@mui/material/colors";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+
+import ImportExcelPop from "./ImportExcelPop";
+
+import * as XLSX from "xlsx";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -72,10 +76,10 @@ export default function SOE_Table(props) {
   const [comment, setComment] = useState("");
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
   const [openEditPopup, setOpenEditPopup] = useState(false);
-  const [Edit, setEdit] = useState("")
+  const [Edit, setEdit] = useState("");
   const [openViewCommentPopup, setOpenViewCommentPopup] = useState(false);
   const [openAddFundsPopUp, setOpenAddFundsPopUp] = useState(false);
-  const [openCommitPopup, setOpenCommitPopup] = useState(false)
+  const [openCommitPopup, setOpenCommitPopup] = useState(false);
   const [rowId, setrowId] = useState(0);
   const [NewExpense, setNewExpense] = useState("");
   const [rowIdView, setrowIdView] = useState(0);
@@ -99,21 +103,268 @@ export default function SOE_Table(props) {
   const [newEquipment, setnewEquipment] = useState("");
   const [newConstruction, setnewConstruction] = useState("");
   const [newFabrication, setnewFabrication] = useState("");
-  const [whichTable, setwhichTable] = useState(0)
-  const [newRecurring, setnewRecurring] = useState("")
-  const [newNonRecurring, setnewNonRecurring] = useState("")
-  const [currUpdateheads, setcurrUpdateheads] = useState("")
-  const [committedOrNot, setcommittedOrNot] = useState("")
-  const [oldPay, setoldPay] = useState("")
+  const [whichTable, setwhichTable] = useState(0);
+  const [newRecurring, setnewRecurring] = useState("");
+  const [newNonRecurring, setnewNonRecurring] = useState("");
+  const [currUpdateheads, setcurrUpdateheads] = useState("");
+  const [committedOrNot, setcommittedOrNot] = useState("");
+  const [oldPay, setoldPay] = useState("");
+  const [openImportExcelPop, setOpenImportExcelPop] = useState(false);
+  const [rec1, setrec1] = useState("")
+  const [rec2, setrec2] = useState("")
+  const [rec3, setrec3] = useState("")
+  const [nonrec1, setnonrec1] = useState("")
+  const [nonrec2, setnonrec2] = useState("")
+  const [nonrec3, setnonrec3] = useState("")
+  const [excelData, setexcelData] = useState([]);
+  const [yearCtr, setyearCtr] = useState(1);
+
+  
+
+  const handleFile = async(e) => {
+    console.log(e.target.files[0]);
+    const file=e.target.files[0];
+    const data=await file.arrayBuffer();
+    const workbook=XLSX.read(data);
+    const worksheet=workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData=XLSX.utils.sheet_to_json(worksheet);
+    // console.log(jsonData);
+    setexcelData(jsonData);
+
+    
+    
+  };
+
+
+
+  const processExcel =  async() => {
+    console.log("DATA");
+    console.log(excelData);
+    var arr = [];
+    Object.keys(excelData).forEach(function(key) {
+      console.log(excelData[key]);
+      arr.push(excelData[key]);
+    });
+    console.log(arr.length);
+    for(var i=0;i<arr.length;i++){
+      
+      if(arr[i]['Heads']=='Grant')
+      {
+        console.log("Hi Here");
+        if(yearCtr==1)
+        {
+          console.log("Hi Here");
+        var server_address = "http://localhost:5000/updated_add_fund";
+        const resp2 = await fetch(server_address, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+        particulars: arr[i]['Particulars'],
+        remarks: arr[i]['Remarks'],
+        vouchno: arr[i]['Voucher No. & Date'],
+        recur: rec1,
+        non_recur: nonrec1,
+        project_id: props.projId,
+
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->" + json_response);
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+    set_new_particulars("");
+    set_new_remarks("");
+    set_new_vouchno("");
+    set_new_rec("");
+    set_new_pay("");
+        }
+        else if(yearCtr==2)
+        {
+          var server_address = "http://localhost:5000/updated_add_fund";
+        const resp2 = await fetch(server_address, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+        particulars: arr[i]['Particulars'],
+        remarks: arr[i]['Remarks'],
+        vouchno: arr[i]['Voucher No. & Date'],
+        recur: rec2,
+        non_recur: nonrec2,
+        project_id: props.projId,
+
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->" + json_response);
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+    set_new_particulars("");
+    set_new_remarks("");
+    set_new_vouchno("");
+    set_new_rec("");
+    set_new_pay("");
+        }else{
+          var server_address = "http://localhost:5000/updated_add_fund";
+        const resp2 = await fetch(server_address, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+        particulars: arr[i]['Particulars'],
+        remarks: arr[i]['Remarks'],
+        vouchno: arr[i]['Voucher No. & Date'],
+        recur: rec3,
+        non_recur: nonrec3,
+        project_id: props.projId,
+
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->" + json_response);
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+    set_new_particulars("");
+    set_new_remarks("");
+    set_new_vouchno("");
+    set_new_rec("");
+    set_new_pay("");
+        }
+        setyearCtr(yearCtr+1);
+
+      }else{
+        if(arr[i]['Heads']=="Equipments"|| arr[i]['Heads']=="Fabrication"){
+          var x="Non-Rec.";
+        }
+        else{
+          x="Rec.";
+        }
+        var server_address = "http://localhost:5000/insert_main_table";
+    const resp2 = await fetch(server_address, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        particulars: arr[i]['Particulars'],
+        remarks: arr[i]['Remarks'],
+        vouchno: arr[i]['Voucher No. & Date'],
+        // rec: new_rec,
+        pay: Number(arr[i]['Payment']),
+        // balance: new_balance,
+        actual: 0,
+        heads: x,
+        heads2: arr[i]['Heads'],
+        project_id: props.projId,
+      }),
+    });
+
+    const json_response = await resp2.json();
+    console.log("RESPONSEEE->" + json_response);
+
+    if (json_response == -1) {
+      alert("Expenditure exceeds Sanctioned Amount, Request Denied!!");
+      return;
+    }
+
+    var server_address3 = "http://localhost:5000/get_main_table";
+    const resp3 = await fetch(server_address3, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response3 = await resp3.json();
+    set_rows(json_response3);
+
+    // update summary table
+    var server_address4 = "http://localhost:5000/get_summary_table";
+    const resp4 = await fetch(server_address4, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project_id: props.projId }),
+    });
+
+    const json_response4 = await resp4.json();
+    setsummaryrows(json_response4);
+    set_new_particulars("");
+    set_new_remarks("");
+    set_new_vouchno("");
+    set_new_rec("");
+    set_new_pay("");
+      }
+      console.log(arr[i]['Particulars']);
+
+    }
+    setOpenImportExcelPop(false);
+  }
+
+
+
   const handleSubmit = async () => {
     console.log(comment);
     console.log(rowId);
-    console.log("Table", whichTable)
+    console.log("Table", whichTable);
     var server_address;
-    if(whichTable === 1)
-    server_address = "http://localhost:5000/comment";
-    if(whichTable === 2)
-    server_address = "http://localhost:5000/summary_comment";
+    if (whichTable === 1) server_address = "http://localhost:5000/comment";
+    if (whichTable === 2)
+      server_address = "http://localhost:5000/summary_comment";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -149,10 +400,7 @@ export default function SOE_Table(props) {
     const json_response3 = await resp3.json();
     set_rows(json_response3);
     setOpenAddCommentPopup(false);
-
   };
-
-  
 
   const sendmail = async () => {
     console.log(comment);
@@ -167,17 +415,15 @@ export default function SOE_Table(props) {
         row_no: rowId,
         comment_body: comment,
         prof_email: props.userEmail,
-        prof_name: props.userName
+        prof_name: props.userName,
       }),
     });
 
     const json_response = await resp2.json();
-    console.log(json_response)
-    
+    console.log(json_response);
+
     setOpenAddCommentPopup(false);
   };
-
-  
 
   const addNewExpensesRecord = async () => {
     var server_address2 = "http://localhost:5000/user/" + props.userEmail;
@@ -214,8 +460,8 @@ export default function SOE_Table(props) {
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
 
-    if(json_response == -1){
-      alert("Expenditure exceeds Sanctioned Amount, Request Denied!!")
+    if (json_response == -1) {
+      alert("Expenditure exceeds Sanctioned Amount, Request Denied!!");
       return;
     }
 
@@ -266,12 +512,12 @@ export default function SOE_Table(props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         particulars: new_particulars,
-        remarks:new_remarks,
-        vouchno:new_vouchno,
+        remarks: new_remarks,
+        vouchno: new_vouchno,
         // rec:new_rec,
-        recur:newRecurring,
-        non_recur:newNonRecurring,
-        project_id: props.projId
+        recur: newRecurring,
+        non_recur: newNonRecurring,
+        project_id: props.projId,
         // manpower: newManpower,
         // consumables: newConsumables,
         // project_id: props.projId,
@@ -325,14 +571,12 @@ export default function SOE_Table(props) {
     }
   }, [rowIdView]);
 
-
-  function rowSelector(flag){
+  function rowSelector(flag) {
     // console.log("GG")
-    
-    if(flag===1) return 'green';
-    else return '';
-  }
 
+    if (flag === 1) return "green";
+    else return "";
+  }
 
   return (
     <>
@@ -375,6 +619,15 @@ export default function SOE_Table(props) {
               >
                 Add Funds
               </Button>
+
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setOpenImportExcelPop(true);
+                }}
+              >
+                Import Excel
+              </Button>
             </>
           ) : (
             <></>
@@ -413,7 +666,9 @@ export default function SOE_Table(props) {
           id="test-table-xls-button"
           className="download-table-xls-button btn btn-primary mb-3"
           table="tbl1"
-          filename={"StatementOfExpenses_" + (props.projId).toString().substring(1)}
+          filename={
+            "StatementOfExpenses_" + props.projId.toString().substring(1)
+          }
           sheet="Sheet1"
           buttonText="Export Expense Table to Excel Sheet"
         />
@@ -427,9 +682,9 @@ export default function SOE_Table(props) {
             <TableHead>
               <TableRow>
                 <StyledTableCell colspan={11} align="center">
-                  Project ID: {(props.projId).toString().substring(1)}, Project Title:{" "}
-                  {props.project_title}, PI Name: {props.projProfName}, Total
-                  Cost: INR {props.project_grant}
+                  Project ID: {props.projId.toString().substring(1)}, Project
+                  Title: {props.project_title}, PI Name: {props.projProfName},
+                  Total Cost: INR {props.project_grant}
                 </StyledTableCell>
               </TableRow>
               <TableRow>
@@ -443,10 +698,11 @@ export default function SOE_Table(props) {
                 <StyledTableCell align="center">Payment</StyledTableCell>
                 <StyledTableCell align="center">Balance</StyledTableCell>
                 <StyledTableCell align="center">Heads</StyledTableCell>
-                <StyledTableCell align="center">Comment</StyledTableCell>             
+                <StyledTableCell align="center">Comment</StyledTableCell>
                 <StyledTableCell align="left">Actual Expense</StyledTableCell>
-                {props.userFlag===1?(<StyledTableCell align="center"></StyledTableCell>):(null)}
-                
+                {props.userFlag === 1 ? (
+                  <StyledTableCell align="center"></StyledTableCell>
+                ) : null}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -467,12 +723,14 @@ export default function SOE_Table(props) {
                   <StyledTableCell align="center">
                     {row.vouchno}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{((row.rec!=null)?("₹"+row.rec):(null))}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {((row.payment!=null)?("₹"+row.payment):(null))}
+                    {row.rec != null ? "₹" + row.rec : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {((row.balance!=null)?("₹"+row.balance):(null))}
+                    {row.payment != null ? "₹" + row.payment : null}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.balance != null ? "₹" + row.balance : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.heads}</StyledTableCell>
                   <StyledTableCell align="right">
@@ -510,89 +768,92 @@ export default function SOE_Table(props) {
                     />
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.heads==="Grant"?(null):(<FormControl>
-                      {/* <FormLabel id="demo-controlled-radio-buttons-group">
+                    {row.heads === "Grant" ? null : (
+                      <FormControl>
+                        {/* <FormLabel id="demo-controlled-radio-buttons-group">
                         Gender
                       </FormLabel> */}
-                      <RadioGroup
-                        aria-labelledby="demo-controlled-radio-buttons-group"
-                        name="controlled-radio-buttons-group"
-                        // value={value}
-                        onChange={ () => {
-                          if(props.userFlag===2){
-                            alert("You don't have admin access");
-                          }
-                          else{
-                            setOpenCommitPopup(true);
-                            setoldPay(row.payment);
-                          setrowId(row.sr);
-                          set_new_heads(row.heads);
-                          }
-
-                          
-                        }}
-                      >
-                        
-                        <FormControlLabel
-                          value="Actual"
-                          checked={row.actual_flag==0}
-                          control={<Radio />}
-                          label=""
-                        />
-                      </RadioGroup>
-                    </FormControl>)}
-                    
+                        <RadioGroup
+                          aria-labelledby="demo-controlled-radio-buttons-group"
+                          name="controlled-radio-buttons-group"
+                          // value={value}
+                          onChange={() => {
+                            if (props.userFlag === 2) {
+                              alert("You don't have admin access");
+                            } else {
+                              setOpenCommitPopup(true);
+                              setoldPay(row.payment);
+                              setrowId(row.sr);
+                              set_new_heads(row.heads);
+                            }
+                          }}
+                        >
+                          <FormControlLabel
+                            value="Actual"
+                            checked={row.actual_flag == 0}
+                            control={<Radio />}
+                            label=""
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    )}
                   </StyledTableCell>
-                  {props.userFlag===1?(<StyledTableCell>
-                    <Button
-                      startIcon={<DeleteIcon />}
-                      onClick={async () => {
-                        if (row.heads == "Grant") {
-                          alert("You cannot delete Grant row");
-                        } else if (
-                          window.confirm("Are you sure, you want to delete")
-                        ) {
-                          var server_address = "http://localhost:5000/del_row";
-                          const resp2 = await fetch(server_address, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                              sr: row.sr,
-                              project_id: props.projId,
-                              heads: row.heads,
-                            }),
-                          });
+                  {props.userFlag === 1 ? (
+                    <StyledTableCell>
+                      <Button
+                        startIcon={<DeleteIcon />}
+                        onClick={async () => {
+                          if (row.heads == "Grant") {
+                            alert("You cannot delete Grant row");
+                          } else if (
+                            window.confirm("Are you sure, you want to delete")
+                          ) {
+                            var server_address =
+                              "http://localhost:5000/del_row";
+                            const resp2 = await fetch(server_address, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                sr: row.sr,
+                                project_id: props.projId,
+                                heads: row.heads,
+                              }),
+                            });
 
-                          const json_response = await resp2.json();
-                          console.log(json_response);
+                            const json_response = await resp2.json();
+                            console.log(json_response);
 
-                          var server_address3 =
-                            "http://localhost:5000/get_main_table";
-                          const resp3 = await fetch(server_address3, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ project_id: props.projId }),
-                          });
+                            var server_address3 =
+                              "http://localhost:5000/get_main_table";
+                            const resp3 = await fetch(server_address3, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                project_id: props.projId,
+                              }),
+                            });
 
-                          const json_response3 = await resp3.json();
-                          set_rows(json_response3);
+                            const json_response3 = await resp3.json();
+                            set_rows(json_response3);
 
-                          // update summary table
-                          var server_address4 =
-                            "http://localhost:5000/get_summary_table";
-                          const resp4 = await fetch(server_address4, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ project_id: props.projId }),
-                          });
+                            // update summary table
+                            var server_address4 =
+                              "http://localhost:5000/get_summary_table";
+                            const resp4 = await fetch(server_address4, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                project_id: props.projId,
+                              }),
+                            });
 
-                          const json_response4 = await resp4.json();
-                          setsummaryrows(json_response4);
-                        }
-                      }}
-                    />
-                  </StyledTableCell>):(null)}
-                  
+                            const json_response4 = await resp4.json();
+                            setsummaryrows(json_response4);
+                          }
+                        }}
+                      />
+                    </StyledTableCell>
+                  ) : null}
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -609,7 +870,7 @@ export default function SOE_Table(props) {
           id="test-table-xls-button2"
           className="download-table-xls-button btn btn-primary mb-3"
           table="table-to-xls2"
-          filename={"Summary_" + (props.projId).toString().substring(1)}
+          filename={"Summary_" + props.projId.toString().substring(1)}
           sheet="Sheet1"
           buttonText="Export Summary Table to Excel Sheet"
         />
@@ -622,9 +883,9 @@ export default function SOE_Table(props) {
           <TableHead>
             <TableRow>
               <StyledTableCell colspan={12} align="center">
-                Project ID: {(props.projId).toString().substring(1)}, Project Title: {props.project_title}
-                , PI Name: {props.projProfName}, Total Cost: INR{" "}
-                {props.project_grant}
+                Project ID: {props.projId.toString().substring(1)}, Project
+                Title: {props.project_title}, PI Name: {props.projProfName},
+                Total Cost: INR {props.project_grant}
               </StyledTableCell>
             </TableRow>
             <TableRow>
@@ -639,8 +900,9 @@ export default function SOE_Table(props) {
               <StyledTableCell align="left">Expenditure</StyledTableCell>
               <StyledTableCell align="left">Balance</StyledTableCell>
               <StyledTableCell align="left">Comment</StyledTableCell>
-              {props.userFlag===1?(<StyledTableCell align="left"></StyledTableCell>):(null)}
-              
+              {props.userFlag === 1 ? (
+                <StyledTableCell align="left"></StyledTableCell>
+              ) : null}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -683,7 +945,7 @@ export default function SOE_Table(props) {
                           : { fontWeight: "" }
                       }
                     >
-                      {"₹"+row.sanctioned_amount}
+                      {"₹" + row.sanctioned_amount}
                     </span>
                   )}
                 </StyledTableCell>
@@ -695,7 +957,7 @@ export default function SOE_Table(props) {
                         : { fontWeight: "" }
                     }
                   >
-                    {"₹"+row.year_1_funds}
+                    {"₹" + row.year_1_funds}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
@@ -706,7 +968,7 @@ export default function SOE_Table(props) {
                         : { fontWeight: "" }
                     }
                   >
-                    {"₹"+row.year_2_funds}
+                    {"₹" + row.year_2_funds}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
@@ -717,14 +979,14 @@ export default function SOE_Table(props) {
                         : { fontWeight: "" }
                     }
                   >
-                    {"₹"+row.year_3_funds}
+                    {"₹" + row.year_3_funds}
                   </span>
                 </StyledTableCell>
                 {/* <StyledTableCell align="left"> */}
-                  {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
                 {/* </StyledTableCell> */}
                 {/* <StyledTableCell align="left"> */}
-                  {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
+                {/* <span style={row.heads === "Rec." || row.heads === "Non-Rec." ?{fontWeight: 'bold', fontSize:'large'}:{fontWeight: ''}}>{row.year_3_funds}</span> */}
                 {/* </StyledTableCell> */}
                 <StyledTableCell align="left">
                   <span
@@ -734,7 +996,7 @@ export default function SOE_Table(props) {
                         : { fontWeight: "" }
                     }
                   >
-                    {"₹"+row.expenditure}
+                    {"₹" + row.expenditure}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
@@ -745,7 +1007,7 @@ export default function SOE_Table(props) {
                         : { fontWeight: "" }
                     }
                   >
-                    {"₹"+row.balance}
+                    {"₹" + row.balance}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
@@ -782,17 +1044,18 @@ export default function SOE_Table(props) {
                     }}
                   />
                 </StyledTableCell>
-                {props.userFlag===1?(<StyledTableCell align="left">
-                  <Button
-                    startIcon={<EditIcon />}
-                    onClick={() => {
-                      setcurrUpdateheads(row.heads);
-                      setOpenEditPopup(true);
-                      setrowId(row.sr);
-                    }}
-                  />
-                </StyledTableCell>):(null)}
-                
+                {props.userFlag === 1 ? (
+                  <StyledTableCell align="left">
+                    <Button
+                      startIcon={<EditIcon />}
+                      onClick={() => {
+                        setcurrUpdateheads(row.heads);
+                        setOpenEditPopup(true);
+                        setrowId(row.sr);
+                      }}
+                    />
+                  </StyledTableCell>
+                ) : null}
               </StyledTableRow>
             ))}
           </TableBody>
@@ -847,7 +1110,6 @@ export default function SOE_Table(props) {
           </div>
         </Box>
       </AddCommentPopup>
-
 
       <ViewCommentPopup
         openViewCommentPopup={openViewCommentPopup}
@@ -939,10 +1201,10 @@ export default function SOE_Table(props) {
                 onClick={() => setOpenCommitPopup(false)}
               />
               <TextField
-               type="number"
-               id="outlined-basic"
-               label="New Expense"
-               variant="outlined"
+                type="number"
+                id="outlined-basic"
+                label="New Expense"
+                variant="outlined"
                 onChange={(event) => {
                   setNewExpense(event.target.value);
                 }}
@@ -952,46 +1214,44 @@ export default function SOE_Table(props) {
                   variant="contained"
                   endIcon={<SendIcon />}
                   // onClick={handleSubmit}
-                  onClick={async() => {
+                  onClick={async () => {
                     var server_address = "http://localhost:5000/to_actual";
-                          const resp2 = await fetch(server_address, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                              sr: rowId,
-                              p_id: props.projId,
-                              new_pay: Number(NewExpense),
-                              old_pay: oldPay,
-                              heads: new_heads,
-                            }),
-                          });
+                    const resp2 = await fetch(server_address, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        sr: rowId,
+                        p_id: props.projId,
+                        new_pay: Number(NewExpense),
+                        old_pay: oldPay,
+                        heads: new_heads,
+                      }),
+                    });
 
-                          const json_response = await resp2.json();
-                          console.log(json_response);
-                          var server_address4 =
-                            "http://localhost:5000/get_summary_table";
-                          const resp4 = await fetch(server_address4, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ project_id: props.projId }),
-                          });
+                    const json_response = await resp2.json();
+                    console.log(json_response);
+                    var server_address4 =
+                      "http://localhost:5000/get_summary_table";
+                    const resp4 = await fetch(server_address4, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ project_id: props.projId }),
+                    });
 
-                          const json_response4 = await resp4.json();
-                          setsummaryrows(json_response4);
+                    const json_response4 = await resp4.json();
+                    setsummaryrows(json_response4);
 
-                          var server_address3 =
-                            "http://localhost:5000/get_main_table";
-                          const resp3 = await fetch(server_address3, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ project_id: props.projId }),
-                          });
+                    var server_address3 =
+                      "http://localhost:5000/get_main_table";
+                    const resp3 = await fetch(server_address3, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ project_id: props.projId }),
+                    });
 
-                          const json_response3 = await resp3.json();
-                          set_rows(json_response3);
-                          setOpenCommitPopup(false);
-
-
+                    const json_response3 = await resp3.json();
+                    set_rows(json_response3);
+                    setOpenCommitPopup(false);
                   }}
                 >
                   Update
@@ -1022,10 +1282,10 @@ export default function SOE_Table(props) {
                 onClick={() => setOpenEditPopup(false)}
               />
               <TextField
-                 type="number"
-                 id="outlined-basic"
-                 label="New Sanctioned Amount"
-                 variant="outlined"
+                type="number"
+                id="outlined-basic"
+                label="New Sanctioned Amount"
+                variant="outlined"
                 onChange={(event) => {
                   setEdit(event.target.value);
                 }}
@@ -1136,7 +1396,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
-                style={{ width: 500 }}
+                style={{ width: 700 }}
                 id="outlined-basic"
                 label="Voucher No. and Date"
                 variant="outlined"
@@ -1144,16 +1404,6 @@ export default function SOE_Table(props) {
                   set_new_vouchno(event.target.value);
                 }}
               />
-              {/* <TextField
-                type="number"
-                style={{ width: 500 }}
-                id="outlined-basic"
-                label="Receipt"
-                variant="outlined"
-                onChange={(event) => {
-                  set_new_rec(event.target.value);
-                }}
-              /> */}
             </Stack>
             <Stack
               justifyContent="center"
@@ -1262,7 +1512,8 @@ export default function SOE_Table(props) {
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
-                  id="demo-simple-select"OpenAddFundsPopUp
+                  id="demo-simple-select"
+                  OpenAddFundsPopUp
                   value={committedOrNot}
                   label="Age"
                   onChange={(event) => {
@@ -1354,7 +1605,7 @@ export default function SOE_Table(props) {
               padding={1}
             >
               <TextField
-                style={{ width: 500 }}
+                style={{ width: 800 }}
                 id="outlined-basic"
                 label="Voucher No. and Date"
                 variant="outlined"
@@ -1373,8 +1624,8 @@ export default function SOE_Table(props) {
                 }}
               /> */}
             </Stack>
-            <center>
-              Enter the Amount under the following categories/Heads:-{" "}
+            <center className="paddingFix">
+              <h6>Enter the Amount under the following categories/Heads : </h6>{" "}
             </center>
             <TextField
               type="number"
@@ -1534,6 +1785,155 @@ export default function SOE_Table(props) {
           </div>
         </Box>
       </AddFundsPopUp>
+
+      {/* /Excel Import compoment   */}
+
+      <ImportExcelPop
+        openImportExcelPop={openImportExcelPop}
+        setOpenImportExcelPop={setOpenImportExcelPop}
+      >
+        <Box
+          component="form"
+          sx={{ "& .MuiTextField-root": { width: "600px" } }}
+          noValidate
+          autoComplete="off"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <div className="addFunds">
+            <Stack
+              justifyContent="right"
+              alignItems="right"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <Button
+                className="CloseAddProjectPopup"
+                startIcon={<CloseIcon />}
+                style={{ float: "right" }}
+                onClick={() => {
+                  setOpenImportExcelPop(false);
+                }}
+              />
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Rec 1st Year"
+                variant="outlined"
+                onChange={(event) => {
+                  setrec1(event.target.value);
+                }}
+              />
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Non-Rec. 1st Year"
+                variant="outlined"
+                onChange={(event) => {
+                  setnonrec1(event.target.value);
+
+                }}
+              />
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Rec 2nd Year"
+                variant="outlined"
+                onChange={(event) => {
+                  setrec2(event.target.value);
+
+                }}
+              />
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Non-Rec 2nd Year"
+                variant="outlined"
+                onChange={(event) => {
+                  setnonrec2(event.target.value);
+
+                }}
+              />
+            </Stack>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Rec 3rd Year"
+                variant="outlined"
+                onChange={(event) => {
+                  setrec3(event.target.value);
+
+                }}
+              />
+              <TextField
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Non-Rec 3rd Year"
+                variant="outlined"
+                onChange={(event) => {
+                  setnonrec3(event.target.value);
+
+                }}
+              />
+            </Stack>
+
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              direction="row"
+              spacing={3}
+              padding={1}
+            >
+               <input
+        type="file"
+        onChange={(e) => {
+         
+          handleFile(e)
+          
+        }}
+      />
+            </Stack>
+
+            <center>
+              <Button
+                onClick={() => {
+                 
+                 processExcel();
+                }}
+                variant="contained"
+                endIcon={<SendIcon />}
+              >
+                Import
+              </Button>
+            </center>
+          </div>
+        </Box>
+      </ImportExcelPop>
     </>
   );
 }

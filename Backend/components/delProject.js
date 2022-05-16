@@ -34,6 +34,7 @@ router.post("/del_project",async function(req,res){
             }
 
             query = "DELETE FROM "
+            prof_id=prof_id.replace(".","dot");
             query=query.concat(prof_id)
             query=query.concat("_proj_list where project_id = '");
             query = query.concat(req.body.p_id)

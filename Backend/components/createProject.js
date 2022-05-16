@@ -43,6 +43,7 @@ router.post("/create_project",async function(req,res){
                     var index = prof_emails[i].indexOf("@");
 
                     var prof_id = prof_emails[i].substring(0,index);
+                    prof_id=prof_id.replace(".","dot");
                     console.log(prof_id)
                     var query = "INSERT INTO "
                     query=query.concat(prof_id)

@@ -75,7 +75,7 @@ router.post("/project_search",async function(req,res){
             var index = req.body.email_id.indexOf("@");
 
             var prof_id = req.body.email_id.substring(0,index);
-            
+            prof_id=prof_id.replace(".","dot");
             var query = "";
             if(req.body.type == 1)
             {

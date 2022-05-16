@@ -11,6 +11,7 @@ router.get("/project_prof/:email_id",async function(req,res){
         var index = req.params.email_id.indexOf("@");
 
         var prof_id = req.params.email_id.substring(0,index);
+        prof_id=prof_id.replace(".","dot");
         console.log(prof_id)
         //running the select command
         var query = "SELECT * from "

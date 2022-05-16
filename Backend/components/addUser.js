@@ -15,7 +15,7 @@ router.post("/user",async function(req,res){
         // creating a table for this prof:-
         if(req.body.admin==2){
             // first extracting the entry number
-            var email = req.body.email_id;
+            var email = req.body.new_email_id;
             var index = email.indexOf("@")
             var str_query = "CREATE TABLE ";
             str_query=str_query.concat(email.substring(0,index));

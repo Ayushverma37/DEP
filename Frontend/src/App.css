@@ -51,6 +51,13 @@
   
 }
 
+.paddingFix{
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+}
+
+
 .navbarClass{
   background-color: whitesmoke;
   width: 85%;
