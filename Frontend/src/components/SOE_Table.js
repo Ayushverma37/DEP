@@ -154,10 +154,11 @@ export default function SOE_Table(props) {
         if(yearCtr==1)
         {
           console.log("Hi Here");
-        var server_address = "http://localhost:5000/updated_add_fund";
+        var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
         const resp2 = await fetch(server_address, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", 
+        "jwt-token" : localStorage.getItem("token"), },
         body: JSON.stringify({
         particulars: arr[i]['Particulars'],
         remarks: arr[i]['Remarks'],
@@ -172,10 +173,11 @@ export default function SOE_Table(props) {
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -183,10 +185,11 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -200,10 +203,11 @@ export default function SOE_Table(props) {
         }
         else if(yearCtr==2)
         {
-          var server_address = "http://localhost:5000/updated_add_fund";
+          var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
         const resp2 = await fetch(server_address, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" , 
+        "jwt-token" : localStorage.getItem("token"),},
         body: JSON.stringify({
         particulars: arr[i]['Particulars'],
         remarks: arr[i]['Remarks'],
@@ -218,10 +222,11 @@ export default function SOE_Table(props) {
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -229,10 +234,11 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -244,10 +250,11 @@ export default function SOE_Table(props) {
     set_new_rec("");
     set_new_pay("");
         }else{
-          var server_address = "http://localhost:5000/updated_add_fund";
+          var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
         const resp2 = await fetch(server_address, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" , 
+        "jwt-token" : localStorage.getItem("token"),},
         body: JSON.stringify({
         particulars: arr[i]['Particulars'],
         remarks: arr[i]['Remarks'],
@@ -262,10 +269,11 @@ export default function SOE_Table(props) {
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -273,10 +281,11 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -297,10 +306,11 @@ export default function SOE_Table(props) {
         else{
           x="Rec.";
         }
-        var server_address = "http://localhost:5000/insert_main_table";
+        var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/insert_main_table";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({
         particulars: arr[i]['Particulars'],
         remarks: arr[i]['Remarks'],
@@ -323,10 +333,11 @@ export default function SOE_Table(props) {
       return;
     }
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -334,10 +345,11 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -362,12 +374,13 @@ export default function SOE_Table(props) {
     console.log(rowId);
     console.log("Table", whichTable);
     var server_address;
-    if (whichTable === 1) server_address = "http://localhost:5000/comment";
+    if (whichTable === 1) server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/comment";
     if (whichTable === 2)
-      server_address = "http://localhost:5000/summary_comment";
+      server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/summary_comment";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({
         project_id: props.projId,
         row_no: rowId,
@@ -380,20 +393,22 @@ export default function SOE_Table(props) {
 
     const json_response = await resp2.json();
     console.log(json_response);
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({ project_id: props.projId }),
     });
 
     const json_response4 = await resp4.json();
     setsummaryrows(json_response4);
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -406,10 +421,11 @@ export default function SOE_Table(props) {
     console.log(comment);
     console.log(rowId);
 
-    var server_address = "http://localhost:5000/sendMail";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/sendMail";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({
         project_id: props.projId,
         row_no: rowId,
@@ -426,10 +442,11 @@ export default function SOE_Table(props) {
   };
 
   const addNewExpensesRecord = async () => {
-    var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+    var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
     const resp = await fetch(server_address2, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
     });
     const response = await resp.json();
     console.log("Server response", response);
@@ -439,10 +456,11 @@ export default function SOE_Table(props) {
       return;
     }
 
-    var server_address = "http://localhost:5000/insert_main_table";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/insert_main_table";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({
         particulars: new_particulars,
         remarks: new_remarks,
@@ -465,10 +483,11 @@ export default function SOE_Table(props) {
       return;
     }
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -476,10 +495,11 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -493,10 +513,11 @@ export default function SOE_Table(props) {
   };
 
   const addNewFunds = async () => {
-    var server_address2 = "http://localhost:5000/user/" + props.userEmail;
+    var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
     const resp = await fetch(server_address2, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
     });
     const response = await resp.json();
     console.log("Server response", response);
@@ -506,10 +527,11 @@ export default function SOE_Table(props) {
       return;
     }
 
-    var server_address = "http://localhost:5000/updated_add_fund";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({
         particulars: new_particulars,
         remarks: new_remarks,
@@ -534,10 +556,11 @@ export default function SOE_Table(props) {
     const json_response = await resp2.json();
     console.log("RESPONSEEE->" + json_response);
 
-    var server_address3 = "http://localhost:5000/get_main_table";
+    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
     const resp3 = await fetch(server_address3, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -545,10 +568,11 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "http://localhost:5000/get_summary_table";
+    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
     const resp4 = await fetch(server_address4, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -594,10 +618,11 @@ export default function SOE_Table(props) {
                 variant="contained"
                 onClick={async () => {
                   var server_address2 =
-                    "http://localhost:5000/user/" + props.userEmail;
+                    "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
                   const resp = await fetch(server_address2, {
                     method: "GET",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", 
+                    "jwt-token" : localStorage.getItem("token"), },
                   });
                   const response = await resp.json();
                   console.log("Server response", response);
@@ -636,10 +661,11 @@ export default function SOE_Table(props) {
           <Button
             variant="contained"
             onClick={async () => {
-              var server_address = "http://localhost:5000/get_main_table";
+              var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
               const resp2 = await fetch(server_address, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", 
+                "jwt-token" : localStorage.getItem("token"), },
                 body: JSON.stringify({ project_id: props.projId }),
               });
 
@@ -647,10 +673,11 @@ export default function SOE_Table(props) {
               set_rows(json_response);
 
               // update summary table
-              server_address = "http://localhost:5000/get_summary_table";
+              server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
               const resp3 = await fetch(server_address, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json" , 
+                "jwt-token" : localStorage.getItem("token"),},
                 body: JSON.stringify({ project_id: props.projId }),
               });
 
@@ -740,10 +767,11 @@ export default function SOE_Table(props) {
                       onClick={async () => {
                         setrowIdView(row.sr);
                         var server_address =
-                          "http://localhost:5000/get_comment";
+                          "https://iitrpr-res-mgmt-backend.herokuapp.com/get_comment";
                         const resp2 = await fetch(server_address, {
                           method: "POST",
-                          headers: { "Content-Type": "application/json" },
+                          headers: { "Content-Type": "application/json", 
+                          "jwt-token" : localStorage.getItem("token"), },
                           body: JSON.stringify({
                             row_no: row.sr,
                             project_id: props.projId,
@@ -809,10 +837,11 @@ export default function SOE_Table(props) {
                             window.confirm("Are you sure, you want to delete")
                           ) {
                             var server_address =
-                              "http://localhost:5000/del_row";
+                              "https://iitrpr-res-mgmt-backend.herokuapp.com/del_row";
                             const resp2 = await fetch(server_address, {
                               method: "POST",
-                              headers: { "Content-Type": "application/json" },
+                              headers: { "Content-Type": "application/json", 
+                              "jwt-token" : localStorage.getItem("token"), },
                               body: JSON.stringify({
                                 sr: row.sr,
                                 project_id: props.projId,
@@ -824,10 +853,11 @@ export default function SOE_Table(props) {
                             console.log(json_response);
 
                             var server_address3 =
-                              "http://localhost:5000/get_main_table";
+                              "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
                             const resp3 = await fetch(server_address3, {
                               method: "POST",
-                              headers: { "Content-Type": "application/json" },
+                              headers: { "Content-Type": "application/json", 
+                              "jwt-token" : localStorage.getItem("token"), },
                               body: JSON.stringify({
                                 project_id: props.projId,
                               }),
@@ -838,10 +868,11 @@ export default function SOE_Table(props) {
 
                             // update summary table
                             var server_address4 =
-                              "http://localhost:5000/get_summary_table";
+                              "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
                             const resp4 = await fetch(server_address4, {
                               method: "POST",
-                              headers: { "Content-Type": "application/json" },
+                              headers: { "Content-Type": "application/json", 
+                              "jwt-token" : localStorage.getItem("token"), },
                               body: JSON.stringify({
                                 project_id: props.projId,
                               }),
@@ -1017,10 +1048,11 @@ export default function SOE_Table(props) {
                     onClick={async () => {
                       setrowIdView(row.sr);
                       var server_address =
-                        "http://localhost:5000/get_summary_comment";
+                        "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_comment";
                       const resp2 = await fetch(server_address, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { "Content-Type": "application/json" , 
+                        "jwt-token" : localStorage.getItem("token"),},
                         body: JSON.stringify({
                           row_no: row.sr,
                           project_id: props.projId,
@@ -1121,10 +1153,11 @@ export default function SOE_Table(props) {
               startIcon={<CloseIcon />}
               style={{ float: "right" }}
               onClick={async () => {
-                var server_address3 = "http://localhost:5000/get_main_table";
+                var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
                 const resp3 = await fetch(server_address3, {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: { "Content-Type": "application/json" , 
+                  "jwt-token" : localStorage.getItem("token"),},
                   body: JSON.stringify({ project_id: props.projId }),
                 });
 
@@ -1132,10 +1165,11 @@ export default function SOE_Table(props) {
                 set_rows(json_response3);
 
                 // update summary table
-                var server_address4 = "http://localhost:5000/get_summary_table";
+                var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
                 const resp4 = await fetch(server_address4, {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: { "Content-Type": "application/json", 
+                  "jwt-token" : localStorage.getItem("token"), },
                   body: JSON.stringify({ project_id: props.projId }),
                 });
 
@@ -1215,10 +1249,11 @@ export default function SOE_Table(props) {
                   endIcon={<SendIcon />}
                   // onClick={handleSubmit}
                   onClick={async () => {
-                    var server_address = "http://localhost:5000/to_actual";
+                    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/to_actual";
                     const resp2 = await fetch(server_address, {
                       method: "POST",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { "Content-Type": "application/json", 
+                      "jwt-token" : localStorage.getItem("token"), },
                       body: JSON.stringify({
                         sr: rowId,
                         p_id: props.projId,
@@ -1231,10 +1266,11 @@ export default function SOE_Table(props) {
                     const json_response = await resp2.json();
                     console.log(json_response);
                     var server_address4 =
-                      "http://localhost:5000/get_summary_table";
+                      "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
                     const resp4 = await fetch(server_address4, {
                       method: "POST",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { "Content-Type": "application/json", 
+                      "jwt-token" : localStorage.getItem("token"), },
                       body: JSON.stringify({ project_id: props.projId }),
                     });
 
@@ -1242,10 +1278,11 @@ export default function SOE_Table(props) {
                     setsummaryrows(json_response4);
 
                     var server_address3 =
-                      "http://localhost:5000/get_main_table";
+                      "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
                     const resp3 = await fetch(server_address3, {
                       method: "POST",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { "Content-Type": "application/json", 
+                      "jwt-token" : localStorage.getItem("token"), },
                       body: JSON.stringify({ project_id: props.projId }),
                     });
 
@@ -1297,10 +1334,11 @@ export default function SOE_Table(props) {
                   // onClick={handleSubmit}
                   onClick={async () => {
                     var server_address =
-                      "http://localhost:5000/edit_sanctioned";
+                      "https://iitrpr-res-mgmt-backend.herokuapp.com/edit_sanctioned";
                     const resp2 = await fetch(server_address, {
                       method: "POST",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { "Content-Type": "application/json" , 
+                      "jwt-token" : localStorage.getItem("token"),},
                       body: JSON.stringify({
                         project_id: props.projId,
                         sanc: Edit,
@@ -1313,10 +1351,11 @@ export default function SOE_Table(props) {
                     setOpenEditPopup(false);
 
                     var server_address4 =
-                      "http://localhost:5000/get_summary_table";
+                      "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
                     const resp4 = await fetch(server_address4, {
                       method: "POST",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { "Content-Type": "application/json", 
+                      "jwt-token" : localStorage.getItem("token"), },
                       body: JSON.stringify({ project_id: props.projId }),
                     });
 

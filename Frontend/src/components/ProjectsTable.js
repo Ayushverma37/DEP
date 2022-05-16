@@ -121,19 +121,21 @@ export default function ProjectTable(props) {
                 <StyledTableCell align="center">{row.doc}</StyledTableCell>
                 <StyledTableCell align="center"><Button onClick={async() => {
 
-                  var server_address = "http://localhost:5000/get_main_table";
+                  var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
                   const resp2 = await fetch(server_address, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json" , 
+                    "jwt-token" : localStorage.getItem("token"),},
                     body: JSON.stringify({ project_id: row.project_id }),
                   });
 
                   const json_response = await resp2.json();
                   
-                  server_address = "http://localhost:5000/get_summary_table";
+                  server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
                   const resp3 = await fetch(server_address, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", 
+                    "jwt-token" : localStorage.getItem("token"), },
                     body: JSON.stringify({ project_id: row.project_id }),
                   });
 
@@ -152,10 +154,11 @@ export default function ProjectTable(props) {
                         )
                         {
                           var server_address =
-                            "http://localhost:5000/del_project";
+                            "https://iitrpr-res-mgmt-backend.herokuapp.com/del_project";
                           const resp2 = await fetch(server_address, {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
+                            headers: { "Content-Type": "application/json", 
+                            "jwt-token" : localStorage.getItem("token"), },
                             body: JSON.stringify({
                               p_id: row.project_id,
                               professors: row.professor_list,
@@ -164,10 +167,11 @@ export default function ProjectTable(props) {
                           });
                           const json_response = await resp2.json();
 
-                          var server_address2 = "http://localhost:5000/project/";
+                          var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/project/";
                           const resp3 = await fetch(server_address2, {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
+                            headers: { "Content-Type": "application/json", 
+                            "jwt-token" : localStorage.getItem("token"), },
                             body: JSON.stringify({ sort: 1 }),
                           });
 

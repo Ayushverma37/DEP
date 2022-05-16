@@ -26,7 +26,7 @@ export default function PermanentDrawerLeft(props) {
     
     alert("You have been logged out successfully");
     
-    navigate("/home");
+    navigate("/");
     window.location.reload();
   };
   const logout= () =>{
@@ -35,7 +35,7 @@ export default function PermanentDrawerLeft(props) {
       gapi.auth2.init();
     });
       var auth2 = gapi.auth2.getAuthInstance();
-      navigate("/home");
+      navigate("/");
       console.log("LOGOUT");
       auth2.signOut();
       window.location.reload();
@@ -57,10 +57,11 @@ export default function PermanentDrawerLeft(props) {
   const toManageUser=async () =>{
     
 
-    var server_address = "http://localhost:5000/user/" + props.userEmail;
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
     });
     const response = await resp.json();
     console.log("Server response", response);

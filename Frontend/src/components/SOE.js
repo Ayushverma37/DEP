@@ -39,7 +39,7 @@ export default function SOE() {
   async function fetch_proj_on_click() {
     setTableShow(true);
     return;
-    var server_address = "http://localhost:5000/user/" + obj.userEmail;
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -51,7 +51,7 @@ export default function SOE() {
       return;
     }
 
-    var server_address = "http://localhost:5000/project/";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/project/";
     const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

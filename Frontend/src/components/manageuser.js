@@ -53,10 +53,11 @@ export default function Manageuser() {
 
   useEffect(async () => {
 
-    var server_address = "http://localhost:5000/get_user";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_user";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ 
        }),
     });
@@ -83,10 +84,11 @@ export default function Manageuser() {
     var post = newUserEmail.substring(index);
     pre = pre.replace(".", "dot");
     var newEmail_id=pre+post;
-    var server_address = "http://localhost:5000/user";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ 
         new_email_id:newEmail_id,
         email_id : newUserEmail,
@@ -107,10 +109,11 @@ export default function Manageuser() {
     var post = currentUserEmail.substring(index);
     pre = pre.replace(".", "dot");
     var newEmail_id=pre+post;
-    var server_address = "http://localhost:5000/del_user";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/del_user";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ 
         e_id : currentUserEmail,
         new_e_id: newEmail_id,
@@ -118,10 +121,11 @@ export default function Manageuser() {
     });
 
     const response = await resp2.json();
-    server_address = "http://localhost:5000/get_user";
+    server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_user";
     const resp3 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({ 
        }),
     });

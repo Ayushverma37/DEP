@@ -67,10 +67,11 @@ export default function Dashboard() {
       return;
     }
     // console.log(new Date(newDOS).getTime());
-    var server_address = "http://localhost:5000/create_project";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/create_project";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({
         project_id: "p"+newProjectId,
         project_title: newProjectTitle,
@@ -153,7 +154,7 @@ export default function Dashboard() {
     setnewDOS("")
     setnewYear("")
     setnewDuration("")
-    // var server_address = "http://localhost:5000/user/" + obj.userEmail;
+    // var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + obj.userEmail;
     // const resp = await fetch(server_address, {
     //   method: "GET",
     //   headers: { "Content-Type": "application/json" },
@@ -176,19 +177,21 @@ export default function Dashboard() {
     console.log("Fetched");
     return;*/
 
-    var server_address = "http://localhost:5000/user/" + obj.userEmail;
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + obj.userEmail;
     const resp = await fetch(server_address, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
     });
     const response = await resp.json();
     console.log("Server response", response);
     if (response == 2) {
 
-      var server_address2 = "http://localhost:5000/project_prof/" + obj.userEmail;
+      var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/project_prof/" + obj.userEmail;
       const resp2 = await fetch(server_address2, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", 
+        "jwt-token" : localStorage.getItem("token"), },
       });
       const response2 = await resp2.json();
       console.log("Server response", response2);
@@ -199,10 +202,11 @@ export default function Dashboard() {
       return;
     }
 
-    var server_address = "http://localhost:5000/project/";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/project/";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" , 
+      "jwt-token" : localStorage.getItem("token"),},
       body: JSON.stringify({ sort: 1 }),
     });
 
@@ -215,10 +219,11 @@ export default function Dashboard() {
   async function search_project() {
 
     
-    var server_address = "http://localhost:5000/project_search";
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/project_search";
     const resp2 = await fetch(server_address, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", 
+      "jwt-token" : localStorage.getItem("token"), },
       body: JSON.stringify({
         admin: state.userFlag,
         type: searchOption,

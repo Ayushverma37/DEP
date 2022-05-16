@@ -17,29 +17,41 @@ const clientId =
   "277372439327-34b2v50u9nner2fulahklo3au5vbh911.apps.googleusercontent.com";
 
 function Login() {
-  const [showloginButton, setShowloginButton] = useState(true);
+  const [showloginButton, setShowloginButton] = useState(true); 
   const [showlogoutButton, setShowlogoutButton] = useState(false);
   const navigate = useNavigate();
   const onLoginSuccess = async (res) => {
-    console.log("Login Success:", res);
 
-     var server_address = "http://localhost:5000/authenticate"
+
+    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/authenticate"
      const resp2 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token : res.tokenId }),
+      body: JSON.stringify({ token : res.tokenId,
+                  email: res.profileObj.email,
+       }),
     }); 
 
     const jwt_data = await resp2.json();
 
     console.log("JWT->",jwt_data)
 
+    if (jwt_data == -1) {
+      var auth2 = gapi.auth2.getAuthInstance();
+      alert("You are not a valid USER!!");
+      navigate("/");
+      auth2.signOut();
+      
+      return;
+    }
+
+
     // the token received from the backend 
 
     // setting the token in local storage 
     localStorage.setItem("token",jwt_data.token)
 
-    server_address = "http://localhost:5000/test_temp"
+    server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/test_temp"
      const resp34 = await fetch(server_address, {
       method: "POST",
       headers: { "Content-Type": "application/json",
@@ -53,10 +65,13 @@ function Login() {
     console.log("checking jwt->",data34)
 
 
-     server_address = "http://localhost:5000/user/" + res.profileObj.email;
+
+    console.log("Login Success:", res.profileObj);
+     var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + res.profileObj.email;
      const resp = await fetch(server_address, {
        method: "GET",
-       headers: { "Content-Type": "application/json" },
+       headers: { "Content-Type": "application/json", 
+       "jwt-token" : localStorage.getItem("token"),},
       
      });
      const response = await resp.json();
@@ -65,7 +80,7 @@ function Login() {
     if (flag == -1) {
       var auth2 = gapi.auth2.getAuthInstance();
       alert("You are not a valid USER!!");
-      navigate("/home");
+      navigate("/");
       auth2.signOut();
       
       
@@ -90,7 +105,7 @@ function Login() {
     console.clear();
     setShowloginButton(true);
     setShowlogoutButton(false);
-    navigate("/home");
+    navigate("/");
     window.location.reload();
   };
 
