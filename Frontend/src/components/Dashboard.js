@@ -57,7 +57,16 @@ export default function Dashboard() {
   console.log("SWEMZ", state.isDashboard);
 
   const SubmitAddProject = async () => {
-
+    if((new Date(newDOS).getTime())>(new Date(newDOC).getTime())){
+      alert("Start Date is later than Completion Date");
+      return;
+    }
+    else if((new Date(newDOS).getFullYear())!=newYear)
+    {
+      alert("Year in Start Date does not match with Start year entered");
+      return;
+    }
+    // console.log(new Date(newDOS).getTime());
     var server_address = "http://localhost:5000/create_project";
     const resp2 = await fetch(server_address, {
       method: "POST",
@@ -413,7 +422,7 @@ export default function Dashboard() {
             />
             <TextField
               id="outlined-basic"
-              label="Year"
+              label="Start Year"
               variant="outlined"
               
               onChange={(event) => {
