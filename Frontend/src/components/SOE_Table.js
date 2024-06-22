@@ -1,45 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 // import data from "./data.json"
-import soeData from "./soeData.json";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import AddIcon from "@mui/icons-material/Add";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import SendIcon from "@mui/icons-material/Send";
-import CloseIcon from "@mui/icons-material/Close";
-import TextField from "@mui/material/TextField";
-import AddCommentPopup from "./AddCommentPopup";
-import EditPopup from "./EditPopup";
-import ViewCommentPopup from "./ViewCommentPopup";
-import CommentViewData from "./CommentViewData.json";
-import CommitPopup from "./CommitPopup";
-import AddExpensesRowPopUp from "./AddExpensesRowPop";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import AddFundsPopUp from "./AddFundsPopup";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { green } from "@mui/material/colors";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
+import soeData from './soeData.json';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import AddIcon from '@mui/icons-material/Add';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import SendIcon from '@mui/icons-material/Send';
+import CloseIcon from '@mui/icons-material/Close';
+import TextField from '@mui/material/TextField';
+import AddCommentPopup from './AddCommentPopup';
+import EditPopup from './EditPopup';
+import ViewCommentPopup from './ViewCommentPopup';
+import CommentViewData from './CommentViewData.json';
+import CommitPopup from './CommitPopup';
+import AddExpensesRowPopUp from './AddExpensesRowPop';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import AddFundsPopUp from './AddFundsPopup';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { green } from '@mui/material/colors';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 
-import ImportExcelPop from "./ImportExcelPop";
+import ImportExcelPop from './ImportExcelPop';
 
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,14 +52,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
+  '&:nth-of-type(odd)': {
     // backgroundColor: theme.palette.action.hover,
   },
   // hide last border
-  "&:last-child td, &:last-child th": {
+  '&:last-child td, &:last-child th': {
     border: 0,
   },
 }));
+
+const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
+const GET_MAIN_TABLE_URL = `${BACKEND_URL}/get_main_table`;
+const GET_SUMMARY_TABLE_URL = `${BACKEND_URL}/get_summary_table`;
+const POST_INSERT_MAIN_TABLE_URL = `${BACKEND_URL}/insert_main_table`;
 
 export default function SOE_Table(props) {
   useEffect(() => {
@@ -71,316 +76,312 @@ export default function SOE_Table(props) {
   // const [rows,set_rows] = useState(props.data);
   const [rows, set_rows] = useState(props.table_data);
   const [summaryrows, setsummaryrows] = useState(props.summary_table_data);
-  console.log("Project id = " + props.projId);
+  console.log('Project id = ' + props.projId);
   console.log(rows);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
   const [openEditPopup, setOpenEditPopup] = useState(false);
-  const [Edit, setEdit] = useState("");
+  const [Edit, setEdit] = useState('');
   const [openViewCommentPopup, setOpenViewCommentPopup] = useState(false);
   const [openAddFundsPopUp, setOpenAddFundsPopUp] = useState(false);
   const [openCommitPopup, setOpenCommitPopup] = useState(false);
   const [rowId, setrowId] = useState(0);
-  const [NewExpense, setNewExpense] = useState("");
+  const [NewExpense, setNewExpense] = useState('');
   const [rowIdView, setrowIdView] = useState(0);
   const [commentJsonData, setcommentJsonData] = useState(CommentViewData);
   const [AddExpensesRowPop, setAddExpensesRowPop] = useState(false);
-  const [new_sr, set_new_sr] = useState("");
-  const [new_particulars, set_new_particulars] = useState("");
-  const [new_remarks, set_new_remarks] = useState("");
-  const [new_vouchno, set_new_vouchno] = useState("");
-  const [new_rec, set_new_rec] = useState("");
-  const [new_pay, set_new_pay] = useState("");
-  const [new_balance, set_new_balance] = useState("");
-  const [new_heads, set_new_heads] = useState("");
-  const [new_heads2, set_new_heads2] = useState("");
-  const [newManpower, setnewManpower] = useState("");
-  const [newConsumables, setnewConsumables] = useState("");
-  const [newTravel, setnewTravel] = useState("");
-  const [newDemo, setnewDemo] = useState("");
-  const [newOverheads, setnewOverheads] = useState("");
-  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState("");
-  const [newEquipment, setnewEquipment] = useState("");
-  const [newConstruction, setnewConstruction] = useState("");
-  const [newFabrication, setnewFabrication] = useState("");
+  const [new_sr, set_new_sr] = useState('');
+  const [new_particulars, set_new_particulars] = useState('');
+  const [new_remarks, set_new_remarks] = useState('');
+  const [new_vouchno, set_new_vouchno] = useState('');
+  const [new_rec, set_new_rec] = useState('');
+  const [new_pay, set_new_pay] = useState('');
+  const [new_balance, set_new_balance] = useState('');
+  const [new_heads, set_new_heads] = useState('');
+  const [new_heads2, set_new_heads2] = useState('');
+  const [newManpower, setnewManpower] = useState('');
+  const [newConsumables, setnewConsumables] = useState('');
+  const [newTravel, setnewTravel] = useState('');
+  const [newDemo, setnewDemo] = useState('');
+  const [newOverheads, setnewOverheads] = useState('');
+  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState('');
+  const [newEquipment, setnewEquipment] = useState('');
+  const [newConstruction, setnewConstruction] = useState('');
+  const [newFabrication, setnewFabrication] = useState('');
   const [whichTable, setwhichTable] = useState(0);
-  const [newRecurring, setnewRecurring] = useState("");
-  const [newNonRecurring, setnewNonRecurring] = useState("");
-  const [currUpdateheads, setcurrUpdateheads] = useState("");
-  const [committedOrNot, setcommittedOrNot] = useState("");
-  const [oldPay, setoldPay] = useState("");
+  const [newRecurring, setnewRecurring] = useState('');
+  const [newNonRecurring, setnewNonRecurring] = useState('');
+  const [currUpdateheads, setcurrUpdateheads] = useState('');
+  const [committedOrNot, setcommittedOrNot] = useState('');
+  const [oldPay, setoldPay] = useState('');
   const [openImportExcelPop, setOpenImportExcelPop] = useState(false);
-  const [rec1, setrec1] = useState("")
-  const [rec2, setrec2] = useState("")
-  const [rec3, setrec3] = useState("")
-  const [nonrec1, setnonrec1] = useState("")
-  const [nonrec2, setnonrec2] = useState("")
-  const [nonrec3, setnonrec3] = useState("")
+  const [rec1, setrec1] = useState('');
+  const [rec2, setrec2] = useState('');
+  const [rec3, setrec3] = useState('');
+  const [nonrec1, setnonrec1] = useState('');
+  const [nonrec2, setnonrec2] = useState('');
+  const [nonrec3, setnonrec3] = useState('');
   const [excelData, setexcelData] = useState([]);
   const [yearCtr, setyearCtr] = useState(1);
 
-  
-
-  const handleFile = async(e) => {
+  const handleFile = async (e) => {
     console.log(e.target.files[0]);
-    const file=e.target.files[0];
-    const data=await file.arrayBuffer();
-    const workbook=XLSX.read(data);
-    const worksheet=workbook.Sheets[workbook.SheetNames[0]];
-    const jsonData=XLSX.utils.sheet_to_json(worksheet);
+    const file = e.target.files[0];
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
     // console.log(jsonData);
     setexcelData(jsonData);
-
-    
-    
   };
 
-
-
-  const processExcel =  async() => {
-    console.log("DATA");
+  const processExcel = async () => {
+    console.log('DATA');
     console.log(excelData);
     var arr = [];
-    Object.keys(excelData).forEach(function(key) {
+    Object.keys(excelData).forEach(function (key) {
       console.log(excelData[key]);
       arr.push(excelData[key]);
     });
     console.log(arr.length);
-    for(var i=0;i<arr.length;i++){
-      
-      if(arr[i]['Heads']=='Grant')
-      {
-        console.log("Hi Here");
-        if(yearCtr==1)
-        {
-          console.log("Hi Here");
-        var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
-        const resp2 = await fetch(server_address, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", 
-        "jwt-token" : localStorage.getItem("token"), },
-        body: JSON.stringify({
-        particulars: arr[i]['Particulars'],
-        remarks: arr[i]['Remarks'],
-        vouchno: arr[i]['Voucher No. & Date'],
-        recur: rec1,
-        non_recur: nonrec1,
-        project_id: props.projId,
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i]['Heads'] == 'Grant') {
+        console.log('Hi Here');
+        if (yearCtr == 1) {
+          console.log('Hi Here');
+          const resp2 = await fetch(`${BACKEND_URL}/updated_add_fund`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({
+              particulars: arr[i]['Particulars'],
+              remarks: arr[i]['Remarks'],
+              vouchno: arr[i]['Voucher No. & Date'],
+              recur: rec1,
+              non_recur: nonrec1,
+              project_id: props.projId,
+            }),
+          });
 
-      }),
-    });
+          const json_response = await resp2.json();
+          console.log('RESPONSEEE->' + json_response);
 
-    const json_response = await resp2.json();
-    console.log("RESPONSEEE->" + json_response);
+          const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ project_id: props.projId }),
+          });
 
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+          const json_response3 = await resp3.json();
+          set_rows(json_response3);
 
-    const json_response3 = await resp3.json();
-    set_rows(json_response3);
+          // update summary table
+          const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ project_id: props.projId }),
+          });
 
-    // update summary table
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+          const json_response4 = await resp4.json();
+          setsummaryrows(json_response4);
+          set_new_particulars('');
+          set_new_remarks('');
+          set_new_vouchno('');
+          set_new_rec('');
+          set_new_pay('');
+        } else if (yearCtr == 2) {
+          const resp2 = await fetch(`${BACKEND_URL}/updated_add_fund`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({
+              particulars: arr[i]['Particulars'],
+              remarks: arr[i]['Remarks'],
+              vouchno: arr[i]['Voucher No. & Date'],
+              recur: rec2,
+              non_recur: nonrec2,
+              project_id: props.projId,
+            }),
+          });
 
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
-    set_new_particulars("");
-    set_new_remarks("");
-    set_new_vouchno("");
-    set_new_rec("");
-    set_new_pay("");
+          const json_response = await resp2.json();
+          console.log('RESPONSEEE->' + json_response);
+
+          const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ project_id: props.projId }),
+          });
+
+          const json_response3 = await resp3.json();
+          set_rows(json_response3);
+
+          // update summary table
+          const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ project_id: props.projId }),
+          });
+
+          const json_response4 = await resp4.json();
+          setsummaryrows(json_response4);
+          set_new_particulars('');
+          set_new_remarks('');
+          set_new_vouchno('');
+          set_new_rec('');
+          set_new_pay('');
+        } else {
+          const resp2 = await fetch(`${BACKEND_URL}/updated_add_fund`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({
+              particulars: arr[i]['Particulars'],
+              remarks: arr[i]['Remarks'],
+              vouchno: arr[i]['Voucher No. & Date'],
+              recur: rec3,
+              non_recur: nonrec3,
+              project_id: props.projId,
+            }),
+          });
+
+          const json_response = await resp2.json();
+          console.log('RESPONSEEE->' + json_response);
+
+          const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ project_id: props.projId }),
+          });
+
+          const json_response3 = await resp3.json();
+          set_rows(json_response3);
+
+          // update summary table
+          const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'jwt-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ project_id: props.projId }),
+          });
+
+          const json_response4 = await resp4.json();
+          setsummaryrows(json_response4);
+          set_new_particulars('');
+          set_new_remarks('');
+          set_new_vouchno('');
+          set_new_rec('');
+          set_new_pay('');
         }
-        else if(yearCtr==2)
-        {
-          var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
-        const resp2 = await fetch(server_address, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" , 
-        "jwt-token" : localStorage.getItem("token"),},
-        body: JSON.stringify({
-        particulars: arr[i]['Particulars'],
-        remarks: arr[i]['Remarks'],
-        vouchno: arr[i]['Voucher No. & Date'],
-        recur: rec2,
-        non_recur: nonrec2,
-        project_id: props.projId,
-
-      }),
-    });
-
-    const json_response = await resp2.json();
-    console.log("RESPONSEEE->" + json_response);
-
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
-
-    const json_response3 = await resp3.json();
-    set_rows(json_response3);
-
-    // update summary table
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
-
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
-    set_new_particulars("");
-    set_new_remarks("");
-    set_new_vouchno("");
-    set_new_rec("");
-    set_new_pay("");
-        }else{
-          var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
-        const resp2 = await fetch(server_address, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" , 
-        "jwt-token" : localStorage.getItem("token"),},
-        body: JSON.stringify({
-        particulars: arr[i]['Particulars'],
-        remarks: arr[i]['Remarks'],
-        vouchno: arr[i]['Voucher No. & Date'],
-        recur: rec3,
-        non_recur: nonrec3,
-        project_id: props.projId,
-
-      }),
-    });
-
-    const json_response = await resp2.json();
-    console.log("RESPONSEEE->" + json_response);
-
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
-
-    const json_response3 = await resp3.json();
-    set_rows(json_response3);
-
-    // update summary table
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
-
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
-    set_new_particulars("");
-    set_new_remarks("");
-    set_new_vouchno("");
-    set_new_rec("");
-    set_new_pay("");
+        setyearCtr(yearCtr + 1);
+      } else {
+        if (
+          arr[i]['Heads'] == 'Equipments' ||
+          arr[i]['Heads'] == 'Fabrication'
+        ) {
+          var x = 'Non-Rec.';
+        } else {
+          x = 'Rec.';
         }
-        setyearCtr(yearCtr+1);
+        const resp2 = await fetch(POST_INSERT_MAIN_TABLE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'jwt-token': localStorage.getItem('token'),
+          },
+          body: JSON.stringify({
+            particulars: arr[i]['Particulars'],
+            remarks: arr[i]['Remarks'],
+            vouchno: arr[i]['Voucher No. & Date'],
+            // rec: new_rec,
+            pay: Number(arr[i]['Payment']),
+            // balance: new_balance,
+            actual: 0,
+            heads: x,
+            heads2: arr[i]['Heads'],
+            project_id: props.projId,
+          }),
+        });
 
-      }else{
-        if(arr[i]['Heads']=="Equipments"|| arr[i]['Heads']=="Fabrication"){
-          var x="Non-Rec.";
+        const json_response = await resp2.json();
+        console.log('RESPONSEEE->' + json_response);
+
+        if (json_response == -1) {
+          alert('Expenditure exceeds Sanctioned Amount, Request Denied!!');
+          return;
         }
-        else{
-          x="Rec.";
-        }
-        var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/insert_main_table";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({
-        particulars: arr[i]['Particulars'],
-        remarks: arr[i]['Remarks'],
-        vouchno: arr[i]['Voucher No. & Date'],
-        // rec: new_rec,
-        pay: Number(arr[i]['Payment']),
-        // balance: new_balance,
-        actual: 0,
-        heads: x,
-        heads2: arr[i]['Heads'],
-        project_id: props.projId,
-      }),
-    });
 
-    const json_response = await resp2.json();
-    console.log("RESPONSEEE->" + json_response);
+        const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'jwt-token': localStorage.getItem('token'),
+          },
+          body: JSON.stringify({ project_id: props.projId }),
+        });
 
-    if (json_response == -1) {
-      alert("Expenditure exceeds Sanctioned Amount, Request Denied!!");
-      return;
-    }
+        const json_response3 = await resp3.json();
+        set_rows(json_response3);
 
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
+        // update summary table
+        const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'jwt-token': localStorage.getItem('token'),
+          },
+          body: JSON.stringify({ project_id: props.projId }),
+        });
 
-    const json_response3 = await resp3.json();
-    set_rows(json_response3);
-
-    // update summary table
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
-      body: JSON.stringify({ project_id: props.projId }),
-    });
-
-    const json_response4 = await resp4.json();
-    setsummaryrows(json_response4);
-    set_new_particulars("");
-    set_new_remarks("");
-    set_new_vouchno("");
-    set_new_rec("");
-    set_new_pay("");
+        const json_response4 = await resp4.json();
+        setsummaryrows(json_response4);
+        set_new_particulars('');
+        set_new_remarks('');
+        set_new_vouchno('');
+        set_new_rec('');
+        set_new_pay('');
       }
       console.log(arr[i]['Particulars']);
-
     }
     setOpenImportExcelPop(false);
-  }
-
-
+  };
 
   const handleSubmit = async () => {
     console.log(comment);
     console.log(rowId);
-    console.log("Table", whichTable);
-    var server_address;
-    if (whichTable === 1) server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/comment";
-    if (whichTable === 2)
-      server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/summary_comment";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    console.log('Table', whichTable);
+    var SUBMIT_URL;
+    if (whichTable === 1) SUBMIT_URL = `${BACKEND_URL}/comment`;
+    if (whichTable === 2) SUBMIT_URL = `${BACKEND_URL}/summary_comment`;
+    const resp2 = await fetch(SUBMIT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({
         project_id: props.projId,
         row_no: rowId,
@@ -393,22 +394,24 @@ export default function SOE_Table(props) {
 
     const json_response = await resp2.json();
     console.log(json_response);
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
     const json_response4 = await resp4.json();
     setsummaryrows(json_response4);
 
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -421,11 +424,12 @@ export default function SOE_Table(props) {
     console.log(comment);
     console.log(rowId);
 
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/sendMail";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp2 = await fetch(`${BACKEND_URL}/sendMail`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({
         project_id: props.projId,
         row_no: rowId,
@@ -442,25 +446,27 @@ export default function SOE_Table(props) {
   };
 
   const addNewExpensesRecord = async () => {
-    var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
-    const resp = await fetch(server_address2, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp = await fetch(`${BACKEND_URL}/user/${props.userEmail}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
     });
     const response = await resp.json();
-    console.log("Server response", response);
+    console.log('Server response', response);
 
     if (response != 1) {
-      alert("YOU ARE NOT THE ADMIN");
+      alert('YOU ARE NOT THE ADMIN');
       return;
     }
 
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/insert_main_table";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp2 = await fetch(POST_INSERT_MAIN_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({
         particulars: new_particulars,
         remarks: new_remarks,
@@ -476,18 +482,19 @@ export default function SOE_Table(props) {
     });
 
     const json_response = await resp2.json();
-    console.log("RESPONSEEE->" + json_response);
+    console.log('RESPONSEEE->' + json_response);
 
     if (json_response == -1) {
-      alert("Expenditure exceeds Sanctioned Amount, Request Denied!!");
+      alert('Expenditure exceeds Sanctioned Amount, Request Denied!!');
       return;
     }
 
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -495,43 +502,46 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
     const json_response4 = await resp4.json();
     setsummaryrows(json_response4);
-    set_new_particulars("");
-    set_new_remarks("");
-    set_new_vouchno("");
-    set_new_rec("");
-    set_new_pay("");
+    set_new_particulars('');
+    set_new_remarks('');
+    set_new_vouchno('');
+    set_new_rec('');
+    set_new_pay('');
   };
 
   const addNewFunds = async () => {
-    var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
-    const resp = await fetch(server_address2, {
-      method: "GET",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp = await fetch(`${BACKEND_URL}/user/${props.userEmail}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
     });
     const response = await resp.json();
-    console.log("Server response", response);
+    console.log('Server response', response);
 
     if (response != 1) {
-      alert("YOU ARE NOT THE ADMIN");
+      alert('YOU ARE NOT THE ADMIN');
       return;
     }
 
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/updated_add_fund";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp2 = await fetch(`${BACKEND_URL}/updated_add_fund`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({
         particulars: new_particulars,
         remarks: new_remarks,
@@ -554,13 +564,14 @@ export default function SOE_Table(props) {
     });
 
     const json_response = await resp2.json();
-    console.log("RESPONSEEE->" + json_response);
+    console.log('RESPONSEEE->' + json_response);
 
-    var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-    const resp3 = await fetch(server_address3, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
@@ -568,21 +579,22 @@ export default function SOE_Table(props) {
     set_rows(json_response3);
 
     // update summary table
-    var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-    const resp4 = await fetch(server_address4, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ project_id: props.projId }),
     });
 
     const json_response4 = await resp4.json();
     setsummaryrows(json_response4);
-    set_new_particulars("");
-    set_new_remarks("");
-    set_new_vouchno("");
-    set_new_rec("");
-    set_new_pay("");
+    set_new_particulars('');
+    set_new_remarks('');
+    set_new_vouchno('');
+    set_new_rec('');
+    set_new_pay('');
   };
 
   useEffect(() => {
@@ -598,8 +610,8 @@ export default function SOE_Table(props) {
   function rowSelector(flag) {
     // console.log("GG")
 
-    if (flag === 1) return "green";
-    else return "";
+    if (flag === 1) return 'green';
+    else return '';
   }
 
   return (
@@ -617,18 +629,21 @@ export default function SOE_Table(props) {
               <Button
                 variant="contained"
                 onClick={async () => {
-                  var server_address2 =
-                    "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + props.userEmail;
-                  const resp = await fetch(server_address2, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json", 
-                    "jwt-token" : localStorage.getItem("token"), },
-                  });
+                  const resp = await fetch(
+                    `${BACKEND_URL}/user/${props.userEmail}`,
+                    {
+                      method: 'GET',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'jwt-token': localStorage.getItem('token'),
+                      },
+                    }
+                  );
                   const response = await resp.json();
-                  console.log("Server response", response);
+                  console.log('Server response', response);
 
                   if (response != 1) {
-                    alert("YOU ARE NOT THE ADMIN");
+                    alert('YOU ARE NOT THE ADMIN');
                     return;
                   }
                   setAddExpensesRowPop(true);
@@ -661,11 +676,12 @@ export default function SOE_Table(props) {
           <Button
             variant="contained"
             onClick={async () => {
-              var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-              const resp2 = await fetch(server_address, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", 
-                "jwt-token" : localStorage.getItem("token"), },
+              const resp2 = await fetch(GET_MAIN_TABLE_URL, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'jwt-token': localStorage.getItem('token'),
+                },
                 body: JSON.stringify({ project_id: props.projId }),
               });
 
@@ -673,11 +689,12 @@ export default function SOE_Table(props) {
               set_rows(json_response);
 
               // update summary table
-              server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-              const resp3 = await fetch(server_address, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" , 
-                "jwt-token" : localStorage.getItem("token"),},
+              const resp3 = await fetch(GET_SUMMARY_TABLE_URL, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'jwt-token': localStorage.getItem('token'),
+                },
                 body: JSON.stringify({ project_id: props.projId }),
               });
 
@@ -694,7 +711,7 @@ export default function SOE_Table(props) {
           className="download-table-xls-button btn btn-primary mb-3"
           table="tbl1"
           filename={
-            "StatementOfExpenses_" + props.projId.toString().substring(1)
+            'StatementOfExpenses_' + props.projId.toString().substring(1)
           }
           sheet="Sheet1"
           buttonText="Export Expense Table to Excel Sheet"
@@ -751,13 +768,13 @@ export default function SOE_Table(props) {
                     {row.vouchno}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.rec != null ? "₹" + row.rec : null}
+                    {row.rec != null ? '₹' + row.rec : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.payment != null ? "₹" + row.payment : null}
+                    {row.payment != null ? '₹' + row.payment : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.balance != null ? "₹" + row.balance : null}
+                    {row.balance != null ? '₹' + row.balance : null}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.heads}</StyledTableCell>
                   <StyledTableCell align="right">
@@ -766,18 +783,21 @@ export default function SOE_Table(props) {
                       startIcon={<RemoveRedEyeIcon />}
                       onClick={async () => {
                         setrowIdView(row.sr);
-                        var server_address =
-                          "https://iitrpr-res-mgmt-backend.herokuapp.com/get_comment";
-                        const resp2 = await fetch(server_address, {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json", 
-                          "jwt-token" : localStorage.getItem("token"), },
-                          body: JSON.stringify({
-                            row_no: row.sr,
-                            project_id: props.projId,
-                            is_admin: props.userFlag,
-                          }),
-                        });
+                        const resp2 = await fetch(
+                          `${BACKEND_URL}/get_comment`,
+                          {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'jwt-token': localStorage.getItem('token'),
+                            },
+                            body: JSON.stringify({
+                              row_no: row.sr,
+                              project_id: props.projId,
+                              is_admin: props.userFlag,
+                            }),
+                          }
+                        );
 
                         const json_response = await resp2.json();
                         console.log(json_response);
@@ -786,7 +806,7 @@ export default function SOE_Table(props) {
                       }}
                     />
                     <Button
-                      style={{ width: "60px" }}
+                      style={{ width: '60px' }}
                       startIcon={<AddIcon />}
                       onClick={() => {
                         setOpenAddCommentPopup(true);
@@ -796,7 +816,7 @@ export default function SOE_Table(props) {
                     />
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.heads === "Grant" ? null : (
+                    {row.heads === 'Grant' ? null : (
                       <FormControl>
                         {/* <FormLabel id="demo-controlled-radio-buttons-group">
                         Gender
@@ -831,33 +851,36 @@ export default function SOE_Table(props) {
                       <Button
                         startIcon={<DeleteIcon />}
                         onClick={async () => {
-                          if (row.heads == "Grant") {
-                            alert("You cannot delete Grant row");
+                          if (row.heads == 'Grant') {
+                            alert('You cannot delete Grant row');
                           } else if (
-                            window.confirm("Are you sure, you want to delete")
+                            window.confirm('Are you sure, you want to delete')
                           ) {
-                            var server_address =
-                              "https://iitrpr-res-mgmt-backend.herokuapp.com/del_row";
-                            const resp2 = await fetch(server_address, {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json", 
-                              "jwt-token" : localStorage.getItem("token"), },
-                              body: JSON.stringify({
-                                sr: row.sr,
-                                project_id: props.projId,
-                                heads: row.heads,
-                              }),
-                            });
+                            const resp2 = await fetch(
+                              `${BACKEND_URL}/del_row`,
+                              {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'jwt-token': localStorage.getItem('token'),
+                                },
+                                body: JSON.stringify({
+                                  sr: row.sr,
+                                  project_id: props.projId,
+                                  heads: row.heads,
+                                }),
+                              }
+                            );
 
                             const json_response = await resp2.json();
                             console.log(json_response);
 
-                            var server_address3 =
-                              "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-                            const resp3 = await fetch(server_address3, {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json", 
-                              "jwt-token" : localStorage.getItem("token"), },
+                            const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'jwt-token': localStorage.getItem('token'),
+                              },
                               body: JSON.stringify({
                                 project_id: props.projId,
                               }),
@@ -867,12 +890,12 @@ export default function SOE_Table(props) {
                             set_rows(json_response3);
 
                             // update summary table
-                            var server_address4 =
-                              "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-                            const resp4 = await fetch(server_address4, {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json", 
-                              "jwt-token" : localStorage.getItem("token"), },
+                            const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'jwt-token': localStorage.getItem('token'),
+                              },
                               body: JSON.stringify({
                                 project_id: props.projId,
                               }),
@@ -894,14 +917,14 @@ export default function SOE_Table(props) {
         <br />
 
         <center>
-          <h2>Summary Table</h2>{" "}
+          <h2>Summary Table</h2>{' '}
         </center>
 
         <ReactHTMLTableToExcel
           id="test-table-xls-button2"
           className="download-table-xls-button btn btn-primary mb-3"
           table="table-to-xls2"
-          filename={"Summary_" + props.projId.toString().substring(1)}
+          filename={'Summary_' + props.projId.toString().substring(1)}
           sheet="Sheet1"
           buttonText="Export Summary Table to Excel Sheet"
         />
@@ -948,22 +971,22 @@ export default function SOE_Table(props) {
                 <StyledTableCell align="left">
                   <span
                     style={
-                      row.heads === "Rec." || row.heads === "Non-Rec."
-                        ? { fontWeight: "bold" }
-                        : { fontWeight: "" }
+                      row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                        ? { fontWeight: 'bold' }
+                        : { fontWeight: '' }
                     }
                   >
                     {row.heads}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {row.heads === "Misc Rec." ||
-                  row.heads === "Misc Non Rec." ? (
+                  {row.heads === 'Misc Rec.' ||
+                  row.heads === 'Misc Non Rec.' ? (
                     <span
                       style={
-                        row.heads === "Rec." || row.heads === "Non-Rec."
-                          ? { fontWeight: "bold" }
-                          : { fontWeight: "" }
+                        row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                          ? { fontWeight: 'bold' }
+                          : { fontWeight: '' }
                       }
                     >
                       0
@@ -971,46 +994,46 @@ export default function SOE_Table(props) {
                   ) : (
                     <span
                       style={
-                        row.heads === "Rec." || row.heads === "Non-Rec."
-                          ? { fontWeight: "bold" }
-                          : { fontWeight: "" }
+                        row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                          ? { fontWeight: 'bold' }
+                          : { fontWeight: '' }
                       }
                     >
-                      {"₹" + row.sanctioned_amount}
+                      {'₹' + row.sanctioned_amount}
                     </span>
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="left">
                   <span
                     style={
-                      row.heads === "Rec." || row.heads === "Non-Rec."
-                        ? { fontWeight: "bold" }
-                        : { fontWeight: "" }
+                      row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                        ? { fontWeight: 'bold' }
+                        : { fontWeight: '' }
                     }
                   >
-                    {"₹" + row.year_1_funds}
+                    {'₹' + row.year_1_funds}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
                   <span
                     style={
-                      row.heads === "Rec." || row.heads === "Non-Rec."
-                        ? { fontWeight: "bold" }
-                        : { fontWeight: "" }
+                      row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                        ? { fontWeight: 'bold' }
+                        : { fontWeight: '' }
                     }
                   >
-                    {"₹" + row.year_2_funds}
+                    {'₹' + row.year_2_funds}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
                   <span
                     style={
-                      row.heads === "Rec." || row.heads === "Non-Rec."
-                        ? { fontWeight: "bold" }
-                        : { fontWeight: "" }
+                      row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                        ? { fontWeight: 'bold' }
+                        : { fontWeight: '' }
                     }
                   >
-                    {"₹" + row.year_3_funds}
+                    {'₹' + row.year_3_funds}
                   </span>
                 </StyledTableCell>
                 {/* <StyledTableCell align="left"> */}
@@ -1022,23 +1045,23 @@ export default function SOE_Table(props) {
                 <StyledTableCell align="left">
                   <span
                     style={
-                      row.heads === "Rec." || row.heads === "Non-Rec."
-                        ? { fontWeight: "bold" }
-                        : { fontWeight: "" }
+                      row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                        ? { fontWeight: 'bold' }
+                        : { fontWeight: '' }
                     }
                   >
-                    {"₹" + row.expenditure}
+                    {'₹' + row.expenditure}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
                   <span
                     style={
-                      row.heads === "Rec." || row.heads === "Non-Rec."
-                        ? { fontWeight: "bold" }
-                        : { fontWeight: "" }
+                      row.heads === 'Rec.' || row.heads === 'Non-Rec.'
+                        ? { fontWeight: 'bold' }
+                        : { fontWeight: '' }
                     }
                   >
-                    {"₹" + row.balance}
+                    {'₹' + row.balance}
                   </span>
                 </StyledTableCell>
                 <StyledTableCell align="left">
@@ -1047,18 +1070,21 @@ export default function SOE_Table(props) {
                     startIcon={<RemoveRedEyeIcon />}
                     onClick={async () => {
                       setrowIdView(row.sr);
-                      var server_address =
-                        "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_comment";
-                      const resp2 = await fetch(server_address, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" , 
-                        "jwt-token" : localStorage.getItem("token"),},
-                        body: JSON.stringify({
-                          row_no: row.sr,
-                          project_id: props.projId,
-                          is_admin: props.userFlag,
-                        }),
-                      });
+                      const resp2 = await fetch(
+                        `${BACKEND_URL}/get_summary_comment`,
+                        {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'jwt-token': localStorage.getItem('token'),
+                          },
+                          body: JSON.stringify({
+                            row_no: row.sr,
+                            project_id: props.projId,
+                            is_admin: props.userFlag,
+                          }),
+                        }
+                      );
 
                       const json_response = await resp2.json();
                       console.log(json_response);
@@ -1067,7 +1093,7 @@ export default function SOE_Table(props) {
                     }}
                   />
                   <Button
-                    style={{ width: "60px" }}
+                    style={{ width: '60px' }}
                     startIcon={<AddIcon />}
                     onClick={() => {
                       setOpenAddCommentPopup(true);
@@ -1099,7 +1125,7 @@ export default function SOE_Table(props) {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
+          sx={{ '& .MuiTextField-root': { m: 1, width: '500px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -1110,7 +1136,7 @@ export default function SOE_Table(props) {
             <span>
               <Button
                 startIcon={<CloseIcon />}
-                style={{ float: "right" }}
+                style={{ float: 'right' }}
                 onClick={() => setOpenAddCommentPopup(false)}
               />
               <TextField
@@ -1120,7 +1146,7 @@ export default function SOE_Table(props) {
                 rows={4}
                 defaultValue=""
                 bgcolor="white"
-                sx={{ zIndex: "tooltip" }}
+                sx={{ zIndex: 'tooltip' }}
                 onChange={(event) => {
                   setComment(event.target.value);
                 }}
@@ -1151,13 +1177,14 @@ export default function SOE_Table(props) {
           <span>
             <Button
               startIcon={<CloseIcon />}
-              style={{ float: "right" }}
+              style={{ float: 'right' }}
               onClick={async () => {
-                var server_address3 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-                const resp3 = await fetch(server_address3, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" , 
-                  "jwt-token" : localStorage.getItem("token"),},
+                const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'jwt-token': localStorage.getItem('token'),
+                  },
                   body: JSON.stringify({ project_id: props.projId }),
                 });
 
@@ -1165,11 +1192,12 @@ export default function SOE_Table(props) {
                 set_rows(json_response3);
 
                 // update summary table
-                var server_address4 = "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-                const resp4 = await fetch(server_address4, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json", 
-                  "jwt-token" : localStorage.getItem("token"), },
+                const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'jwt-token': localStorage.getItem('token'),
+                  },
                   body: JSON.stringify({ project_id: props.projId }),
                 });
 
@@ -1220,7 +1248,7 @@ export default function SOE_Table(props) {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
+          sx={{ '& .MuiTextField-root': { m: 1, width: '500px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -1231,7 +1259,7 @@ export default function SOE_Table(props) {
             <span>
               <Button
                 startIcon={<CloseIcon />}
-                style={{ float: "right" }}
+                style={{ float: 'right' }}
                 onClick={() => setOpenCommitPopup(false)}
               />
               <TextField
@@ -1249,11 +1277,12 @@ export default function SOE_Table(props) {
                   endIcon={<SendIcon />}
                   // onClick={handleSubmit}
                   onClick={async () => {
-                    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/to_actual";
-                    const resp2 = await fetch(server_address, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json", 
-                      "jwt-token" : localStorage.getItem("token"), },
+                    const resp2 = await fetch(`${BACKEND_URL}/to_actual`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'jwt-token': localStorage.getItem('token'),
+                      },
                       body: JSON.stringify({
                         sr: rowId,
                         p_id: props.projId,
@@ -1265,24 +1294,24 @@ export default function SOE_Table(props) {
 
                     const json_response = await resp2.json();
                     console.log(json_response);
-                    var server_address4 =
-                      "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-                    const resp4 = await fetch(server_address4, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json", 
-                      "jwt-token" : localStorage.getItem("token"), },
+                    const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'jwt-token': localStorage.getItem('token'),
+                      },
                       body: JSON.stringify({ project_id: props.projId }),
                     });
 
                     const json_response4 = await resp4.json();
                     setsummaryrows(json_response4);
 
-                    var server_address3 =
-                      "https://iitrpr-res-mgmt-backend.herokuapp.com/get_main_table";
-                    const resp3 = await fetch(server_address3, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json", 
-                      "jwt-token" : localStorage.getItem("token"), },
+                    const resp3 = await fetch(GET_MAIN_TABLE_URL, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'jwt-token': localStorage.getItem('token'),
+                      },
                       body: JSON.stringify({ project_id: props.projId }),
                     });
 
@@ -1304,7 +1333,7 @@ export default function SOE_Table(props) {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
+          sx={{ '& .MuiTextField-root': { m: 1, width: '500px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -1315,7 +1344,7 @@ export default function SOE_Table(props) {
             <span>
               <Button
                 startIcon={<CloseIcon />}
-                style={{ float: "right" }}
+                style={{ float: 'right' }}
                 onClick={() => setOpenEditPopup(false)}
               />
               <TextField
@@ -1333,29 +1362,32 @@ export default function SOE_Table(props) {
                   endIcon={<SendIcon />}
                   // onClick={handleSubmit}
                   onClick={async () => {
-                    var server_address =
-                      "https://iitrpr-res-mgmt-backend.herokuapp.com/edit_sanctioned";
-                    const resp2 = await fetch(server_address, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" , 
-                      "jwt-token" : localStorage.getItem("token"),},
-                      body: JSON.stringify({
-                        project_id: props.projId,
-                        sanc: Edit,
-                        heads: currUpdateheads,
-                      }),
-                    });
+                    const resp2 = await fetch(
+                      `${BACKEND_URL}/edit_sanctioned`,
+                      {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'jwt-token': localStorage.getItem('token'),
+                        },
+                        body: JSON.stringify({
+                          project_id: props.projId,
+                          sanc: Edit,
+                          heads: currUpdateheads,
+                        }),
+                      }
+                    );
 
                     const json_response = await resp2.json();
                     console.log(json_response);
                     setOpenEditPopup(false);
 
-                    var server_address4 =
-                      "https://iitrpr-res-mgmt-backend.herokuapp.com/get_summary_table";
-                    const resp4 = await fetch(server_address4, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json", 
-                      "jwt-token" : localStorage.getItem("token"), },
+                    const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'jwt-token': localStorage.getItem('token'),
+                      },
                       body: JSON.stringify({ project_id: props.projId }),
                     });
 
@@ -1376,7 +1408,7 @@ export default function SOE_Table(props) {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { width: "600px" } }}
+          sx={{ '& .MuiTextField-root': { width: '600px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -1394,9 +1426,9 @@ export default function SOE_Table(props) {
               <Button
                 className="CloseAddProjectPopup"
                 startIcon={<CloseIcon />}
-                style={{ float: "right" }}
+                style={{ float: 'right' }}
                 onClick={() => {
-                  set_new_heads("Heads");
+                  set_new_heads('Heads');
                   setAddExpensesRowPop(false);
                 }}
               />
@@ -1483,8 +1515,8 @@ export default function SOE_Table(props) {
                     set_new_heads(event.target.value);
                   }}
                 >
-                  <MenuItem value={"Rec."}>Recurring</MenuItem>
-                  <MenuItem value={"Non-Rec."}>Non-Recurring</MenuItem>
+                  <MenuItem value={'Rec.'}>Recurring</MenuItem>
+                  <MenuItem value={'Non-Rec.'}>Non-Recurring</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
@@ -1495,7 +1527,7 @@ export default function SOE_Table(props) {
               spacing={3}
               padding={1}
             >
-              {new_heads === "Rec." ? (
+              {new_heads === 'Rec.' ? (
                 <FormControl variant="standard" fullWidth>
                   <InputLabel id="demo-simple-select-label2">Heads</InputLabel>
                   <Select
@@ -1507,18 +1539,18 @@ export default function SOE_Table(props) {
                       set_new_heads2(event.target.value);
                     }}
                   >
-                    <MenuItem value={"Manpower"}>Manpower</MenuItem>
-                    <MenuItem value={"Consumables"}>Consumables</MenuItem>
-                    <MenuItem value={"Travel"}>Travel</MenuItem>
-                    <MenuItem value={"Field Testing/Demo/Tranings"}>
+                    <MenuItem value={'Manpower'}>Manpower</MenuItem>
+                    <MenuItem value={'Consumables'}>Consumables</MenuItem>
+                    <MenuItem value={'Travel'}>Travel</MenuItem>
+                    <MenuItem value={'Field Testing/Demo/Tranings'}>
                       Field Testing/Demo/Tranings
                     </MenuItem>
-                    <MenuItem value={"Overheads"}>Overheads</MenuItem>
-                    <MenuItem value={"Unforseen Expenses"}>
+                    <MenuItem value={'Overheads'}>Overheads</MenuItem>
+                    <MenuItem value={'Unforseen Expenses'}>
                       Unforseen Expenses
                     </MenuItem>
-                    <MenuItem value={"Fabrication"}>Fabrication</MenuItem>
-                    <MenuItem value={"Misc Rec."}>
+                    <MenuItem value={'Fabrication'}>Fabrication</MenuItem>
+                    <MenuItem value={'Misc Rec.'}>
                       Miscellaneous(Recurring)
                     </MenuItem>
                   </Select>
@@ -1535,10 +1567,10 @@ export default function SOE_Table(props) {
                       set_new_heads2(event.target.value);
                     }}
                   >
-                    <MenuItem value={"Equipments"}>Equipment</MenuItem>
-                    <MenuItem value={"Construction"}>Construction</MenuItem>
+                    <MenuItem value={'Equipments'}>Equipment</MenuItem>
+                    <MenuItem value={'Construction'}>Construction</MenuItem>
 
-                    <MenuItem value={"Misc Non Rec."}>
+                    <MenuItem value={'Misc Non Rec.'}>
                       Miscellaneous(Non-Recurring)
                     </MenuItem>
                   </Select>
@@ -1559,8 +1591,8 @@ export default function SOE_Table(props) {
                     setcommittedOrNot(event.target.value);
                   }}
                 >
-                  <MenuItem value={"1"}>Committed</MenuItem>
-                  <MenuItem value={"0"}>Actual</MenuItem>
+                  <MenuItem value={'1'}>Committed</MenuItem>
+                  <MenuItem value={'0'}>Actual</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
@@ -1585,7 +1617,7 @@ export default function SOE_Table(props) {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { width: "600px" } }}
+          sx={{ '& .MuiTextField-root': { width: '600px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -1603,7 +1635,7 @@ export default function SOE_Table(props) {
               <Button
                 className="CloseAddProjectPopup"
                 startIcon={<CloseIcon />}
-                style={{ float: "right" }}
+                style={{ float: 'right' }}
                 onClick={() => {
                   setOpenAddFundsPopUp(false);
                 }}
@@ -1664,7 +1696,7 @@ export default function SOE_Table(props) {
               /> */}
             </Stack>
             <center className="paddingFix">
-              <h6>Enter the Amount under the following categories/Heads : </h6>{" "}
+              <h6>Enter the Amount under the following categories/Heads : </h6>{' '}
             </center>
             <TextField
               type="number"
@@ -1833,7 +1865,7 @@ export default function SOE_Table(props) {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { width: "600px" } }}
+          sx={{ '& .MuiTextField-root': { width: '600px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -1851,7 +1883,7 @@ export default function SOE_Table(props) {
               <Button
                 className="CloseAddProjectPopup"
                 startIcon={<CloseIcon />}
-                style={{ float: "right" }}
+                style={{ float: 'right' }}
                 onClick={() => {
                   setOpenImportExcelPop(false);
                 }}
@@ -1880,7 +1912,6 @@ export default function SOE_Table(props) {
                 variant="outlined"
                 onChange={(event) => {
                   setnonrec1(event.target.value);
-
                 }}
               />
             </Stack>
@@ -1898,7 +1929,6 @@ export default function SOE_Table(props) {
                 variant="outlined"
                 onChange={(event) => {
                   setrec2(event.target.value);
-
                 }}
               />
               <TextField
@@ -1908,7 +1938,6 @@ export default function SOE_Table(props) {
                 variant="outlined"
                 onChange={(event) => {
                   setnonrec2(event.target.value);
-
                 }}
               />
             </Stack>
@@ -1926,7 +1955,6 @@ export default function SOE_Table(props) {
                 variant="outlined"
                 onChange={(event) => {
                   setrec3(event.target.value);
-
                 }}
               />
               <TextField
@@ -1936,7 +1964,6 @@ export default function SOE_Table(props) {
                 variant="outlined"
                 onChange={(event) => {
                   setnonrec3(event.target.value);
-
                 }}
               />
             </Stack>
@@ -1948,21 +1975,18 @@ export default function SOE_Table(props) {
               spacing={3}
               padding={1}
             >
-               <input
-        type="file"
-        onChange={(e) => {
-         
-          handleFile(e)
-          
-        }}
-      />
+              <input
+                type="file"
+                onChange={(e) => {
+                  handleFile(e);
+                }}
+              />
             </Stack>
 
             <center>
               <Button
                 onClick={() => {
-                 
-                 processExcel();
+                  processExcel();
                 }}
                 variant="contained"
                 endIcon={<SendIcon />}

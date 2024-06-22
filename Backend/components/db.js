@@ -1,25 +1,23 @@
-const Pool = require("pg").Pool;
+const { Pool } = require('pg');
+require('dotenv').config();
 
-require("dotenv").config();
+const devConfig = {
+  user: process.env.DEV_PG_USER,
+  password: process.env.DEV_PG_PASSWORD,
+  host: process.env.DEV_PG_HOST,
+  port: process.env.DEV_PG_PORT,
+  database: process.env.DEV_PG_DATABASE,
+};
 
-const devconfig={
-    user: process.env.PG_USER,
-    password: "password",
-    host: "localhost",
-    port: 5432,
-    database: "research_mgmt"
-}
+const prodConfig = {
+  connectionString: process.env.PROD_DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+};
 
-const proConfig={
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
-}
-
-const pool = new Pool({
-    connectionString:"postgres://hjzkfaxfmpyjjo:6cf4a3fc572c16c2360d1536115d1d52abbfd38e7ca7b586b36a3a86330e4d67@ec2-52-54-212-232.compute-1.amazonaws.com:5432/d756afv3qeuka0",
-    ssl: {
-        rejectUnauthorized: false,
-    },
-} );
+const pool = new Pool(
+  process.env.NODE_ENV === 'production' ? prodConfig : devConfig
+);
 
 module.exports = pool;

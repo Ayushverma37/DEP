@@ -1,79 +1,79 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import ProjectTable from "./ProjectsTable";
-import NavbarComp from "./NavbarComp";
-import PermanentDrawerLeft from "./sidebar";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import Box from "@mui/material/Box";
-import SearchIcon from "@mui/icons-material/Search";
-import SendIcon from "@mui/icons-material/Send";
-import AddProjectPopup from "./AddProjectPopup";
-import CloseIcon from "@mui/icons-material/Close";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import ProjectTable from './ProjectsTable';
+import NavbarComp from './NavbarComp';
+import PermanentDrawerLeft from './sidebar';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import Box from '@mui/material/Box';
+import SearchIcon from '@mui/icons-material/Search';
+import SendIcon from '@mui/icons-material/Send';
+import AddProjectPopup from './AddProjectPopup';
+import CloseIcon from '@mui/icons-material/Close';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
+const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
 
 export default function Dashboard() {
   const { state } = useLocation();
   const [tableShow, setTableShow] = useState(false);
   const [all_projects, setall_projects] = useState(null);
   const [openAddProjectPopup, setopenAddProjectPopup] = useState(false);
-  const [newProjectId, setnewProjectId] = useState("")
-  const [newProjectTitle, setnewProjectTitle] = useState("")
-  const [newProfessor, setnewProfessor] = useState("")
-  const [newGrant, setnewGrant] = useState("")
-  const [newManpower, setnewManpower] = useState("")
-  const [newConsumables, setnewConsumables] = useState("")
-  const [newTravel, setnewTravel] = useState("")
-  const [newDemo, setnewDemo] = useState("")
-  const [newOverheads, setnewOverheads] = useState("")
-  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState("")
-  const [newEquipment, setnewEquipment] = useState("")
-  const [newConstruction, setnewConstruction] = useState("")
-  const [newFabrication, setnewFabrication] = useState("")
-  const [newRecurring, setnewRecurring] = useState("")
-  const [newNonRecurring, setnewNonRecurring] = useState("")
-  const [searchOption, setsearchOption] = useState("")
-  const [newPI, setnewPI] = useState("")
-  const [newCOPI, setnewCOPI] = useState("")
-  const [newDepartment, setnewDepartment] = useState("")
-  const [newAgency, setnewAgency] = useState("")
-  const [newSanctionedNumber, setnewSanctionedNumber] = useState("")
-  const [newSanctionedDate, setnewSanctionedDate] = useState("")
-  const [newDOC, setnewDOC] = useState("")
-  const [newDOS, setnewDOS] = useState("")
-  const [newYear, setnewYear] = useState("")
-  const [newDuration, setnewDuration] = useState("")
+  const [newProjectId, setnewProjectId] = useState('');
+  const [newProjectTitle, setnewProjectTitle] = useState('');
+  const [newProfessor, setnewProfessor] = useState('');
+  const [newGrant, setnewGrant] = useState('');
+  const [newManpower, setnewManpower] = useState('');
+  const [newConsumables, setnewConsumables] = useState('');
+  const [newTravel, setnewTravel] = useState('');
+  const [newDemo, setnewDemo] = useState('');
+  const [newOverheads, setnewOverheads] = useState('');
+  const [newUnforeseenExpenses, setnewUnforeseenExpenses] = useState('');
+  const [newEquipment, setnewEquipment] = useState('');
+  const [newConstruction, setnewConstruction] = useState('');
+  const [newFabrication, setnewFabrication] = useState('');
+  const [newRecurring, setnewRecurring] = useState('');
+  const [newNonRecurring, setnewNonRecurring] = useState('');
+  const [searchOption, setsearchOption] = useState('');
+  const [newPI, setnewPI] = useState('');
+  const [newCOPI, setnewCOPI] = useState('');
+  const [newDepartment, setnewDepartment] = useState('');
+  const [newAgency, setnewAgency] = useState('');
+  const [newSanctionedNumber, setnewSanctionedNumber] = useState('');
+  const [newSanctionedDate, setnewSanctionedDate] = useState('');
+  const [newDOC, setnewDOC] = useState('');
+  const [newDOS, setnewDOS] = useState('');
+  const [newYear, setnewYear] = useState('');
+  const [newDuration, setnewDuration] = useState('');
 
   console.log(state.userImg);
-  console.log("HELPL");
+  console.log('HELPL');
   console.log(state.userName);
   console.log(state.userEmail);
-  console.log("SWEMZ", state.isDashboard);
+  console.log('SWEMZ', state.isDashboard);
 
   const SubmitAddProject = async () => {
-    if((new Date(newDOS).getTime())>(new Date(newDOC).getTime())){
-      alert("Start Date is later than Completion Date");
+    if (new Date(newDOS).getTime() > new Date(newDOC).getTime()) {
+      alert('Start Date is later than Completion Date');
       return;
-    }
-    else if((new Date(newDOS).getFullYear())!=newYear)
-    {
-      alert("Year in Start Date does not match with Start year entered");
+    } else if (new Date(newDOS).getFullYear() != newYear) {
+      alert('Year in Start Date does not match with Start year entered');
       return;
     }
     // console.log(new Date(newDOS).getTime());
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/create_project";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp2 = await fetch(`${BACKEND_URL}/create_project`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({
-        project_id: "p"+newProjectId,
+        project_id: 'p' + newProjectId,
         project_title: newProjectTitle,
         professors: newProfessor,
         grant: newGrant,
@@ -85,7 +85,7 @@ export default function Dashboard() {
         sanctioned_date: newSanctionedDate,
         duration: newDuration,
         dos: newDOS,
-        doc:newDOC,
+        doc: newDOC,
         start_year: newYear,
         rec_sanctioned_amount: newRecurring,
         nonrec_sanctioned_amount: newNonRecurring,
@@ -97,22 +97,23 @@ export default function Dashboard() {
         unforseen_sanc: newUnforeseenExpenses,
         equip_sanc: newEquipment,
         const_sanc: newConstruction,
-        fab_sanc: newFabrication
-
-
+        fab_sanc: newFabrication,
       }),
     });
 
     const json_response = await resp2.json();
-    if(json_response==-1){
-      alert("Total project cost is not equal to the sum of recurring and non recurring");
+    if (json_response == -1) {
+      alert(
+        'Total project cost is not equal to the sum of recurring and non recurring'
+      );
+      return;
+    } else if (json_response == -2) {
+      alert(
+        'Either recurring or non recurring total is less than sum of corresponding subheads'
+      );
       return;
     }
-    else if(json_response==-2){
-      alert("Either recurring or non recurring total is less than sum of corresponding subheads");
-      return;
-    }
-    console.log("RESPONSEEE->" + json_response);
+    console.log('RESPONSEEE->' + json_response);
     console.log(newProjectTitle);
     setopenAddProjectPopup(false);
     fetch_proj_on_click();
@@ -128,34 +129,33 @@ export default function Dashboard() {
   };
 
   async function add_proj_on_click() {
-    setnewProjectId("")
-    setnewProjectTitle("")
-    setnewProfessor("")
-    setnewGrant("")
-    setnewManpower("")
-    setnewConsumables("")
-    setnewTravel("")
-    setnewDemo("")
-    setnewOverheads("")
-    setnewUnforeseenExpenses("")
-    setnewEquipment("")
-    setnewConstruction("")
-    setnewFabrication("")
-    setnewRecurring("")
-    setnewNonRecurring("")
-    setsearchOption("")
-    setnewPI("")
-    setnewCOPI("")
-    setnewDepartment("")
-    setnewAgency("")
-    setnewSanctionedNumber("")
-    setnewSanctionedDate("")
-    setnewDOC("")
-    setnewDOS("")
-    setnewYear("")
-    setnewDuration("")
-    // var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + obj.userEmail;
-    // const resp = await fetch(server_address, {
+    setnewProjectId('');
+    setnewProjectTitle('');
+    setnewProfessor('');
+    setnewGrant('');
+    setnewManpower('');
+    setnewConsumables('');
+    setnewTravel('');
+    setnewDemo('');
+    setnewOverheads('');
+    setnewUnforeseenExpenses('');
+    setnewEquipment('');
+    setnewConstruction('');
+    setnewFabrication('');
+    setnewRecurring('');
+    setnewNonRecurring('');
+    setsearchOption('');
+    setnewPI('');
+    setnewCOPI('');
+    setnewDepartment('');
+    setnewAgency('');
+    setnewSanctionedNumber('');
+    setnewSanctionedDate('');
+    setnewDOC('');
+    setnewDOS('');
+    setnewYear('');
+    setnewDuration('');
+    // const resp = await fetch(`${BACKEND_URL}/user/${obj.userEmail}`, {
     //   method: "GET",
     //   headers: { "Content-Type": "application/json" },
     // });
@@ -177,36 +177,41 @@ export default function Dashboard() {
     console.log("Fetched");
     return;*/
 
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/user/" + obj.userEmail;
-    const resp = await fetch(server_address, {
-      method: "GET",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp = await fetch(`${BACKEND_URL}/user/${obj.userEmail}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
     });
     const response = await resp.json();
-    console.log("Server response", response);
+    console.log('Server response', response);
     if (response == 2) {
-
-      var server_address2 = "https://iitrpr-res-mgmt-backend.herokuapp.com/project_prof/" + obj.userEmail;
-      const resp2 = await fetch(server_address2, {
-        method: "GET",
-        headers: { "Content-Type": "application/json", 
-        "jwt-token" : localStorage.getItem("token"), },
-      });
+      const resp2 = await fetch(
+        `${BACKEND_URL}/project_prof/${obj.userEmail}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'jwt-token': localStorage.getItem('token'),
+          },
+        }
+      );
       const response2 = await resp2.json();
-      console.log("Server response", response2);
-      
+      console.log('Server response', response2);
+
       setall_projects(response2);
       setTableShow(true);
-      
+
       return;
     }
 
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/project/";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" , 
-      "jwt-token" : localStorage.getItem("token"),},
+    const resp2 = await fetch(`${BACKEND_URL}/project/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({ sort: 1 }),
     });
 
@@ -217,22 +222,21 @@ export default function Dashboard() {
   }
 
   async function search_project() {
-
-    
-    var server_address = "https://iitrpr-res-mgmt-backend.herokuapp.com/project_search";
-    const resp2 = await fetch(server_address, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", 
-      "jwt-token" : localStorage.getItem("token"), },
+    const resp2 = await fetch(`${BACKEND_URL}/project_search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'jwt-token': localStorage.getItem('token'),
+      },
       body: JSON.stringify({
         admin: state.userFlag,
         type: searchOption,
         title: searchProject,
-        id:"p"+searchProject,
+        id: 'p' + searchProject,
         pi: searchProject,
         dept: searchProject,
         year: searchProject,
-        fund_agency:searchProject,
+        fund_agency: searchProject,
         email_id: state.userEmail,
       }),
     });
@@ -244,8 +248,7 @@ export default function Dashboard() {
     //We will use the setall_project state to update the JSON file with new data
   }
 
-  
-  const [searchProject, setsearchProject] = useState("");
+  const [searchProject, setsearchProject] = useState('');
   return (
     <div>
       <NavbarComp />
@@ -284,28 +287,29 @@ export default function Dashboard() {
                 setsearchOption(event.target.value);
               }}
             >
-              <MenuItem value={"2"}>ID</MenuItem>
-              <MenuItem value={"1"}>Title</MenuItem>
-              <MenuItem value={"3"}>Name of PI</MenuItem>
-              <MenuItem value={"4"}>Department</MenuItem>
-              <MenuItem value={"5"}>Year</MenuItem>
-              <MenuItem value={"6"}>Funding Agency</MenuItem>
+              <MenuItem value={'2'}>ID</MenuItem>
+              <MenuItem value={'1'}>Title</MenuItem>
+              <MenuItem value={'3'}>Name of PI</MenuItem>
+              <MenuItem value={'4'}>Department</MenuItem>
+              <MenuItem value={'5'}>Year</MenuItem>
+              <MenuItem value={'6'}>Funding Agency</MenuItem>
             </Select>
           </FormControl>
           <Button variant="contained" onClick={search_project}>
-            Search{" "}
+            Search{' '}
           </Button>
           {/* <Button variant="contained" onClick={search_project_prof}>
             Search by Professor{" "}
           </Button> */}
 
           <Button variant="contained" onClick={fetch_proj_on_click}>
-            Fetch All Projects{" "}
+            Fetch All Projects{' '}
           </Button>
-          {state.userFlag===1?(<Button variant="contained" onClick={add_proj_on_click}>
-            Add new project{" "}
-          </Button>):(null)}
-          
+          {state.userFlag === 1 ? (
+            <Button variant="contained" onClick={add_proj_on_click}>
+              Add new project{' '}
+            </Button>
+          ) : null}
         </Stack>
       </div>
       {tableShow ? <ProjectTable {...obj} /> : null}
@@ -315,7 +319,7 @@ export default function Dashboard() {
       >
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "500px" } }}
+          sx={{ '& .MuiTextField-root': { m: 1, width: '500px' } }}
           noValidate
           autoComplete="off"
           display="flex"
@@ -326,7 +330,7 @@ export default function Dashboard() {
             <Button
               className="CloseAddProjectPopup"
               startIcon={<CloseIcon />}
-              style={{ float: "right" }}
+              style={{ float: 'right' }}
               onClick={() => {
                 setopenAddProjectPopup(false);
               }}
@@ -420,7 +424,6 @@ export default function Dashboard() {
               id="outlined-basic"
               label="Duration"
               variant="outlined"
-              
               onChange={(event) => {
                 setnewDuration(event.target.value);
               }}
@@ -429,12 +432,11 @@ export default function Dashboard() {
               id="outlined-basic"
               label="Start Year"
               variant="outlined"
-              
               onChange={(event) => {
                 setnewYear(event.target.value);
               }}
             />
-            <TextField 
+            <TextField
               type="date"
               id="outlined-basic"
               label="Date of Start"
@@ -459,7 +461,7 @@ export default function Dashboard() {
               }}
             />
             <center>
-              Enter the Sanctioned Amount under the following categories:-{" "}
+              Enter the Sanctioned Amount under the following categories:-{' '}
             </center>
             <TextField
               type="number"
@@ -479,60 +481,97 @@ export default function Dashboard() {
                 setnewNonRecurring(event.target.value);
               }}
             />
-            <Stack justifyContent="center" alignItems="center"  direction="row" >
-            <TextField type="number" style = {{width: 500}} id="outlined-basic" label="Manpower" variant="outlined" 
-              onChange={(event) => {
-                setnewManpower(event.target.value);
-              }}
-            />
-            <TextField type="number" style = {{width: 500}}  id="outlined-basic" label="Consumables" variant="outlined"
-              onChange={(event) => {
-                setnewConsumables(event.target.value);
-              }}
-            />
+            <Stack justifyContent="center" alignItems="center" direction="row">
+              <TextField
+                type="number"
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Manpower"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewManpower(event.target.value);
+                }}
+              />
+              <TextField
+                type="number"
+                style={{ width: 500 }}
+                id="outlined-basic"
+                label="Consumables"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewConsumables(event.target.value);
+                }}
+              />
             </Stack>
-            <Stack justifyContent="center" alignItems="center"  direction="row">
-            <TextField type = "number" id="outlined-basic" label="Travel" variant="outlined"
-              onChange={(event) => {
-                setnewTravel(event.target.value);
-              }}
-            />
-            <TextField type = "number" id="outlined-basic" label="Field Testing/Demo/Tranings" variant="outlined"
-              onChange={(event) => {
-                setnewDemo(event.target.value);
-              }}
-            />
+            <Stack justifyContent="center" alignItems="center" direction="row">
+              <TextField
+                type="number"
+                id="outlined-basic"
+                label="Travel"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewTravel(event.target.value);
+                }}
+              />
+              <TextField
+                type="number"
+                id="outlined-basic"
+                label="Field Testing/Demo/Tranings"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewDemo(event.target.value);
+                }}
+              />
             </Stack>
-            <Stack justifyContent="center" alignItems="center"  direction="row">
-            <TextField type = "number" id="outlined-basic" label="Overhead" variant="outlined"
-              onChange={(event) => {
-                setnewOverheads(event.target.value);
-              }}
-            />
-            <TextField type = "number" id="outlined-basic" label="Unforseen Expenses" variant="outlined"
-              onChange={(event) => {
-                setnewUnforeseenExpenses(event.target.value);
-              }}
-            />
+            <Stack justifyContent="center" alignItems="center" direction="row">
+              <TextField
+                type="number"
+                id="outlined-basic"
+                label="Overhead"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewOverheads(event.target.value);
+                }}
+              />
+              <TextField
+                type="number"
+                id="outlined-basic"
+                label="Unforseen Expenses"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewUnforeseenExpenses(event.target.value);
+                }}
+              />
             </Stack>
-            <TextField type = "number" id="outlined-basic" label="Fabrication" variant="outlined"
+            <TextField
+              type="number"
+              id="outlined-basic"
+              label="Fabrication"
+              variant="outlined"
               onChange={(event) => {
                 setnewFabrication(event.target.value);
               }}
             />
-            <Stack justifyContent="center" alignItems="center"  direction="row">
-            <TextField type = "number" id="outlined-basic" label="Equipment" variant="outlined"
-              onChange={(event) => {
-                setnewEquipment(event.target.value);
-              }}
-            />
-            <TextField type = "number" id="outlined-basic" label="Construction" variant="outlined"
-              onChange={(event) => {
-                setnewConstruction(event.target.value);
-              }}
-            />
+            <Stack justifyContent="center" alignItems="center" direction="row">
+              <TextField
+                type="number"
+                id="outlined-basic"
+                label="Equipment"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewEquipment(event.target.value);
+                }}
+              />
+              <TextField
+                type="number"
+                id="outlined-basic"
+                label="Construction"
+                variant="outlined"
+                onChange={(event) => {
+                  setnewConstruction(event.target.value);
+                }}
+              />
             </Stack>
-            
 
             <center>
               <Button
