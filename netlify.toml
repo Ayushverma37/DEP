@@ -1,4 +1,4 @@
 [build]
-  base = "Frontend"
-  publish = "Frontend/build"
+  base = "Frontend/"
+  publish = "build/"
   command = "npm install --force && npm run build"
