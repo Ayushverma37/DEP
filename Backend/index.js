@@ -14,7 +14,7 @@ const specificProject = require('./components/specificProject');
 const createProject = require('./components/createProject');
 const addFund = require('./components/addFund');
 const addComment = require('./components/addComment');
-const sendMail = require('./components/sendMail');
+const sendCommentNotification = require('./components/sendMail');
 const getComment = require('./components/getComment');
 const showProjects = require('./components/showProjects');
 const addSummaryComment = require('./components/addSummaryComment');
@@ -125,7 +125,11 @@ app.post('/project_search', verifyToken, specificProject.specificProject);
 app.post('/create_project', verifyToken, createProject.createProject);
 app.post('/fund', verifyToken, addFund.addFund);
 app.post('/comment', verifyToken, addComment.addComment);
-app.post('/sendMail', verifyToken, sendMail.sendMail);
+app.post(
+  '/sendMail',
+  verifyToken,
+  sendCommentNotification.sendCommentNotification
+);
 app.post('/get_comment', verifyToken, getComment.getComment);
 app.get('/project_prof/:email_id', verifyToken, showProjects.showProjects);
 app.post('/summary_comment', verifyToken, addSummaryComment.addSummaryComment);

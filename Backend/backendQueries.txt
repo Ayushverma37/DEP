@@ -9,6 +9,7 @@ create table users(email_id text, user_name text, admin integer);
 insert into users(email_id, user_name, admin) values('2019csb1147@iitrpr.ac.in', 'Ayush', 1);
 insert into users(email_id, user_name, admin) values('2019csb1074@iitrpr.ac.in', 'Anshu Kumar', 1);
 insert into users(email_id, user_name, admin) values('2019csb1305@iitrpr.ac.in', 'Vishawam Datta', 1);
+insert into users(email_id, user_name, admin) values('2019csb1263@iitrpr.ac.in', 'Himanshu Yadav', 1);
 select * from users;
 
 // To drop all table
