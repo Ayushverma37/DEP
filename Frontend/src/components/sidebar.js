@@ -31,7 +31,6 @@ export default function PermanentDrawerLeft(props) {
     });
     var auth2 = gapi.auth2.getAuthInstance();
     navigate('/');
-    console.log('LOGOUT');
     auth2.signOut();
     window.location.reload();
 
@@ -56,7 +55,6 @@ export default function PermanentDrawerLeft(props) {
       },
     });
     const response = await resp.json();
-    console.log('Server response', response);
 
     if (response != 1) {
       alert('YOU ARE NOT THE ADMIN');
@@ -98,8 +96,6 @@ export default function PermanentDrawerLeft(props) {
         anchor="left"
       >
         <Toolbar />
-        {console.log(props.userImg)}
-        {console.log(props.userEmail)}
 
         <span className="userImgContainer">
           <img className="userImage" src={props.userImg}></img>

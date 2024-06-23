@@ -62,7 +62,6 @@ export default function Manageuser() {
     });
 
     const response = await resp2.json();
-    console.log('Server response', response);
     set_rows(response);
   }, []);
 
@@ -97,9 +96,7 @@ export default function Manageuser() {
     });
 
     const response = await resp2.json();
-    console.log('Server response', response);
     set_rows(response);
-    console.log('THis is rows ->' + rows);
   }
 
   async function removeUser() {
@@ -131,7 +128,6 @@ export default function Manageuser() {
     });
 
     const response2 = await resp3.json();
-    console.log('Server response', response2);
     set_rows(response2);
   }
   function addUser() {

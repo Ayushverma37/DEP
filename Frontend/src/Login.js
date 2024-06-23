@@ -28,8 +28,6 @@ function Login() {
 
     const jwt_data = await resp2.json();
 
-    console.log('JWT->', jwt_data);
-
     if (jwt_data == -1) {
       var auth2 = gapi.auth2.getAuthInstance();
       alert('You are not a valid USER!!');
@@ -55,9 +53,6 @@ function Login() {
 
     const data34 = await resp34.json();
 
-    console.log('checking jwt->', data34);
-
-    console.log('Login Success:', res.profileObj);
     const resp = await fetch(`${BACKEND_URL}/user/${res.profileObj.email}`, {
       method: 'GET',
       headers: {
@@ -66,7 +61,6 @@ function Login() {
       },
     });
     const response = await resp.json();
-    console.log('Server response', response);
     const flag = response;
     if (flag == -1) {
       var auth2 = gapi.auth2.getAuthInstance();
@@ -74,7 +68,6 @@ function Login() {
       navigate('/');
       auth2.signOut();
     } else {
-      console.log('This is: ', flag);
       navigate('/dashboard', {
         state: {
           userName: res.profileObj.givenName,
@@ -83,15 +76,12 @@ function Login() {
           userFlag: flag,
         },
       });
-      console.log(res.profileObj);
       setShowloginButton(false);
       setShowlogoutButton(true);
     }
   };
 
-  const onLoginFailure = (res) => {
-    console.log('Login Failed:', res);
-  };
+  const onLoginFailure = () => {};
 
   const onSignoutSuccess = () => {
     alert('You have been logged out successfully');

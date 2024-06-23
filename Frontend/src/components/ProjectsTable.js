@@ -46,8 +46,6 @@ export default function ProjectTable(props) {
 
   const [projectId, setprojectId] = useState(0);
   const [rows, set_rows] = useState(data);
-  console.log('Hello ' + props);
-  console.log(rows);
   function sortByID() {}
   function sortByTitle() {}
   function sortByProfessor() {}

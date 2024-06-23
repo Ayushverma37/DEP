@@ -76,8 +76,6 @@ export default function SOE_Table(props) {
   // const [rows,set_rows] = useState(props.data);
   const [rows, set_rows] = useState(props.table_data);
   const [summaryrows, setsummaryrows] = useState(props.summary_table_data);
-  console.log('Project id = ' + props.projId);
-  console.log(rows);
   const [comment, setComment] = useState('');
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
   const [openEditPopup, setOpenEditPopup] = useState(false);
@@ -125,30 +123,22 @@ export default function SOE_Table(props) {
   const [yearCtr, setyearCtr] = useState(1);
 
   const handleFile = async (e) => {
-    console.log(e.target.files[0]);
     const file = e.target.files[0];
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jsonData = XLSX.utils.sheet_to_json(worksheet);
-    // console.log(jsonData);
     setexcelData(jsonData);
   };
 
   const processExcel = async () => {
-    console.log('DATA');
-    console.log(excelData);
     var arr = [];
     Object.keys(excelData).forEach(function (key) {
-      console.log(excelData[key]);
       arr.push(excelData[key]);
     });
-    console.log(arr.length);
     for (var i = 0; i < arr.length; i++) {
       if (arr[i]['Heads'] == 'Grant') {
-        console.log('Hi Here');
         if (yearCtr == 1) {
-          console.log('Hi Here');
           const resp2 = await fetch(`${BACKEND_URL}/updated_add_fund`, {
             method: 'POST',
             headers: {
@@ -166,7 +156,6 @@ export default function SOE_Table(props) {
           });
 
           const json_response = await resp2.json();
-          console.log('RESPONSEEE->' + json_response);
 
           const resp3 = await fetch(GET_MAIN_TABLE_URL, {
             method: 'POST',
@@ -215,7 +204,6 @@ export default function SOE_Table(props) {
           });
 
           const json_response = await resp2.json();
-          console.log('RESPONSEEE->' + json_response);
 
           const resp3 = await fetch(GET_MAIN_TABLE_URL, {
             method: 'POST',
@@ -264,7 +252,6 @@ export default function SOE_Table(props) {
           });
 
           const json_response = await resp2.json();
-          console.log('RESPONSEEE->' + json_response);
 
           const resp3 = await fetch(GET_MAIN_TABLE_URL, {
             method: 'POST',
@@ -327,7 +314,6 @@ export default function SOE_Table(props) {
         });
 
         const json_response = await resp2.json();
-        console.log('RESPONSEEE->' + json_response);
 
         if (json_response == -1) {
           alert('Expenditure exceeds Sanctioned Amount, Request Denied!!');
@@ -364,15 +350,11 @@ export default function SOE_Table(props) {
         set_new_rec('');
         set_new_pay('');
       }
-      console.log(arr[i]['Particulars']);
     }
     setOpenImportExcelPop(false);
   };
 
   const handleSubmit = async () => {
-    console.log(comment);
-    console.log(rowId);
-    console.log('Table', whichTable);
     var SUBMIT_URL;
     if (whichTable === 1) SUBMIT_URL = `${BACKEND_URL}/comment`;
     if (whichTable === 2) SUBMIT_URL = `${BACKEND_URL}/summary_comment`;
@@ -393,7 +375,7 @@ export default function SOE_Table(props) {
     });
 
     const json_response = await resp2.json();
-    console.log(json_response);
+
     const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
       method: 'POST',
       headers: {
@@ -421,9 +403,6 @@ export default function SOE_Table(props) {
   };
 
   const sendmail = async () => {
-    console.log(comment);
-    console.log(rowId);
-
     const resp2 = await fetch(`${BACKEND_URL}/sendMail`, {
       method: 'POST',
       headers: {
@@ -440,7 +419,6 @@ export default function SOE_Table(props) {
     });
 
     const json_response = await resp2.json();
-    console.log(json_response);
 
     setOpenAddCommentPopup(false);
   };
@@ -454,7 +432,6 @@ export default function SOE_Table(props) {
       },
     });
     const response = await resp.json();
-    console.log('Server response', response);
 
     if (response != 1) {
       alert('YOU ARE NOT THE ADMIN');
@@ -482,7 +459,6 @@ export default function SOE_Table(props) {
     });
 
     const json_response = await resp2.json();
-    console.log('RESPONSEEE->' + json_response);
 
     if (json_response == -1) {
       alert('Expenditure exceeds Sanctioned Amount, Request Denied!!');
@@ -529,7 +505,6 @@ export default function SOE_Table(props) {
       },
     });
     const response = await resp.json();
-    console.log('Server response', response);
 
     if (response != 1) {
       alert('YOU ARE NOT THE ADMIN');
@@ -564,7 +539,6 @@ export default function SOE_Table(props) {
     });
 
     const json_response = await resp2.json();
-    console.log('RESPONSEEE->' + json_response);
 
     const resp3 = await fetch(GET_MAIN_TABLE_URL, {
       method: 'POST',
@@ -599,7 +573,6 @@ export default function SOE_Table(props) {
 
   useEffect(() => {
     if (rowIdView > 0) {
-      console.log(rowIdView);
       setOpenViewCommentPopup(true);
       //Todo: Set the Json data according to "rowIdView"
     } else {
@@ -608,8 +581,6 @@ export default function SOE_Table(props) {
   }, [rowIdView]);
 
   function rowSelector(flag) {
-    // console.log("GG")
-
     if (flag === 1) return 'green';
     else return '';
   }
@@ -640,7 +611,6 @@ export default function SOE_Table(props) {
                     }
                   );
                   const response = await resp.json();
-                  console.log('Server response', response);
 
                   if (response != 1) {
                     alert('YOU ARE NOT THE ADMIN');
@@ -800,7 +770,7 @@ export default function SOE_Table(props) {
                         );
 
                         const json_response = await resp2.json();
-                        console.log(json_response);
+
                         setcommentJsonData(json_response);
                         // ViewComments(row.sr)
                       }}
@@ -873,7 +843,6 @@ export default function SOE_Table(props) {
                             );
 
                             const json_response = await resp2.json();
-                            console.log(json_response);
 
                             const resp3 = await fetch(GET_MAIN_TABLE_URL, {
                               method: 'POST',
@@ -1087,7 +1056,7 @@ export default function SOE_Table(props) {
                       );
 
                       const json_response = await resp2.json();
-                      console.log(json_response);
+
                       setcommentJsonData(json_response);
                       // ViewComments(row.sr)
                     }}
@@ -1293,7 +1262,7 @@ export default function SOE_Table(props) {
                     });
 
                     const json_response = await resp2.json();
-                    console.log(json_response);
+
                     const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {
                       method: 'POST',
                       headers: {
@@ -1379,7 +1348,7 @@ export default function SOE_Table(props) {
                     );
 
                     const json_response = await resp2.json();
-                    console.log(json_response);
+
                     setOpenEditPopup(false);
 
                     const resp4 = await fetch(GET_SUMMARY_TABLE_URL, {

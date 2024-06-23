@@ -17,11 +17,6 @@ export default function SOE() {
   const { state } = useLocation();
   const [tableShow, setTableShow] = useState(false);
   // const [all_projects,setall_projects] = useState(null);
-  console.log(state.userImg);
-  console.log('HELPL');
-  console.log(state.userName);
-  console.log(state.userEmail);
-  console.log('The project id is: ' + state.projId.toString().substring(1));
 
   let obj = {
     userName: state.userName,
@@ -44,7 +39,6 @@ export default function SOE() {
       headers: { 'Content-Type': 'application/json' },
     });
     const response = await resp.json();
-    console.log('Server response', response);
     if (response != 1) {
       alert('You Are not an Admin , access Denied ');
       return;
@@ -63,9 +57,7 @@ export default function SOE() {
   }
   const [comment, setComment] = useState('');
 
-  const handleSubmit = () => {
-    console.log(comment);
-  };
+  const handleSubmit = () => {};
 
   const [openAddCommentPopup, setOpenAddCommentPopup] = useState(false);
   return (

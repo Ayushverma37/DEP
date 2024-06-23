@@ -51,12 +51,6 @@ export default function Dashboard() {
   const [newYear, setnewYear] = useState('');
   const [newDuration, setnewDuration] = useState('');
 
-  console.log(state.userImg);
-  console.log('HELPL');
-  console.log(state.userName);
-  console.log(state.userEmail);
-  console.log('SWEMZ', state.isDashboard);
-
   const SubmitAddProject = async () => {
     if (new Date(newDOS).getTime() > new Date(newDOC).getTime()) {
       alert('Start Date is later than Completion Date');
@@ -65,7 +59,6 @@ export default function Dashboard() {
       alert('Year in Start Date does not match with Start year entered');
       return;
     }
-    // console.log(new Date(newDOS).getTime());
     const resp2 = await fetch(`${BACKEND_URL}/create_project`, {
       method: 'POST',
       headers: {
@@ -113,8 +106,6 @@ export default function Dashboard() {
       );
       return;
     }
-    console.log('RESPONSEEE->' + json_response);
-    console.log(newProjectTitle);
     setopenAddProjectPopup(false);
     fetch_proj_on_click();
   };
@@ -160,7 +151,6 @@ export default function Dashboard() {
     //   headers: { "Content-Type": "application/json" },
     // });
     // const response = await resp.json();
-    // console.log("Server response", response);
 
     // if(response!=1){
     //   alert("YOU ARE NOT THE ADMIN")
@@ -174,7 +164,6 @@ export default function Dashboard() {
 
   async function fetch_proj_on_click() {
     /*setTableShow(true);
-    console.log("Fetched");
     return;*/
 
     const resp = await fetch(`${BACKEND_URL}/user/${obj.userEmail}`, {
@@ -185,7 +174,6 @@ export default function Dashboard() {
       },
     });
     const response = await resp.json();
-    console.log('Server response', response);
     if (response == 2) {
       const resp2 = await fetch(
         `${BACKEND_URL}/project_prof/${obj.userEmail}`,
@@ -198,7 +186,6 @@ export default function Dashboard() {
         }
       );
       const response2 = await resp2.json();
-      console.log('Server response', response2);
 
       setall_projects(response2);
       setTableShow(true);

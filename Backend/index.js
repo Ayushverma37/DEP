@@ -81,16 +81,12 @@ app.post('/authenticate', async function (req, res) {
     query2 = query2.concat(req.body.email);
     query2 = query2.concat("'");
 
-    console.log(query2);
-
     const db_res = await pool.query(query2);
 
     if (db_res.rows[0] == undefined) {
       // if the user himself is not valid then send -1
       res.json(-1);
     } else {
-      console.log(req.body);
-
       const { token } = req.body;
 
       // verifying the google login sent
@@ -145,7 +141,7 @@ app.post('/del_user', verifyToken, delUser.delUser);
 app.post('/del_project', verifyToken, delProject.delProject);
 app.post('/to_actual', verifyToken, ToActual.ToActual);
 
-app.get('/final_deploy_test', (req, res) => {
+app.get('/health', (req, res) => {
   res.send('SERVER UP');
 });
 
