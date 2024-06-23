@@ -29,7 +29,7 @@ const ToActual = require('./components/ToActual');
 // cors allows communication from differnt domains(requests to our server)
 const cors = require('cors');
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
 
 //creating middleware
 app.use(cors());
