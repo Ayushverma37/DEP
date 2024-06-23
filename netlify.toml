@@ -1,4 +1,7 @@
 [build]
-  base = "Frontend/"
-  publish = "build/"
-  command = "npm install --force && npm run build"
+  publish = "Frontend/build/"
+  command = "cd Frontend && npm install --force && npm run build"
+
+[build.environment]
+  node_version = "19.8.1"  
+  npm_version = "9.5.1"
