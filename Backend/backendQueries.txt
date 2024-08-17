@@ -1,7 +1,23 @@
 CREATE DATABASE research_mgmt;
 
 drop table if exists projects;
-create table projects(project_id text, project_title text, professor_list text, project_grant integer, comment_time timestamp with time zone);
+create table projects(
+    project_id text, 
+    project_title text, 
+    professors text, 
+    project_grant int, 
+    comment_time timestamp with time zone, 
+    pi text, 
+    co_pi text,
+    dept text,
+    fund_agency text,
+    sanc_order_no text,
+    sanctioned_date text,
+    duration int,
+    dos text,
+    doc text,
+    start_year int
+);
 
 drop table if exists users;
 create table users(email_id text, user_name text, admin integer);
